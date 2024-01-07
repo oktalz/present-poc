@@ -1,0 +1,9 @@
+declare module 'markdown-it-textual-uml';
+declare module 'markdown-it-emoji';
+declare module 'markdown-it-easy-tables';
+declare module 'markdown-it-icons';
+declare module 'markdown-it-color-inline';
+declare module 'asciinema-player';
+declare module 'markdown-it-regex';
+declare module 'vue-nav-tabs';
+declare module '@mdit/plugin-footnote';
