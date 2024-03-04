@@ -10,10 +10,13 @@ onMounted(() => {
   eventSource.value = new EventSource(baseUrl+ '/sync');
   eventSource.value.onmessage = (event) => {
     const data = JSON.parse(event.data)
-    syncMessage.value = data
-    console.log("event received from server "+syncMessage.value)
+    console.log("event received from server "+event.data)
     if (data.Reload) {
       location.reload()
+    } else {
+      if (data.Slide > -999){
+        syncMessage.value = data
+      }
     }
   };
 });

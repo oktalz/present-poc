@@ -1,9 +1,6 @@
 package reader
 
 import (
-	"bytes"
-	"html/template"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -35,20 +32,51 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 	}
 
 	fileContent := string(content)
-	fileContent = strings.ReplaceAll(fileContent, ":image(", ":image("+ro.DevUrl)
+	fileContent = strings.ReplaceAll(fileContent, ".center.end", ":::")
+	fileContent = strings.ReplaceAll(fileContent, ".center", "::: center")
+	fileContent = replaceWithConditionImage(fileContent, ".image(", ":image("+ro.DevUrl, ":image(")
 
 	lines := strings.Split(fileContent, "\n")
 	slides := []types.Slide{}
 
 	var slide strings.Builder
 	lastIndex := 1
-	templates := map[string]string{}
+	// templates := map[string]string{}
 	shortTemplates := map[string]string{}
 	currentFontSize := ro.DefaultFontSize
+	currentBackgroundColor := ro.DefaultBackgroundColor
 	defaultEveryDashIsACut := ro.EveryDashIsACut
 	_ = defaultEveryDashIsACut
 	slideDashCut := ro.EveryDashIsACut
 	notes := ""
+
+	for index := 0; index < len(lines); index++ {
+		line := lines[index]
+		if strings.HasPrefix(line, ".template") {
+			// we have a template
+			templateName := strings.TrimPrefix(line, ".template ")
+			lines[index] = ""
+			index++
+			var template strings.Builder
+			for {
+				line = lines[index]
+				lines[index] = ""
+				if strings.HasPrefix(line, ".template.end") {
+					break
+				}
+				template.WriteString(line)
+				template.WriteString("\n")
+				index++
+			}
+			lines = applyTemplate(lines, templateName, strings.TrimSuffix(template.String(), "\n"))
+			continue
+		}
+	}
+	for template, data := range shortTemplates {
+		for index := range lines {
+			_, _, _ = template, data, index
+		}
+	}
 
 	for index := 0; index < len(lines); index++ {
 		line := lines[index]
@@ -58,24 +86,6 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 			templateLine := strings.TrimPrefix(line, "...#")
 			data := strings.SplitN(templateLine, " ", 2)
 			shortTemplates[data[0]] = data[1]
-			continue
-		}
-		if strings.HasPrefix(line, ".template") {
-			// we have a template
-			templateName := strings.TrimPrefix(line, ".template ")
-			index++
-			var template strings.Builder
-			for {
-				line = lines[index]
-				if strings.HasPrefix(line, ".template.end") {
-					break
-				}
-				template.WriteString(line)
-				template.WriteString("\n")
-				index++
-			}
-
-			templates[templateName] = template.String()
 			continue
 		}
 		if strings.HasPrefix(line, ".notes") {
@@ -102,15 +112,17 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 				slide := slide.String()
 				if len(strings.Trim(slide, " \n")) > 0 {
 					slides = append(slides, types.Slide{
-						Markdown:   slide,
-						Notes:      notes,
-						PageNumber: lastIndex,
-						FontSize:   currentFontSize,
+						Markdown:        slide,
+						Notes:           notes,
+						PageNumber:      lastIndex,
+						FontSize:        currentFontSize,
+						BackgroundColor: currentBackgroundColor,
 					})
 					notes = ""
 					lastIndex++
 				}
 				currentFontSize = ro.DefaultFontSize
+				currentBackgroundColor = ro.DefaultBackgroundColor
 			}
 			slide.Reset()
 			slideDashCut = ro.EveryDashIsACut
@@ -119,6 +131,12 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 		if strings.HasPrefix(line, ".global.font-size") {
 			currentFontSize = strings.TrimPrefix(line, ".global.font-size ")
 			ro.DefaultFontSize = currentFontSize
+			lines[index] = ""
+			continue
+		}
+		if strings.HasPrefix(line, ".global.background-color") {
+			currentBackgroundColor = strings.TrimPrefix(line, ".global.background-color ")
+			ro.DefaultBackgroundColor = currentBackgroundColor
 			lines[index] = ""
 			continue
 		}
@@ -143,6 +161,11 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 			lines[index] = ""
 			continue
 		}
+		if strings.HasPrefix(line, ".slide.background-color") {
+			currentBackgroundColor = strings.TrimPrefix(line, ".slide.background-color ")
+			lines[index] = ""
+			continue
+		}
 		isDashCut := slideDashCut && strings.HasPrefix(line, "-")
 		if strings.HasPrefix(line, ".cut") || isDashCut {
 			// we have reached cut delimiter, see if we have anything in buffer
@@ -151,10 +174,11 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 			if slide.Len() > 0 {
 				tmp = slide.String()
 				slides = append(slides, types.Slide{
-					Markdown:   tmp,
-					Notes:      notes,
-					PageNumber: lastIndex,
-					FontSize:   currentFontSize,
+					Markdown:        tmp,
+					Notes:           notes,
+					PageNumber:      lastIndex,
+					FontSize:        currentFontSize,
+					BackgroundColor: currentBackgroundColor,
 				})
 				notes = ""
 				if !isDashCut {
@@ -178,53 +202,16 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 			// we have reached comment, ignore it
 			continue
 		}
-		isATemplate := false
-		if strings.HasPrefix(line, ".") {
-			// is it a template?
-			for k, v := range templates {
-				if strings.HasPrefix(line, "."+k) {
-					parts := strings.Split(strings.TrimPrefix(line, "."+k), ".")
-					data := map[string]string{}
-					for _, p := range parts {
-						if p == "" {
-							continue
-						}
-						d := strings.SplitN(p, " ", 2)
-						if len(d) != 2 {
-							continue
-						}
-						data[d[0]] = strings.TrimSuffix(d[1], " ")
-					}
-					tmpl, err := template.New("test").Parse(v)
-					if err != nil {
-						panic(err)
-					}
-
-					var tpl bytes.Buffer
-					err = tmpl.Execute(&tpl, data)
-					if err != nil {
-						panic(err)
-					}
-					log.Println(tpl.String())
-					slide.WriteString(tpl.String())
-					slide.WriteString("\n")
-					isATemplate = true
-					break
-				}
-			}
-		}
-		if isATemplate {
-			continue
-		}
 		slide.WriteString(line)
 		slide.WriteString("\n")
 	}
 	if slide.Len() > 0 {
 		slides = append(slides, types.Slide{
-			Markdown:   slide.String(),
-			Notes:      notes,
-			PageNumber: lastIndex,
-			FontSize:   currentFontSize,
+			Markdown:        slide.String(),
+			Notes:           notes,
+			PageNumber:      lastIndex,
+			FontSize:        currentFontSize,
+			BackgroundColor: currentBackgroundColor,
 		})
 		// notes = ""
 		// lastIndex++

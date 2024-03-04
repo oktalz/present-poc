@@ -7,11 +7,6 @@ body {
   height: 100vh;
 
   overflow: hidden;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  font-size: 3.5vh;
   font-family: 'Open Sans', Arial, sans-serif;
 }
 
@@ -31,6 +26,7 @@ a, a:visited {
   position:absolute;
   right : 5px;
   font-style: oblique;
+  font-size: 4vh;
   color: rgb(107, 109, 109);
 }
 
@@ -86,34 +82,46 @@ pre {
   margin-block-end: 0.5em;
 }
 
+.slide {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  margin: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.slide-data {
+  height: 100vh;
+  width: 96vw;
+  max-width: 100vw;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  margin-top: 0vh;
+  margin-bottom: 0vh;
+  margin-left: 2vw;
+  margin-right: 2vw;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
 @media print {
-  /*html, body {
-    width: 210mm;
-    height: 297mm;
-  }*/
   html, body {
-    height: 594mm;
   }
   body {
-    font-size: 150%; /* due to difference in screen size for print */
-    overflow: hidden; /* Hide scrollbars */
+    overflow: hidden; /* Hide scrollbar */
   }
   @page {
-      margin: 20px;
-      padding: 20px;
-      size: A4 landscape;
+    size: landscape;
   }
   head, title, a[href]:after {
       display: none;
-  }
-  .slide {
-    display: block;
-    width: 100vw; /* full width minus left and right margins */
-    height: 100vh; /* full height + zoom minus top and bottom margins */
-    margin: 0;
-    background-color: rgb(255, 255, 255); /* just for visibility, you can remove this */
-    overflow: hidden;
-    position: relative;
   }
   .page-break {
     page-break-after: always;
@@ -164,22 +172,43 @@ div.ap-wrapper div.ap-player {
   border: 3px solid black !important;
 }
 
+.tab {
+  width: fit-content;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: rgb(0, 0, 0);
+  background-color: #fdf6e3;
+  text-align: center;
+  cursor: pointer;
+  border: thin solid black;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  font-family: monospace;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 1ch 1ch;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
 @media screen {
-  .slide {
-    height: 96vh;
-    width: 141.4vh;
-    width: 96vw;
-    max-width: 100vw;
-    overflow-y: hidden;
-    overflow-x: hidden;
-    margin-top: 0vh;
-    margin-bottom: 2vh;
-    margin-left: 2vw;
-    margin-right: 2vw;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-  }
   .hidden {
     height: 0px;
     max-height: 0;

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"log"
 	"net/http"
 )
 
@@ -42,5 +43,8 @@ func (s *fallbackFileServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Header()[k] = v
 	}
 	w.WriteHeader(rw.StatusCode)
-	w.Write(rw.Body.Bytes())
+	_, err := w.Write(rw.Body.Bytes())
+	if err != nil {
+		log.Println(err)
+	}
 }

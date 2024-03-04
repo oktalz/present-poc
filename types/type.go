@@ -8,9 +8,11 @@ type Asciinema struct {
 }
 
 type Cast struct {
-	Width           int             `json:"width"`
-	Height          int             `json:"height"`
-	TerminalCommand TerminalCommand `json:"-"`
+	Width                 int              `json:"width"`
+	Height                int              `json:"height"`
+	TerminalCommandBefore *TerminalCommand `json:"-"`
+	TerminalCommand       TerminalCommand  `json:"-"`
+	TerminalCommandAfter  *TerminalCommand `json:"-"`
 }
 
 type TerminalCommand struct {
@@ -36,6 +38,7 @@ type Slide struct {
 	HasRun          bool            `json:"run"`
 	HasTerminal     bool            `json:"terminal"`
 	BackgroundImage string          `json:"background"`
+	BackgroundColor string          `json:"background_color"`
 	PageNumber      int             `json:"page"`
 	PrintPage       int             `json:"print_page"`
 	FontSize        string          `json:"font_size"`
@@ -47,7 +50,8 @@ type TerminalOutputLine struct {
 }
 
 type ReadOptions struct {
-	DevUrl          string
-	DefaultFontSize string
-	EveryDashIsACut bool
+	DevUrl                 string
+	DefaultFontSize        string
+	DefaultBackgroundColor string
+	EveryDashIsACut        bool
 }

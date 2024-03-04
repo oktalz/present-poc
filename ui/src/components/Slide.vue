@@ -16,39 +16,49 @@
       </tr>
     </table>
   </div>
-  <div @wheel="onWheel" class="slide" :id="'slide-' + index" :ref="'slide' + index" v-bind:class="{ 'hidden': index!==state.page, 'page-not-print-visible': slide.print_page < 1 }"  v-for="(slide, index) in slides" :key="index">
-    <div v-html="md.render(slide.markdown)"></div>
-    <div class="player-wrap" :id="'ascinema-wrap-' + index">
+  <div @wheel="onWheel" class="slide" :id="'slide-' + index" :ref="'slide' + index"
+      v-bind:class="{ 'hidden': index!==state.page, 'page-not-print-visible': slide.print_page < 1 }"
+      v-for="(slide, index) in slides" :key="index"
+      v-bind:style="{
+        'font-size': slide.font_size,
+        'background-image': 'url(' + slide.background + ')',
+        'background-color': slide.background_color
+      }"
+  >
+    <div class="slide-data">
+      <div v-html="md.render(slide.markdown)"></div>
+      <div class="player-wrap" :id="'ascinema-wrap-' + index">
+        <div
+          class="player"
+          :class="{'zeroSize':!AsciinemaPlayerVisible(index)}"
+          :id="'ascinema-player-' + index">
+        </div>
+      </div>
       <div
-        class="player"
-        :class="{'zeroSize':!AsciinemaPlayerVisible(index)}"
-        :id="'ascinema-player-' + index">
+        class="terminal"
+        v-html="state.terminal[index]"
+        v-if="state.terminal[index] != ''">
       </div>
-    </div>
-    <div
-      class="terminal"
-      v-html="state.terminal[index]"
-      v-if="state.terminal[index] != ''">
-    </div>
-    <div class="page-num">
-       <div
-        v-if="RunVisible(state.page)"
-        class="button run-button"
-        @click="execTerm"
-        >
-           Run
+      <div class="page-num">
+        <div
+          v-if="RunVisible(state.page)"
+          class="button run-button"
+          @click="execTerm"
+          >
+            Run
+        </div>
+        <div
+          v-if="state.terminal[index] != ''"
+          class="button run-button"
+          @click="state.terminal[index]=''"
+          >
+            Close
+        </div>
+        &nbsp;&nbsp;&nbsp;<span class="view-page">{{ slide.page }}</span><span class="view-print-page">{{ slide.print_page }}</span>
       </div>
-       <div
-        v-if="state.terminal[index] != ''"
-        class="button run-button"
-        @click="state.terminal[index]=''"
-        >
-           Close
-      </div>
-      &nbsp;&nbsp;&nbsp;<span class="view-page">{{ slide.page }}</span><span class="view-print-page">{{ slide.print_page }}</span>
-    </div>
-    <div class="page-break"></div>
-  </div>
+      <div class="page-break"></div>
+    </div><!-- <div class="slide" -->
+  </div> <!-- <div class="slide" -->
 </template>
 
 <script lang="ts">
@@ -386,7 +396,7 @@ export default defineComponent({
       }else{
         document.body.style.backgroundImage = 'url('+ this.slides[this.state.page].background+')'
       }
-      document.body.style.fontSize = this.slides[this.state.page].font_size;
+      //document.body.style.fontSize = this.slides[this.state.page].font_size;
       if (this.slides[this.state.page].can_edit){
         let codeSelector = document.getElementById('slide-' + this.state.page)
         if (codeSelector) {
@@ -468,6 +478,7 @@ export default defineComponent({
 
     type Slide = {
       background: string;
+      background_color: string;
       font_size: string;
       terminal: boolean;
       markdown: string;

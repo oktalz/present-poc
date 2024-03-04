@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"os"
 	"os/exec"
+	"path"
 	"strings"
 	"sync"
 	"time"
@@ -22,12 +24,31 @@ func Cmd(tc types.TerminalCommand) []byte {
 	return output
 }
 
+func DirectoryExists(path string) bool {
+	info, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return info.IsDir()
+}
+
 func CmdStream(tc types.TerminalCommand) (lines []types.TerminalOutputLine) {
 	fmt.Println("======== executing", tc.Dir, tc.App, strings.Join(tc.Cmd, " "))
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, tc.App, tc.Cmd...)
-	cmd.Dir = tc.Dir
+	if DirectoryExists(tc.Dir) {
+		cmd.Dir = tc.Dir
+	} else {
+		dir, err := os.Getwd()
+		if err != nil {
+			return append(lines, types.TerminalOutputLine{
+				Timestamp: "0.1",
+				Line:      err.Error(),
+			})
+		}
+		cmd.Dir = path.Join(dir, tc.Dir)
+	}
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {

@@ -28,7 +28,7 @@ export default function zbImage(md: MarkdownIt) {
             const token: Token = state.push('zb_image', '', 0);
             let opt = `style=" object-fit: contain;`
             //see if we have extra options
-            if (regMatch.length > 1) {
+            if (regMatch.length > 1 && regMatch[2]) {
                 const matchSize = regMatch[2].split(' ');
                 if (matchSize.length > 0) {
                     let normalWH = matchSize[0].split(':')
