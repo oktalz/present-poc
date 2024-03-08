@@ -22,23 +22,33 @@ func parseCommand(command string) types.TerminalCommand {
 	return tc
 }
 
-func parseCommandBlock(lines []string, index int) types.TerminalCommand {
+func parseCommandBlock(lines []string, index int, codeBlockShowStart, codeBlockShowEnd *int) types.TerminalCommand {
 	tc := parseCommand(lines[index])
 	var codeHeader string
 	var code string
 	var codeFooter string
+	codeStart := index + 2
+	codeEnd := len(lines)
+	if codeBlockShowStart != nil {
+		codeStart += *codeBlockShowStart
+	}
+	if codeBlockShowEnd != nil {
+		codeEnd = index + 2 + *codeBlockShowEnd
+	}
 	for i := index + 2; i < len(lines); i++ {
 		if strings.HasPrefix(lines[i], "```") {
 			break
 		}
-		if strings.HasPrefix(lines[i], ".HEADER") {
-			codeHeader += strings.TrimPrefix(lines[i], ".HEADER") + "\n"
+		if i < codeStart {
+			codeHeader += lines[i] + "\n"
 			lines = removeElementFromSlice(lines, i)
 			i = i - 1
+			codeStart--
+			codeEnd--
 			continue
 		}
-		if strings.HasPrefix(lines[i], ".FOOTER") {
-			codeFooter += strings.TrimPrefix(lines[i], ".FOOTER") + "\n"
+		if i > codeEnd {
+			codeFooter += lines[i] + "\n"
 			lines = removeElementFromSlice(lines, i)
 			i = i - 1
 			continue

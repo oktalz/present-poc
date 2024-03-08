@@ -1,0 +1,37 @@
+#https://taskfile.dev/
+version: '3'
+
+includes:
+  ci: taskfile-ci.yml 
+
+tasks:
+
+  tools:
+    desc: 'Install all tools used in this project'
+    cmds:
+      - task: ci:gofumpt
+      - task: ci:lint-version
+
+  test:
+    desc: 'run Go tests'
+    cmds:
+      - go test ./...
+
+  ci:
+    desc: 'do all the checks'
+    cmds:
+      - task: ci:tidy
+      - task: ci:format
+      - task: ci:lint
+      - task: test
+
+  install:
+    desc: 'build the project'
+    cmds:
+      - go build
+      - go install
+
+  run:
+    desc: 'run the project'
+    cmds:
+      - go run . 

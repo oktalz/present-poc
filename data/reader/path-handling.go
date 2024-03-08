@@ -3,26 +3,28 @@ package reader
 import (
 	"fmt"
 	"os"
-	"path/filepath"
+	"path"
+	"strings"
 )
 
-func getOSPath(path string) string {
-	path = filepath.FromSlash(path)
-	fileInfo, err := os.Stat(path)
+func getOSPath(filePath string) string {
+	filePath = strings.ReplaceAll(filePath, "/", string(os.PathSeparator))
+	filePath = strings.ReplaceAll(filePath, "\\", string(os.PathSeparator))
+
+	wd, err := os.Getwd()
 	if err != nil {
-		// maybe we are on the different platform
-		path = convertToOSPath(path)
-		fileInfo, err = os.Stat(path)
-		if err != nil {
-			// fmt.Println(err.Error())
-			return ""
-		}
+		return ""
+	}
+	filePath = path.Join(wd, filePath)
+	fileInfo, err := os.Stat(filePath)
+	if err != nil {
+		return ""
 	}
 
 	if fileInfo.IsDir() {
-		return path
+		return filePath
 	} else {
-		fmt.Println(path, "is not a directory")
+		fmt.Println(filePath, "is not a directory")
 	}
-	return path
+	return filePath
 }

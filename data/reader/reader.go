@@ -43,6 +43,7 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 	lastIndex := 1
 	// templates := map[string]string{}
 	shortTemplates := map[string]string{}
+	replacers := map[string]string{}
 	currentFontSize := ro.DefaultFontSize
 	currentBackgroundColor := ro.DefaultBackgroundColor
 	defaultEveryDashIsACut := ro.EveryDashIsACut
@@ -72,20 +73,25 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 			continue
 		}
 	}
-	for template, data := range shortTemplates {
-		for index := range lines {
-			_, _, _ = template, data, index
-		}
-	}
 
 	for index := 0; index < len(lines); index++ {
 		line := lines[index]
 
-		if strings.HasPrefix(line, "...#") {
+		if strings.HasPrefix(line, ".short") {
 			// we have a template
-			templateLine := strings.TrimPrefix(line, "...#")
+			templateLine := strings.TrimPrefix(line, ".short ")
 			data := strings.SplitN(templateLine, " ", 2)
-			shortTemplates[data[0]] = data[1]
+			if shortTemplates[data[0]] == "" {
+				shortTemplates[data[0]] = data[1]
+			}
+			continue
+		}
+
+		if strings.HasPrefix(line, ".replace") {
+			// we have a .replace line
+			templateLine := strings.TrimPrefix(line, ".replace ")
+			data := strings.SplitN(templateLine, " ", 2)
+			replacers[data[0]] = data[1]
 			continue
 		}
 		if strings.HasPrefix(line, ".notes") {
@@ -218,7 +224,12 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 	}
 	for template, data := range shortTemplates {
 		for index := range slides {
-			slides[index].Markdown = strings.ReplaceAll(slides[index].Markdown, "...#"+template, data)
+			slides[index].Markdown = strings.ReplaceAll(slides[index].Markdown, template, data)
+		}
+	}
+	for pattern, data := range replacers {
+		for index := range slides {
+			slides[index].Markdown = strings.ReplaceAll(slides[index].Markdown, pattern, data)
 		}
 	}
 	return slides, ro, nil

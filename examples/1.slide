@@ -1,0 +1,653 @@
+.global.font-size 4vh
+
+.replace #dot# .
+.replace -hashtag- #
+.replace #backtick# `
+.replace #equal# =
+
+.template TITLE
+.style "font-size: 3.5vh" ## {{ . }}
+____________
+.template.end
+
+.template CAST_FOLDER
+.cast {{ . }} go run .
+.template.end
+
+.template CAST
+.cast.before go mod init x
+.cast.block.edit main.go go run .
+.template.end
+
+.================================
+.center
+
+&nbsp;
+
+.style "font-size: 3.8em;text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;" **Present tool: Go + VUE**
+
+.image(https://go.dev/images/gophers/biplane.svg 25vw:25vh)
+
+.center.end
+
+.style "position: absolute; top: 35vh; right: 15vh; transform: rotate(15deg);" .image(assets/images/3.png :50vh)
+.style "position: absolute; bottom: -5vh; left: 45vw;" .image(assets/images/4.png 10vw:)
+.style "position: absolute; top: 35vh; left: 15vh; transform: rotate(-15deg);" .image(assets/images/3.png :50vh)
+
+.================================
+&nbsp;
+
+Most examples will have a demo with effects and a code (in code block)
+
+```txt
+Most examples will have a demo with effects and a code (in code block)
+```
+.================================
+&nbsp;
+
+text that is **Bold**
+
+```txt
+text that is **Bold**
+```
+
+&nbsp;
+
+text that is *Italics*
+
+```txt
+text that is *Italics*
+```
+
+&nbsp;
+
+text that is `highlighted`
+
+```txt
+text that is `highlighted`
+```
+.================================
+# Size 1
+## Size 2
+### Size 3
+#### Size 4
+
+&nbsp;
+
+```md
+# Size 1
+## Size 2
+### Size 3
+#### Size 4
+```
+.================================
+# Bullet points
+
+- One
+  - Two
+- Three
+  - Four
+    - Five
+
+&nbsp;
+
+```md
+- One
+  - Two
+- Three
+  - Four
+    - Five
+```
+.================================
+&nbsp;
+
+.center
+text that is **Bold** and centered
+
+a second line
+.center.end
+
+```txt
+#dot#center
+text that is **Bold**
+
+a second line
+#dot#center.end
+```
+.================================
+# .style
+
+```txt
+.style "html style" text to format
+```
+
+&nbsp;
+
+.style "text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;" **Go + VUE**
+
+```md
+.style "text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;" **Go + VUE**
+```
+
+&nbsp;
+
+.style "color: red" **Go + VUE**
+
+```md
+.style "color: red" **Go + VUE**
+```
+.================================
+&nbsp;
+
+you can also set colors {red}(to text), {green}(green)
+```md
+you can also set colors {red}(to text), {green}(green)
+```
+
+&nbsp;
+
+in fact any hex color like {#4ebaea}(#4ebaea) works
+```md
+in fact any hex color like {#4ebaea}(#4ebaea) works
+```
+
+.================================
+For space between paragraph use empty line.
+This sentence will be put in the same line as previous one.
+
+second line
+
+if you need more space use `&nbsp;`
+
+&nbsp;
+
+like this
+
+```txt
+For space between paragraph use empty line.
+This will actually be put in the same line
+
+second line
+
+if you need more space use `&nbsp;`
+
+&nbsp;
+
+like this
+```
+.================================
+# transitions
+
+- line one
+.cut
+- line two
+.cut
+- line three
+
+use `.cut` (needs to be on start of the line)
+
+```txt
+ - line one
+ .cut
+ - line two
+ .cut
+ - line three
+```
+
+.================================
+# font awesome
+
+:fas-circle-check:
+
+{green}(:fas-circle-check:)
+
+```txt
+:fas-circle-check:
+
+{green}(:fas-circle-check:)
+```
+
+.================================
+# #dot#short
+
+- one line template
+
+1. define template 
+```txt
+#dot#short <name> <text to set, just one line>
+```
+
+2. usage
+
+```txt
+name
+```
+
+.================================
+# #dot#short
+
+.short #hello2# and then use them
+
+you can define mini templates #hello2# in sentence
+
+```txt
+#dot#short #hello1# and then use them
+
+you can define mini templates #hello1# in sentence
+```
+- <name> can be anything, although using `.` could cause issues (with transitions)
+- examples:
+  - `#id#`
+  - `-identifier-`
+  - `simpleid`
+
+
+.================================
+# #dot#replace
+
+.replace #og# Hello World 
+
+Welcome to {green}(#og#)
+
+```txt
+#dot#replace #Go# Hello World 
+
+Welcome to {green}(#Go#)
+```
+
+- especially usefull if {green}(#dot#) character needs to be as first in line
+.================================
+# transitions - advanced
+
+.short #empty# &nbsp;
+.short #check# :fas-check:
+
+- option one #empty#
+- option two 
+.cut #empty#.#check#
+
+.cut
+`.cut ORIGINAL.END_RESULT` -> replaces one template with another on transition
+
+```txt
+#dot#short -hashtag-empty-hashtag- &nbsp;
+#dot#short -hashtag-check-hashtag- :fas-check:
+
+- option one -hashtag-empty-hashtag-
+- option two 
+#dot#cut -hashtag-empty-hashtag-.-hashtag-check-hashtag-
+
+```
+.================================
+# transitions - advanced #2
+
+.short #check# :fas-circle-check:
+.short #spinner# :fa-spinner#fa-spin:
+
+{green}(#spinner#) line one
+.cut #spinner#.#check#
+
+{green}(#spinner#) line two
+.cut #spinner#.#check#
+
+`.cut ORIGINAL.END_RESULT` -> replaces one template with another on transition
+
+```txt
+#dot#short -hashtag-check-hashtag- :fas-circle-check:
+#dot#short -hashtag-spinner-hashtag- :fa-spinner#fa-spin:
+
+{green}(-hashtag-spinner-hashtag-) line one
+#dot#cut -hashtag-spinner-hashtag-.-hashtag-check-hashtag-
+
+{green}(-hashtag-spinner-hashtag-) line two
+#dot#cut -hashtag-spinner-hashtag-.-hashtag-check-hashtag-
+
+```
+.================================
+
+.table
+.tr
+.td table row 1 column 1
+.td
+ table row 1 column 2
+.tr
+.td 2-1
+.td 2-2
+.tr
+.td 3-1
+.td 3-2
+.table.end
+
+```txt
+.table
+.tr
+.td table row 1 column 1
+.td
+ table row 1 column 2
+.tr
+.td 2-1
+.td 2-2
+.tr
+.td 3-1
+.td 3-2
+.table.end
+```
+
+.================================
+# Images
+
+.image(https://go.dev/images/gophers/biplane.svg 25vw:25vh)
+
+
+  image(url width:height) -> use `vw` & `vh` (relative to screen)
+
+```txt
+#dot#image(https://go.dev/images/gophers/biplane.svg 25vw:25vh)
+```
+
+.================================
+# Images
+
+.center
+.image(assets/images/1.png 25vw:25vh)
+.center.end
+
+```txt
+#dot#center.end
+#dot#image(assets/images/1.png 25vw:25vh)
+#dot#center.end
+```
+
+.================================
+# Images - full screen
+```txt
+#dot#center
+#dot#image(assets/images/2.png :100vh)
+#dot#center.end
+```
+.================================
+.center
+.image(assets/images/2.png :100vh)
+.center.end
+.================================
+# Images - centered
+```txt
+&nbsp;
+
+#dot#center
+#dot#image(assets/images/2.png :50vh)
+#dot#image(assets/images/3.png :50vh)
+#dot#center.end
+```
+.================================
+# Images - centered
+
+&nbsp;
+
+.center
+.image(assets/images/2.png :50vh)
+.image(assets/images/3.png :50vh)
+.center.end
+.================================
+# Images - absolute position & transition
+
+```txt
+#dot#style "position: absolute; right: 15vh; transform: rotate(35deg);" #dot#image(assets/images/3.png :50vh)
+#dot#style "position: absolute; left: 37vw; transform: rotate(180deg);" #dot#image(assets/images/4.png 26vw:50vh)
+#dot#style "position: absolute; left: 15vh; transform: rotate(-15deg);" #dot#image(assets/images/3.png :50vh)
+```
+.================================
+# Images - absolute position & transition
+
+.style "position: absolute; right: 15vh; transform: rotate(35deg);" .image(assets/images/3.png :50vh)
+.style "position: absolute; left: 37vw; transform: rotate(180deg);" .image(assets/images/4.png 26vw:50vh)
+.style "position: absolute; left: 15vh; transform: rotate(-15deg);" .image(assets/images/3.png :50vh)
+.================================
+.TITLE Templates
+
+```txt
+#dot#template TITLE
+#dot#style "font-size: 3.5vh" ## {{ . }}
+____________
+#dot#template.end
+
+#dot#TITLE Templates
+```
+
+- templates can be defined on start page and used in all others
+.================================
+.template GOTITLE
+.style "font-size: 3.5vh" ## {{ .Title }} - {{ .Extra }} {{ .Last }}
+____________
+.template.end
+
+.GOTITLE .Title Templates .Extra Go Templating .Last \o/
+
+```txt
+#dot#template GOTITLE
+#dot#style "font-size: 3.5vh" ## {{ .Title }} - {{ .Extra }} {{ .Last }}
+____________
+#dot#template.end
+
+#dot#GOTITLE .Title Templates .Extra Go Templating .Last \o/
+```
+
+- Go Templating can be used in templates
+
+.================================
+.TITLE Code
+
+```go
+func main() {
+    fmt.Println("hello world")
+}
+```
+
+code:
+```txt
+#backtick##backtick##backtick#go
+mfunc main() {
+    fmt.Println("hello world")
+}
+#backtick##backtick#
+```
+
+- note: one #backtick# is missing
+.================================
+.TITLE Code
+
+```python
+x = 1
+if x == 1:
+    # indented four spaces
+    print("x is 1.")
+```
+
+code:
+```txt
+#backtick##backtick##backtick#python
+x = 1
+if x == 1:
+    # indented four spaces
+    print("x is 1.")
+#backtick##backtick#
+```
+
+- note: one #backtick# is missing
+.================================
+.TITLE Code - Running
+
+### before any code block aditional commands can be added
+
+- command to prepare/finish ENV
+
+  .cast.before <cmd>
+
+  .cast.after <cmd>
+
+- command to run on block that will be returned and displayed
+
+  .cast.block <filename> <cmd>
+
+- command to display only part of the code
+
+  .cast.block.show start:stop
+
+- adding `.edit` will allow code to be eddited in presentation
+
+  .cast.block.edit <filename> <cmd>
+.================================
+.TITLE Code - Running Example (editable)
+
+.CAST
+```
+package main
+
+import (
+  "fmt"
+  "slices"
+)
+
+func main() {
+  s1 := []string{"a", "b", "c"}
+  s2 := []string{"d", "e"}
+  s3 := []string{"f"}
+  res := slices.Concat(s1, s2, s3)
+  fmt.Println(res)
+}
+```
+.================================
+.TITLE Code - Omiting the code
+
+`.cast.block.show start:stop` will display code only within [start,stop] indexes within the block
+
+.cast.block.show 7:7 
+.CAST
+```
+package main
+
+import (
+  "fmt"
+)
+
+func main() {
+  fmt.Println("hello world")
+}
+```
+
+`.cast.block.show 7:7` would show only `fmt.Println("hello world")`
+```txt
+package main
+
+import (
+  "fmt"
+)
+
+func main() {
+  fmt.Println("hello world")
+}
+```
+
+.================================
+.TITLE Code - Result
+
+.cast.block.show 8:10
+.CAST
+```
+package main
+
+import (
+  "fmt"
+  "time"
+)
+
+func main() {
+  fmt.Println("hello")
+  time.Sleep(3 * time.Second)
+  fmt.Println("world")
+}
+```
+
+.cut
+- streamed output
+  - executed in background
+  - recorded as ascii video to show and autoplayed in browser
+
+.================================
+.TITLE Code - Running code from folder
+
+- command to execute specific command in specified folder and return result
+
+  .cast <folder> <cmd> [<arg1> <arg2> ...]
+
+.cast hello-world go run .
+```txt
+#dot#cast hello-world go run .
+```
+- no need to have code displayed
+- **NOTE**: example does not work if *Go* is not installed
+.===
+.TITLE Slides
+
+slide separator is `.===` or `.---` (needs to be on start of the line)
+
+- number of `=`/`-` needs to be at least 3, more is allowed (to have better readability)
+  - `.================================` OK
+  - `.--------------------------------` OK
+
+.================================
+.TITLE Notes
+
+.notes 
+invisible on a slide but available to see on presentation notes page
+.notes.end
+
+```txt
+#dot#notes 
+invisible on a slide but available to see on presentation notes page
+#dot#notes.end
+```
+
+.// in file comment, no seen anywhere
+```txt
+#dot#// in file comment, no seen anywhere
+```
+
+.================================
+.TITLE Settings
+
+```txt
+#dot#global.font-size 3.5vh
+#dot#slide.font-size 3.5vh
+
+#dot#global.background-color #FFFFFF
+#dot#slide.background-color #FFFFFF
+
+#dot#default .background assets/images/golang-back-empty.png
+
+#dot#global.dash.is.transition
+#dot#slide.dash.is.transition
+#dot#slide.dash.disable.transition
+```
+.================================
+
+.TITLE Graphs - graphviz - basic support
+
+``` dot
+digraph example {
+    1 -> 2 -> { 4, 5 };
+    1 -> 3 -> { 6, 7 };
+}
+```
+
+```txt
+``` dot
+digraph example {
+    1 -> 2 -> { 4, 5 };
+    1 -> 3 -> { 6, 7 };
+}
+```
+
+.================================
+
+.TITLE Graphs - graphviz
