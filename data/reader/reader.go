@@ -82,7 +82,11 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 			templateLine := strings.TrimPrefix(line, ".short ")
 			data := strings.SplitN(templateLine, " ", 2)
 			if shortTemplates[data[0]] == "" {
-				shortTemplates[data[0]] = data[1]
+				if len(data) > 1 {
+					shortTemplates[data[0]] = data[1]
+				} else {
+					shortTemplates[data[0]] = ""
+				}
 			}
 			continue
 		}

@@ -85,7 +85,7 @@ func ReadFiles() []types.Slide {
 					slide.HasCast = true
 					slide.UseTmpFolder = true
 					slide.CanEdit = true
-					lines[index] = ""
+					lines = append(lines[:index], lines[index+1:]...)
 					slide.Markdown = strings.Join(lines, "\n")
 					break
 				}
@@ -110,7 +110,7 @@ func ReadFiles() []types.Slide {
 					slide.HasCast = true
 					slide.UseTmpFolder = true
 					slide.CanEdit = true
-					lines[index] = ""
+					lines = append(lines[:index], lines[index+1:]...)
 					slide.Markdown = strings.Join(lines, "\n")
 					break
 				}
@@ -135,7 +135,7 @@ func ReadFiles() []types.Slide {
 					codeBlockShowStart = &start
 					codeBlockShowEnd = &end
 
-					lines[index] = ""
+					lines = append(lines[:index], lines[index+1:]...)
 					slide.Markdown = strings.Join(lines, "\n")
 					break
 				}
@@ -158,7 +158,7 @@ func ReadFiles() []types.Slide {
 					slide.HasCast = true
 					slide.UseTmpFolder = true
 					slide.CanEdit = true
-					lines[index] = ""
+					lines = append(lines[:index], lines[index+1:]...)
 					slide.Markdown = strings.Join(lines, "\n")
 					codeBlockShowStart = nil
 					codeBlockShowEnd = nil
@@ -180,7 +180,7 @@ func ReadFiles() []types.Slide {
 					slide.HasRun = true
 					slide.HasCast = true
 					slide.UseTmpFolder = true
-					lines[index] = ""
+					lines = append(lines[:index], lines[index+1:]...)
 					slide.Markdown = strings.Join(lines, "\n")
 					codeBlockShowStart = nil
 					codeBlockShowEnd = nil
@@ -202,7 +202,7 @@ func ReadFiles() []types.Slide {
 					}
 					slide.Cast = &c
 					slide.HasCast = true
-					lines[index] = ""
+					lines = append(lines[:index], lines[index+1:]...)
 					slide.Markdown = strings.Join(lines, "\n")
 					break
 				}
@@ -224,7 +224,7 @@ func ReadFiles() []types.Slide {
 						ac.Cast = mov
 					}
 					slide.Asciinema = &ac
-					lines[index] = ""
+					lines = append(lines[:index], lines[index+1:]...)
 					slide.Markdown = strings.Join(lines, "\n")
 					break
 				}

@@ -1,4 +1,5 @@
 <template>
+
   <div class="presenter-time" v-if="presenterMode">
     {{timer}}
   </div>
@@ -79,6 +80,7 @@ import 'markdown-it-icons/dist/index.css'
 import * as AsciinemaPlayer from 'asciinema-player';
 import '@fortawesome/fontawesome-free/css/all.css'
 
+import zbTabs from '../plugins/Tabs';
 import zbStyle from '../plugins/Style';
 import zbTable from '../plugins/Table';
 import zbImage from '../plugins/Image';
@@ -237,20 +239,20 @@ export default defineComponent({
         const canEdit = this.slides[this.state.page].can_edit
         if (canEdit){
           const slideElement = document.getElementById('slide-'+this.state.page);
-          let codeText = "";
+          let codeText: string[] = [];
           if (slideElement) {
-            let codeElement = slideElement.querySelector('pre code');
-            if (codeElement) {
-              codeText = (codeElement as HTMLElement).innerText;
-            }
+            let codeElements = slideElement.querySelectorAll('pre code');
+            codeText = Array.from(codeElements).map(codeElement => (codeElement as HTMLElement).innerText);
           }
           //console.log(codeText)
+          let body = JSON.stringify({slide: this.state.page, code: codeText})
+          console.log(body)
           fetch(baseUrl + "/cast?slide=" + this.state.page, {
               method: 'POST',
               headers: {
-                'Content-Type': 'text/plain'
+                'Content-Type': 'application/json'
               },
-              body: codeText
+              body: body
           })
           .then(response => response.text())
           .then(data => {
@@ -469,6 +471,7 @@ export default defineComponent({
     md.use(footnote)
     md.use(imgSize)
 
+    md.use(zbTabs)
     md.use(zbStyle)
     md.use(zbImage)
     md.use(zbTable)

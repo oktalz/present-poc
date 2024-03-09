@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -15,6 +16,14 @@ import (
 )
 
 func cast(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodOptions {
+		w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Max-Age", "3600")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
 	slideStr := r.URL.Query().Get("slide")
 	slide, err := strconv.ParseInt(slideStr, 10, 64)
 	if err != nil {
@@ -34,7 +43,13 @@ func cast(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		tc.Code = string(bodyBytes)
+		payload, err := parseJSONData(string(bodyBytes))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		fmt.Println(payload.Code)
+		tc.Code.Code = string(bodyBytes)
 	}
 	if tc.TmpDir {
 		tmpDir := os.TempDir() + "/present-" + strconv.FormatInt(time.Now().UnixNano(), 10)
@@ -44,7 +59,7 @@ func cast(w http.ResponseWriter, r *http.Request) {
 		}
 		tc.Dir = tmpDir
 		defer os.RemoveAll(tmpDir)
-		err = os.WriteFile(filepath.Join(tmpDir, tc.FileName), []byte(tc.CodeHeader+tc.Code+tc.CodeFooter), 0o644)
+		err = os.WriteFile(filepath.Join(tmpDir, tc.FileName), []byte(tc.Code.Header+tc.Code.Code+tc.Code.Footer), 0o644)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

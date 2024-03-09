@@ -172,16 +172,26 @@ div.ap-wrapper div.ap-player {
   border: 3px solid black !important;
 }
 
+.tablinks {
+  font-size: 3.5vh;
+  border-left: 2px solid rgb(190, 190, 190) !important;
+  border-top: 2px solid rgb(190, 190, 190) !important;
+  border-right: 2px solid rgb(190, 190, 190) !important;
+  border-top-left-radius: 1vh;
+  border-top-right-radius: 1vh;
+  color: black;
+  background-color: #fdf6e3;
+  text-align: center;
+  cursor: pointer;
+}
+
 .tab {
   width: fit-content;
   padding-left: 5px;
   padding-right: 5px;
   color: rgb(0, 0, 0);
-  background-color: #fdf6e3;
   text-align: center;
   cursor: pointer;
-  border: thin solid black;
-  border-radius: 5px;
   text-decoration: none;
   transition: background-color 0.3s ease;
   font-family: monospace;
@@ -189,13 +199,22 @@ div.ap-wrapper div.ap-player {
 
 /* Style the buttons inside the tab */
 .tab button {
-  background-color: inherit;
+  background-color: white;
   float: left;
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 1ch 1ch;
+  padding-left: 1vh;
+  padding-right: 1vh;
+  padding-top: 1vh;
   transition: 0.3s;
+  margin-left: 0.5vw;
+}
+.tabs pre {
+  margin-block-start: 0;
+}
+.hidden {
+  display: none;
 }
 
 /* Change background color of buttons on hover */
@@ -205,7 +224,7 @@ div.ap-wrapper div.ap-player {
 
 /* Create an active/current tablink class */
 .tab button.active {
-  background-color: #ccc;
+  background-color: #F3F3F3;
 }
 
 @media screen {

@@ -55,9 +55,11 @@ func parseCommandBlock(lines []string, index int, codeBlockShowStart, codeBlockS
 		}
 		code += lines[i] + "\n"
 	}
-	tc.Code = code
-	tc.CodeHeader = codeHeader
-	tc.CodeFooter = codeFooter
+	tc.Code = types.Code{
+		Header: codeHeader,
+		Code:   code,
+		Footer: codeFooter,
+	}
 	tc.TmpDir = true
 	return tc
 }
