@@ -79,7 +79,7 @@ func ReadFiles() []types.Slide {
 					if slide.Cast != nil {
 						c = *slide.Cast
 					}
-					c.TerminalCommandBefore = &tc
+					slide.TerminalCommandBefore = append(slide.TerminalCommandBefore, tc)
 					slide.Cast = &c
 					slide.HasRun = true
 					slide.HasCast = true
@@ -104,7 +104,7 @@ func ReadFiles() []types.Slide {
 					if slide.Cast != nil {
 						c = *slide.Cast
 					}
-					c.TerminalCommandBefore = &tc
+					slide.TerminalCommandBefore = append(slide.TerminalCommandBefore, tc)
 					slide.Cast = &c
 					slide.HasRun = true
 					slide.HasCast = true
@@ -152,7 +152,7 @@ func ReadFiles() []types.Slide {
 					if slide.Cast != nil {
 						c = *slide.Cast
 					}
-					c.TerminalCommand = tc
+					slide.TerminalCommand = append(slide.TerminalCommand, tc)
 					slide.Cast = &c
 					slide.HasRun = true
 					slide.HasCast = true
@@ -173,9 +173,8 @@ func ReadFiles() []types.Slide {
 			for index, line := range lines {
 				if strings.HasPrefix(line, ".cast.block") {
 					tc := parseCommandBlock(lines, index, codeBlockShowStart, codeBlockShowEnd)
-					c := types.Cast{
-						TerminalCommand: tc,
-					}
+					c := types.Cast{}
+					slide.TerminalCommand = append(slide.TerminalCommand, tc)
 					slide.Cast = &c
 					slide.HasRun = true
 					slide.HasCast = true
@@ -197,9 +196,8 @@ func ReadFiles() []types.Slide {
 					// slide.Markdown = strings.Replace(slide.Markdown, line, "", 1)
 					// p := strings.Split(line, " ")
 					tc := parseCommand(line)
-					c := types.Cast{
-						TerminalCommand: tc,
-					}
+					c := types.Cast{}
+					slide.TerminalCommand = append(slide.TerminalCommand, tc)
 					slide.Cast = &c
 					slide.HasCast = true
 					lines = append(lines[:index], lines[index+1:]...)
