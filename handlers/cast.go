@@ -64,14 +64,18 @@ func cast(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
-	if tcBefore != nil {
-		tcBefore.Dir = tc.Dir
-		_ = exec.CmdStream(*tcBefore)
+	if len(tcBefore) > 0 {
+		for i := range tcBefore {
+			tcBefore[i].Dir = tc.Dir
+			_ = exec.CmdStream(tcBefore[i])
+		}
 	}
 	cmdResult := exec.CmdStream(tc)
 	if tcAfter != nil {
-		tcAfter.Dir = tc.Dir
-		_ = exec.CmdStream(*tcAfter)
+		for i := range tcBefore {
+			tcAfter[i].Dir = tc.Dir
+			_ = exec.CmdStream(tcAfter[i])
+		}
 	}
 	lineNum := len(cmdResult) + 2
 	// if lineNum < 12 {

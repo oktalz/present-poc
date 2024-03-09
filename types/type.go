@@ -15,11 +15,11 @@ type Asciinema struct {
 }
 
 type Cast struct {
-	Width                 int              `json:"width"`
-	Height                int              `json:"height"`
-	TerminalCommandBefore *TerminalCommand `json:"-"`
-	TerminalCommand       TerminalCommand  `json:"-"`
-	TerminalCommandAfter  *TerminalCommand `json:"-"`
+	Width                 int               `json:"width"`
+	Height                int               `json:"height"`
+	TerminalCommandBefore []TerminalCommand `json:"-"`
+	TerminalCommand       TerminalCommand   `json:"-"`
+	TerminalCommandAfter  []TerminalCommand `json:"-"`
 }
 
 type TerminalCommand struct {
