@@ -31,7 +31,7 @@ export default function zbTable(md: MarkdownIt) {
                         if (currentTabActive != "") {
                             active = ""
                         }
-                        tabFooter += `<div class="`+active+`" id="`+currentTabID+`">`+content+`</div>`;
+                        tabFooter += `<div class="tabcontent `+active+`" id="`+currentTabID+`">`+content+`</div>`;
                         currentTabContent = ""
                         currentTabActive = ""
                         currentTabID = Math.random().toString(36).substring(2, 14);
@@ -45,7 +45,7 @@ export default function zbTable(md: MarkdownIt) {
                     currentTabActive = " active"
                     currentTabTitle = line.slice(12).trim();
                 }
-                tabsHeader = tabsHeader + `<button class="tablinks`+currentTabActive+`" @click="tabChange(`+currentTabID+`)">`+currentTabTitle+`</button>`
+                tabsHeader = tabsHeader + `<button class="tablinks`+currentTabActive+`" onclick="tabChangeGlobal('`+currentTabID+`')" id='tab-`+currentTabID+`'>`+currentTabTitle+`</button>`
             } else {
                 currentTabContent += "\n"+line
             }

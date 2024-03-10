@@ -8,15 +8,19 @@ import (
 
 func parseCommand(command string) types.TerminalCommand {
 	parts := strings.Split(command, " ") // TODO handle go run . "some param in quotes" 1 2 ...
-
-	app := parts[2]
-	osPath := getOSPath(parts[1])
 	tc := types.TerminalCommand{
-		Dir: osPath,
-		App: app,
-		Cmd: parts[3:],
+		Index: -1,
 	}
-	if osPath == "" {
+	if len(parts) > 1 {
+		tc.Dir = getOSPath(parts[1])
+	}
+	if len(parts) > 2 {
+		tc.App = parts[2]
+	}
+	if len(parts) > 3 {
+		tc.Cmd = parts[3:]
+	}
+	if tc.Dir == "" {
 		tc.FileName = parts[1]
 	}
 	return tc
@@ -35,8 +39,16 @@ func parseCommandBlock(lines []string, index int, codeBlockShowStart, codeBlockS
 	if codeBlockShowEnd != nil {
 		codeEnd = index + 2 + *codeBlockShowEnd
 	}
+	blockIndex := 0
+	_ = blockIndex
 	for i := index + 2; i < len(lines); i++ {
 		if strings.HasPrefix(lines[i], "```") {
+			for j := range i {
+				if strings.HasPrefix(lines[j], "```") {
+					blockIndex++
+				}
+			}
+			tc.Index = blockIndex / 2
 			break
 		}
 		if i < codeStart {

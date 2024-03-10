@@ -142,11 +142,11 @@ func ReadFiles() []types.Slide {
 			}
 		}
 
-		hasCastBlockEdit := strings.Contains(slide.Markdown, ".cast.block.edit")
+		hasCastBlockEdit := strings.Contains(slide.Markdown, ".cast.block")
 		if hasCastBlockEdit {
 			lines := strings.Split(slide.Markdown, "\n")
 			for index, line := range lines {
-				if strings.HasPrefix(line, ".cast.block.edit") {
+				if strings.HasPrefix(line, ".cast.block") {
 					tc := parseCommandBlock(lines, index, codeBlockShowStart, codeBlockShowEnd)
 					var c types.Cast
 					if slide.Cast != nil {
@@ -162,28 +162,6 @@ func ReadFiles() []types.Slide {
 					slide.Markdown = strings.Join(lines, "\n")
 					codeBlockShowStart = nil
 					codeBlockShowEnd = nil
-					break
-				}
-			}
-		}
-
-		hasCastBlock := strings.Contains(slide.Markdown, ".cast.block")
-		if hasCastBlock {
-			lines := strings.Split(slide.Markdown, "\n")
-			for index, line := range lines {
-				if strings.HasPrefix(line, ".cast.block") {
-					tc := parseCommandBlock(lines, index, codeBlockShowStart, codeBlockShowEnd)
-					c := types.Cast{}
-					slide.TerminalCommand = append(slide.TerminalCommand, tc)
-					slide.Cast = &c
-					slide.HasRun = true
-					slide.HasCast = true
-					slide.UseTmpFolder = true
-					lines = append(lines[:index], lines[index+1:]...)
-					slide.Markdown = strings.Join(lines, "\n")
-					codeBlockShowStart = nil
-					codeBlockShowEnd = nil
-					break
 				}
 			}
 		}

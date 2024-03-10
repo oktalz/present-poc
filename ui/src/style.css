@@ -254,20 +254,41 @@ div.ap-wrapper div.ap-player {
     background-color: #6d6e6f;
   }
 
-  .terminal {
-    margin-right: 50px;
-    bottom: 10px;
+  .loading_cast{
+    margin: 0;
+    bottom: 5vh;
     position:absolute;
-    right : 0px;
-    color: rgb(255, 255, 255);
-    background-color: black;
-    min-width: 40ch;
-    min-height: 20ch;
+    right : 10vh;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .terminal {
+    margin-right: 1vw;
+    bottom: 1vh;
+    position:absolute;
+    right : 15vh;
+    color: rgb(0, 0, 0);
+    background-color: rgb(253, 246, 227);
+    min-width: 17ch !important;
+    min-height: 6ch !important;
+    max-height: 80vh;
+    min-width: calc(15ch + env(screen-min-width));
+    max-width: 80vw;
     padding: 15px;
     border-radius: 20px;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 90%;
+    border-color: black;
+    border-width: 2px;
+    font-family: 'Consolas';   
+    font-size: 6vh; 
+    border:3px solid black;
+    overflow: auto;
+    overflow-x: auto; 
+    overflow-y: auto; 
+
   }
+  
 
   .view-print{
   }

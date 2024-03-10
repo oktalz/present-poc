@@ -208,13 +208,13 @@ use `.cut` (needs to be on start of the line)
 ```
 
 .================================
-# #dot#short
+# #dot#replace
 
 - one line template
 
 1. define template 
 ```txt
-#dot#short <name> <text to set, just one line>
+#dot#replace <name> [text to set, just one line, optional]
 ```
 
 2. usage
@@ -224,14 +224,14 @@ name
 ```
 
 .================================
-# #dot#short
+# #dot#replace
 
-.short #hello2# and then use them
+.replace #hello2# and then use them
 
 you can define mini templates #hello2# in sentence
 
 ```txt
-#dot#short #hello1# and then use them
+#dot#replace #hello1# and then use them
 
 you can define mini templates #hello1# in sentence
 ```
@@ -241,26 +241,11 @@ you can define mini templates #hello1# in sentence
   - `-identifier-`
   - `simpleid`
 
-
-.================================
-# #dot#replace
-
-.replace #og# Hello World 
-
-Welcome to {green}(#og#)
-
-```txt
-#dot#replace #Go# Hello World 
-
-Welcome to {green}(#Go#)
-```
-
-- especially usefull if {green}(#dot#) character needs to be as first in line
 .================================
 # transitions - advanced
 
-.short #empty# &nbsp;
-.short #check# :fas-check:
+.replace #empty#
+.replace #check# :fas-check:
 
 - option one #empty#
 - option two 
@@ -270,7 +255,7 @@ Welcome to {green}(#Go#)
 `.cut ORIGINAL.END_RESULT` -> replaces one template with another on transition
 
 ```txt
-#dot#short -hashtag-empty-hashtag- &nbsp;
+#dot#short -hashtag-empty-hashtag- 
 #dot#short -hashtag-check-hashtag- :fas-check:
 
 - option one -hashtag-empty-hashtag-
@@ -281,8 +266,8 @@ Welcome to {green}(#Go#)
 .================================
 # transitions - advanced #2
 
-.short #check# :fas-circle-check:
-.short #spinner# :fa-spinner#fa-spin:
+.replace #check# :fas-circle-check:
+.replace #spinner# :fa-spinner#fa-spin:
 
 {green}(#spinner#) line one
 .cut #spinner#.#check#
@@ -291,6 +276,8 @@ Welcome to {green}(#Go#)
 .cut #spinner#.#check#
 
 `.cut ORIGINAL.END_RESULT` -> replaces one template with another on transition
+
+`.cut ORIGINAL.END_RESULT ORIGINAL2.END_RESULT2` -> more than one replaces can be used
 
 ```txt
 #dot#short -hashtag-check-hashtag- :fas-circle-check:

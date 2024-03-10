@@ -1,5 +1,4 @@
 <template>
-
   <div class="presenter-time" v-if="presenterMode">
     {{timer}}
   </div>
@@ -28,18 +27,19 @@
   >
     <div class="slide-data">
       <div v-html="md.render(slide.markdown)"></div>
-      <div class="player-wrap" :id="'ascinema-wrap-' + index">
-        <div
-          class="player"
-          :class="{'zeroSize':!AsciinemaPlayerVisible(index)}"
-          :id="'ascinema-player-' + index">
-        </div>
-      </div>
       <div
         class="terminal"
         v-html="state.terminal[index]"
         v-if="state.terminal[index] != ''">
       </div>
+      <div
+        class="loading_cast"
+        v-if="state.terminal_loading"
+        v-html="md.render(`{green}(:fa-spinner#fa-spin:)`)"
+      >
+        
+      </div>
+
       <div class="page-num">
         <div
           v-if="RunVisible(state.page)"
@@ -49,7 +49,7 @@
             Run
         </div>
         <div
-          v-if="state.terminal[index] != ''"
+          v-if="state.terminal[index] == '-1'"
           class="button run-button"
           @click="state.terminal[index]=''"
           >
@@ -169,7 +169,9 @@ export default defineComponent({
       this.setPage(true)
     },
     execTerm: function () {
-      if (this.slides == null) {
+      if (this.state.terminal_loading) {
+        return
+      }if (this.slides == null) {
         return
       }
 
@@ -180,127 +182,93 @@ export default defineComponent({
       if (activeElement.classList.contains('code')) {
           return;
       }
-      //console.log(activeElement)
 
-      const processData = (data: string) => {
-        const playerElement = document.getElementById('ascinema-player-'+this.state.page.toString());
-          //const playerWrap = document.getElementById('ascinema-wrap-'+this.state.page.toString());
-          if(playerElement!= null) {
-            playerElement.innerHTML = '';
-          }
-          if (playerElement) {
-            let  mov = {data: data}
-            let jsonStrStart = data.indexOf('{');
-            let jsonStrEnd = data.indexOf('}') + 1 + 1;
-            let jsonStr = data.slice(jsonStrStart, jsonStrEnd);
-            let jsonObject = JSON.parse(jsonStr);
-            let width = jsonObject.width;
-            let height = jsonObject.height;
-            console.log('Width: ' + width + ', Height: ' + height);
-            let heightCalc = 30 + (height-3)*3 ;
-            if (heightCalc > 75) {
-              heightCalc = 75
-            }
-            playerElement.style.height = heightCalc.toString() + 'vh';
-            //playerElement.style.width = '96vw';
-
-            let player = AsciinemaPlayer.create(
-              mov,
-              playerElement,
-              {
-                //poster: "data:text/plain,I'm regular \x1b[1;32mI'm bold green\x1b[3BI'm 3 lines down",
-                fit: "both",
-                poster: 'npt:0:0',
-                width: width,
-                height: height,
-                theme: "solarized-light",
-                controls: false,
-                //terminalFontSize: ""
-              })
-            player.play();
-            //absolute
-
-            //playerElement.style.width = 'unset';
-            setTimeout(function() {
-              //playerElement.style.width = 'unset';
-              //playerElement.style.height = 'unset';
-            playerElement.style.position = 'absolute';
-            }, 1); // delay in milliseconds
-
-            console.log(player)
-            this.state.player[this.state.page] = {player: player, visible: true}
-            console.log("AsciinemaPlayer.created "+this.state.page.toString(),this.state.player[this.state.page]) // for some reason, without this it does not work
-          }
-          return data;
+      const slideElement = document.getElementById('slide-'+this.state.page);
+      let codeText: string[] = [];
+      if (slideElement) {
+        let codeElements = slideElement.querySelectorAll('pre code');
+        codeText = Array.from(codeElements).map(codeElement => (codeElement as HTMLElement).innerText);
       }
 
-      if (this.slides[this.state.page].cast) {
-        const baseUrl = import.meta.env.VITE_BASE_URL
-        const canEdit = this.slides[this.state.page].can_edit
-        if (canEdit){
-          const slideElement = document.getElementById('slide-'+this.state.page);
-          let codeText: string[] = [];
-          if (slideElement) {
-            let codeElements = slideElement.querySelectorAll('pre code');
-            codeText = Array.from(codeElements).map(codeElement => (codeElement as HTMLElement).innerText);
-          }
-          //console.log(codeText)
-          let body = JSON.stringify({slide: this.state.page, code: codeText})
-          console.log(body)
-          fetch(baseUrl + "/cast?slide=" + this.state.page, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: body
-          })
-          .then(response => response.text())
-          .then(data => {
-            return processData(data)
-          })
-          return
-        }
-        fetch(baseUrl+"/cast?slide="+this.state.page)
-        .then(response => response.text())
-        .then(data => {
-            return processData(data)
-        })
-        .catch(error => {
-          // Handle any errors here
-          console.error('Error:', error);
-        });
-        // do not execute terminal run
-        return
-      }
+      //const baseUrl = import.meta.env.VITE_BASE_URL
+      const baseUrlStart = import.meta.env.VITE_BASE_URL.replace(/^https?:\/\//, '');
+      const baseUrl = baseUrlStart.replace(/^(\/|\\)/, '');
+      console.log(baseUrl)
+      //=====================================================================
+      this.state.terminal[this.state.page] = ""
+      this.state.terminal_loading = true
+      //const evtSource = new EventSource(baseUrl+"/cast-sse?slide="+this.state.page);
+      // Create WebSocket connection
+      const socket = new WebSocket('ws://'+baseUrl+"/cast");
 
-      // check if we have a asciinema file
-      let pl = this.state.player[this.state.page]
-      if (pl.player!= null) {
-        pl.player.play();
-        pl.visible = true;
-        // do not execute terminal run
-        return
-      }
-      if (!this.slides[this.state.page].terminal) {
-        return
-      }
-      this.state.terminal[this.state.page] = "Running..."
-      const baseUrl = import.meta.env.VITE_BASE_URL
-      fetch(baseUrl+"/exec?slide="+this.state.page)
-      .then(response => response.text())
-      .then(data => {
-        data = data.replace(/\n/g, "<br>");
-        data = data.replace(/ /g, "&nbsp;");
-        this.state.terminal[this.state.page] = data;
-        return data;
-      })
-      /*.then(data => {
-        console.log(data);
-      })*/
-      .catch(error => {
-        // Handle any errors here
-        console.error('Error:', error);
+      // Connection opened
+      socket.addEventListener('open', () => {
+        //console.log(codeText)
+        let body = JSON.stringify({slide: this.state.page, code: codeText})
+        console.log(body)
+        socket.send(body);
+        this.CheckTabState(codeText)
       });
+
+      // Listen for messages
+      socket.addEventListener('message', (event) => {
+          console.log('Message from server: ', event.data);
+          if (this.state.terminal[this.state.page] != "") {
+            this.state.terminal[this.state.page] += '<br>'
+          } 
+          this.state.terminal[this.state.page] += event.data
+          this.CheckTabState(codeText)
+      });
+      
+      socket.onclose = () => {
+        console.log('Socket is closed');
+        socket.close();
+        this.state.terminal_loading = false        
+        
+      };
+    },
+    tabChange: function(tabID: string) {
+      console.log(tabID)
+      let tablinks = document.getElementsByClassName("tablinks");
+      for (let i = 0; i < tablinks.length; i++) {
+        if (tablinks[i] && tablinks[i].getAttribute('id') === "tab-"+tabID) {
+          if (!tablinks[i].classList.contains("active")) {          
+            tablinks[i].classList.add("active");
+          } 
+        } else {          
+          tablinks[i].classList.remove("active");
+        }
+      }
+      tablinks = document.getElementsByClassName("tabcontent");
+      for (let i = 0; i < tablinks.length; i++) {
+        if (tablinks[i] && tablinks[i].getAttribute('id') === tabID) {
+          tablinks[i].classList.remove("hidden");          
+        } else {
+          if (!tablinks[i].classList.contains("hidden")) {          
+            tablinks[i].classList.add("hidden");
+          }
+        }       
+      }
+    },
+    CheckTabState: function(codeText: string[]) {
+      // this code here is because I'm lazy to understand why tabs are reseting data and editable state
+      // TODO: fix this 
+      let codeSelector = document.getElementById('slide-' + this.state.page)
+      if (codeSelector) {
+        setTimeout(() => {
+          if (codeSelector) {
+            let codeElements = codeSelector.querySelectorAll('pre code')
+            for (let i = 0; i < codeElements.length; i++) {
+              let codeElement = codeElements[i] as HTMLElement
+              codeElement.contentEditable = "true";
+              codeElement.spellcheck = false;
+              if (codeElement.innerText != codeText[i]){
+                codeElement.innerText = codeText[i];
+              }
+            }
+          }            
+        }, 10);
+      }
     },
     RunVisible: function (index: number) {
       if (index==null || this.slides == null) {
@@ -323,20 +291,6 @@ export default defineComponent({
         return true
       }
       return false
-    },
-    AsciinemaPlayerVisible: function (index: number) {
-      if (index==null || this.slides == null) {
-        return false
-      }
-      //slide.asciinema=='' state.player[state.page].visible
-      let state = this.state
-      if (state.player[index] == null) {
-          return false
-      }
-      let pl = state.player[index]
-      if (pl.visible) {
-        return true
-      }
     },
     handleKeyPress: function (e: KeyboardEvent) {
       const keyCode = e.key;
@@ -369,22 +323,9 @@ export default defineComponent({
         this.showMenu = !this.showMenu
       }
       if (keyCode == 'c') {
-        this.state.terminal[this.state.page] = '';
-        // check if we have a asciinema file
-        let pl = this.state.player[this.state.page]
-        if (pl.player!= null) {
-          pl.player.pause()
-          pl.visible = false
-          return
-        }
+        this.state.terminal[this.state.page] = '';        
       }
       if (keyCode == ' ') {
-        // check if we have a asciinema file
-        let pl = this.state.player[this.state.page]
-        if (pl.player!= null) {
-          pl.player.pause()
-          return
-        }
       }
       //console.log(this.state, keyCode, e, e.key);
     },
@@ -402,11 +343,16 @@ export default defineComponent({
       if (this.slides[this.state.page].can_edit){
         let codeSelector = document.getElementById('slide-' + this.state.page)
         if (codeSelector) {
-          let codeElements = codeSelector.querySelectorAll('pre code')
-          codeElements.forEach((codeElement) => {
-            (codeElement as HTMLElement).contentEditable = "true";
-            (codeElement as HTMLElement).spellcheck = false;
-          })
+          setTimeout(() => {
+            if (codeSelector) {
+              let codeElements = codeSelector.querySelectorAll('pre code')
+              for (let i = 0; i < codeElements.length; i++) {
+                let codeElement = codeElements[i] as HTMLElement
+                codeElement.contentEditable = "true";
+                codeElement.spellcheck = false;
+              }
+            }            
+          }, 10);
         }
       }
       const baseUrl = import.meta.env.VITE_BASE_URL
@@ -445,6 +391,8 @@ export default defineComponent({
       this.setPage(true)
       setTimeout(() => {
         this.setPage(true)
+        // @ts-ignore
+        window.tabChangeGlobal = this.tabChange;
       }, 100);
     })
   },
@@ -455,7 +403,8 @@ export default defineComponent({
     const state = reactive({
         page: 0,
         myID: -1,
-        terminal: [] as string[],
+        terminal: [] as string[],        
+        terminal_loading: false,
         player: [] as any
       });
 
@@ -489,7 +438,6 @@ export default defineComponent({
       can_edit: boolean;
       cast: boolean;
       run: boolean;
-      asciinema: any;
       page: number;
       print_page: number;
     };

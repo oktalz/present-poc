@@ -55,7 +55,7 @@ func main() {
 
 	http.Handle("/api", handlers.API())
 	http.Handle("/exec", handlers.Exec())
-	http.Handle("/cast", handlers.Cast())
+	http.Handle("/cast", handlers.CastWS())
 	http.Handle("/asciinema", handlers.Asciinema())
 	http.Handle("/update", handlers.Update(chUpdate))
 	http.Handle("/sync", handlers.Sync())

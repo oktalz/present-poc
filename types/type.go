@@ -1,10 +1,9 @@
 package types
 
 type Code struct {
-	FileName string
-	Header   string
-	Code     string
-	Footer   string
+	Header string
+	Code   string
+	Footer string
 }
 
 type Asciinema struct {
@@ -24,6 +23,7 @@ type TerminalCommand struct {
 	App      string
 	Cmd      []string
 	Code     Code
+	Index    int
 	FileName string
 	TmpDir   bool
 }
@@ -37,7 +37,6 @@ type Slide struct {
 	TerminalCommandBefore []TerminalCommand `json:"-"`
 	TerminalCommand       []TerminalCommand `json:"-"`
 	TerminalCommandAfter  []TerminalCommand `json:"-"`
-	Code                  []Code            `json:"-"`
 	UseTmpFolder          bool              `json:"-"`
 	CanEdit               bool              `json:"can_edit"`
 	HasCast               bool              `json:"cast"`

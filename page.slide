@@ -1,0 +1,266 @@
+```
+1
+2
+3
+4
+5
+6
+7
+8
+9
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+0
+```
+---
+
+# Go Talks 28.11.2023
+
+.background https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Go_gopher_five_years.jpg/800px-Go_gopher_five_years.jpg?20191207192808
+
+---
+
+## Go News
+
+.background https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Go_gopher_five_years.jpg/800px-Go_gopher_five_years.jpg?20191207192808
+
+---
+
+# Heading 8-)
+
+![back](https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Go_gopher_five_years.jpg/800px-Go_gopher_five_years.jpg?20191207192808)
+
+``` dot
+digraph example1 {
+    1 -> 2 -> { 4, 5 };
+    1 -> 3 -> { 6, 7 };
+}
+```
+
+---
+
+## Code
+
+Inline \`code\`
+
+Indented code
+
+    // Some comments
+    line 1 of code
+    line 2 of code
+    line 3 of code
+
+
+Block code "fences"
+
+---
+
+``` sh
+Sample text here...
+```
+
+const text3 = ref(`
+Syntax highlighting
+
+``` js
+var foo = function (bar) {
+  return bar++;
+};
+
+console.log(foo(5));
+
+---
+
+## Tables
+
+| Option | Description |
+| ------ | ----------- |
+| data   | path to data files to supply  |
+| engine | engine to be used for process |
+| ext    | extension to be used for dest |
+
+```table
+Rank    City           Country         Population (millions)   Attractions
+-       -              -               -:                      :-
+1       Paris          France          2.2                     Eiffel Tower, Louvre Museum
+2       Tokyo          Japan           14.0                    Tokyo Tower, Shibuya Crossing
+3       Rome           Italy           2.9                     Colosseum, Vatican City
+4       Sydney         Australia       5.4                     Sydney Opera House, Bondi Beach
+5       New York City  United States   8.4                     Statue of Liberty, Times Square
+```
+
+---
+
+Hello
+
+- item 1
+- item 2
+- item 3
+
+:D
+
+Classic markup: :wink: :crush: :cry: :teas: :laughing: :yum: 😉
+
+---
+
+``` go
+package main
+
+import "fmt"
+
+func main() {
+    x := 4
+    fmt.Println("Hello, World!")
+}
+
+---
+## Source with tag, but no tag defined
+
+``` console
+ .tag /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results/main.go
+```
+
+.tag /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results/main.go
+
+---
+## Source with tag, but with tag START
+
+``` console
+ .tag START /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results/main.go
+```
+
+.tag START /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results/main.go
+
+---
+## Source with tag, but with tag MAIN
+
+``` console
+ .tag MAIN /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results/main.go
+```
+
+.tag MAIN /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results/main.go
+
+---
+## Source with tag, but with multiple tags FMT1, FMT2
+
+``` console
+ .tag FMT1,FMT2 IN /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results/main.go
+```
+
+.tag FMT1,FMT2 /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results/main.go
+
+---
+## Source with tags, but no tags are visible
+
+```
+ .src /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results/main.go
+```
+
+.src /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results/main.go
+
+.go /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results
+.run /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results go run .
+
+---
+
+.run . kubectl get pods -A
+
+```console
+kubectl get pods -A
+```
+---
+
+# Asciinema
+
+```
+ .asciinema hello.cast
+```
+
+.asciinema hello.cast
+---
+
+# Asciinema experiment
+
+```
+ .asciinema my run
+```
+
+.asciinema test.cast
+
+---
+
+# Cast the result
+
+execute data and return result
+
+```
+ .go /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results
+ .cast url /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results
+ .cast cmd go run .
+ .cast size 25 3
+```
+
+.go /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results
+
+.cast /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results go run .
+
+---
+
+# Cast the result
+
+## just `ls` command
+
+execute data and return result
+
+```
+ .cast /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results ls
+```
+
+.cast /home/zlatko/src/gitlab.com/fer-go/homeworks/task-1-results ls
+
+---
+
+# Cast the result
+
+.cast . kubectl get pods -A
+
+```console
+kubectl get pods -A
+```
+
+---
+
+# Cast the result
+
+.cast . kubectl get pods -A
+
+```console
+kubectl get pods -A
+```
+---
+
+# Cast double the results
+
+.cast . bash -c /home/zlatko/src/gitlab.com/oktalz/present/list.sh
+
+```console
+kubectl get pods -A
+```
