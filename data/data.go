@@ -3,9 +3,9 @@ package data
 import (
 	"sync"
 
-	"github.com/oktalz/present/data/reader"
-	"github.com/oktalz/present/fsnotify"
-	"github.com/oktalz/present/types"
+	"gitlab.com/fer-go/present/data/reader"
+	"gitlab.com/fer-go/present/fsnotify"
+	"gitlab.com/fer-go/present/types"
 )
 
 var (

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/oktalz/present/types"
+	"gitlab.com/fer-go/present/types"
 )
 
 func ReadFiles() []types.Slide {

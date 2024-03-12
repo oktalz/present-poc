@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/oktalz/present/data"
+	"gitlab.com/fer-go/present/data"
 )
 
 func updateHandler(chUpdate chan data.SyncEvent) http.HandlerFunc {

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/oktalz/present/data"
+	"gitlab.com/fer-go/present/data"
 )
 
 func asciinema(w http.ResponseWriter, r *http.Request) {

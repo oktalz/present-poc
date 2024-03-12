@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/oktalz/present/data"
-	"github.com/oktalz/present/exec"
+	"gitlab.com/fer-go/present/data"
+	"gitlab.com/fer-go/present/exec"
 )
 
 func execute(w http.ResponseWriter, r *http.Request) {

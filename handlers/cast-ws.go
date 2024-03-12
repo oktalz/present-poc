@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/oktalz/present/data"
-	"github.com/oktalz/present/exec"
+	"gitlab.com/fer-go/present/data"
+	"gitlab.com/fer-go/present/exec"
 
 	"github.com/gorilla/websocket"
 )

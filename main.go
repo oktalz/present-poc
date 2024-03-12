@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/oktalz/present/archive"
-	"github.com/oktalz/present/data"
-	"github.com/oktalz/present/handlers"
+	"gitlab.com/fer-go/present/archive"
+	"gitlab.com/fer-go/present/data"
+	"gitlab.com/fer-go/present/handlers"
 )
 
 func main() {
