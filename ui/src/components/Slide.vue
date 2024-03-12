@@ -193,7 +193,7 @@ export default defineComponent({
       }
 
       //const baseUrl = import.meta.env.VITE_BASE_URL
-      const baseUrlStart = import.meta.env.VITE_BASE_URL.replace(/^https?:\/\//, '');
+      const baseUrlStart = import.meta.env.VITE_WS_URL.replace(/^https?:\/\//, '');
       const baseUrl = baseUrlStart.replace(/^(\/|\\)/, '');
       console.log(baseUrl)
       //=====================================================================
