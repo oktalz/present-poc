@@ -53,7 +53,7 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 		line := lines[index]
 		if strings.HasPrefix(line, ".template") {
 			// we have a template
-			templateName := strings.TrimPrefix(line, ".template ")
+			templateData := strings.TrimPrefix(line, ".template ")
 			lines[index] = ""
 			index++
 			var template strings.Builder
@@ -67,7 +67,12 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 				template.WriteString("\n")
 				index++
 			}
-			lines = applyTemplate(lines, templateName, strings.TrimSuffix(template.String(), "\n"))
+			templateVars := []string{}
+			data := strings.Split(templateData, " ")
+			for i := 1; i < len(data); i++ {
+				templateVars = append(templateVars, data[i])
+			}
+			lines = applyTemplate(lines, data[0], templateVars, strings.TrimSuffix(template.String(), "\n"))
 			continue
 		}
 	}

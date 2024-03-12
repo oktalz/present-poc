@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"gitlab.com/fer-go/present/data"
@@ -113,15 +114,23 @@ func castWS(w http.ResponseWriter, r *http.Request) {
 		cmd.Dir = workingDir
 		if cmd.App != "" {
 			go exec.CmdStreamWS(cmd, ch)
+			lines := []string{}
 			for line := range ch {
-				log.Printf("write: %s", line)
-				err = c.WriteMessage(mt, []byte(line))
-				log.Println("write done")
-				if err != nil {
-					log.Println("write:", err)
-					return
-				}
+				lines = append(lines, line)
 			}
+			err = c.WriteMessage(mt, []byte(strings.Join(lines, "<br>")))
+			if err != nil {
+				log.Println("write:", err)
+				return
+			}
+			// this is for streaming
+			// for line := range ch {
+			// 	err = c.WriteMessage(mt, []byte(line))
+			// 	if err != nil {
+			// 		log.Println("write:", err)
+			// 		return
+			// 	}
+			// }
 			break
 		}
 
