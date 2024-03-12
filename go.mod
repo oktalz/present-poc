@@ -12,3 +12,7 @@ require (
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sys v0.18.0 // indirect
 )
+
+replace (
+	github.com/oktalz/present => gitlab.com/fer-go/present
+)
