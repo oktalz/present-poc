@@ -41,19 +41,21 @@
       </div>
 
       <div class="page-num">
+        
+        <div
+          v-if="state.terminal[index] != ''"
+          class=""
+          @click="state.terminal[index]=''"
+          style="font-size: 6vh;cursor: pointer;"
+          v-html="md.render(`{fdf6e3}(:fa-rectangle-xmark:)`)">
+          
+        </div>
         <div
           v-if="RunVisible(state.page)"
           class="button run-button"
           @click="execTerm"
           >
-            Run
-        </div>
-        <div
-          v-if="state.terminal[index] == '-1'"
-          class="button run-button"
-          @click="state.terminal[index]=''"
-          >
-            Close
+          <i class="fa-solid fa-terminal"></i>
         </div>
         &nbsp;&nbsp;&nbsp;<span class="view-page">{{ slide.page }}</span><span class="view-print-page">{{ slide.print_page }}</span>
       </div>
