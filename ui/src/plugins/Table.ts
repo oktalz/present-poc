@@ -43,7 +43,7 @@ export default function zbTable(md: MarkdownIt) {
                 table += `<tr>`
             } else if (line.startsWith(".td")) {
                 if (tdContent != "") {
-                    const content = md.renderInline(tdContent);
+                    const content = md.render(tdContent);
                     table += `<td>`+content+`</td>`;
                     tdContent = ""
                 }
