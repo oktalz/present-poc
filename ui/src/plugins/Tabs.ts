@@ -27,7 +27,7 @@ export default function zbTable(md: MarkdownIt) {
                 if (currentTabContent != "") {
                     if (currentTabContent != "") {
                         const content = md.render(currentTabContent);
-                        let active = "hidden"
+                        let active = "hidden-tab"
                         if (currentTabActive != "") {
                             active = ""
                         }

@@ -126,7 +126,7 @@ pre {
   .page-break {
     page-break-after: always;
   }
-  .hidden {
+   {
     overflow: hidden;
   }
   .run-button {
@@ -213,7 +213,7 @@ div.ap-wrapper div.ap-player {
 .tabs pre {
   margin-block-start: 0;
 }
-.hidden {
+.hidden-tab {
   display: none;
 }
 
