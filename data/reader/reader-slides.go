@@ -21,10 +21,14 @@ func ReadFiles() []types.Slide {
 	}
 
 	var presentationFiles []types.Slide
+	lastPageNumber := 0
 
 	var presentationFile []types.Slide
 	for _, slide := range slides {
-		presentationFile, ro, err = readSlideFile(slide, ro)
+		if len(presentationFiles) > 1 {
+			lastPageNumber = presentationFiles[len(presentationFiles)-1].PageNumber
+		}
+		presentationFile, ro, err = readSlideFile(slide, ro, lastPageNumber)
 		if err != nil {
 			panic(err)
 		}
@@ -215,6 +219,15 @@ func ReadFiles() []types.Slide {
 		if presentations[i].PageNumber != presentations[i+1].PageNumber && presentations[i].PrintPage == 0 {
 			presentations[i].PrintPage = printPage
 			printPage++
+		}
+	}
+	shift := 0
+	for i := 1; i < len(presentations)-1; i++ {
+		if presentations[i].PageNumber < presentations[i-1].PageNumber {
+			if presentations[i].PageNumber == 1 {
+				shift = presentations[i-1].PageNumber
+				_ = shift
+			}
 		}
 	}
 	presentations[len(presentations)-1].PrintPage = printPage

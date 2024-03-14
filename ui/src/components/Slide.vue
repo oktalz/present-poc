@@ -16,6 +16,7 @@
       </tr>
     </table>
   </div>
+  
   <div @wheel="onWheel" class="slide" :id="'slide-' + index" :ref="'slide' + index"
       v-bind:class="{ 'hidden': index!==state.page, 'page-not-print-visible': slide.print_page < 1 }"
       v-for="(slide, index) in slides" :key="index"
@@ -39,9 +40,13 @@
       >
         
       </div>
-
-      <div class="page-num">
-        
+      <div class="page-footer" style="font-size: 3vh; width: inherit; ">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <div style="right: 0px; position: absolute; top: 0;">
+    <span class="view-page">{{ slide.page }}</span><span class="view-print-page">{{ slide.print_page }}</span> &nbsp
+    </div>  
+    </div>  
+      <div class="page-num">        
         <div
           v-if="state.terminal[index] != ''"
           class=""
@@ -57,7 +62,7 @@
           >
           <i class="fa-solid fa-terminal"></i>
         </div>
-        &nbsp;&nbsp;&nbsp;<span class="view-page">{{ slide.page }}</span><span class="view-print-page">{{ slide.print_page }}</span>
+        &nbsp;&nbsp;&nbsp;
       </div>
       <div class="page-break"></div>
     </div><!-- <div class="slide" -->
@@ -306,7 +311,7 @@ export default defineComponent({
       if (this.slides == null) {
         return
       }
-      if (keyCode == 'ArrowRight' || keyCode == 'ArrowDown' || keyCode == 'PageDown') {
+      if (keyCode == 'ArrowRight' || keyCode == 'ArrowDown' || keyCode == 'PageDown' || keyCode == ' ') {
         if (this.state.page < this.slides.length-1) {
           this.state.page+= 1
           this.setPage(true)

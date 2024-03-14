@@ -42,7 +42,7 @@ func applyTemplate(lines []string, templateName string, templateVars []string, t
 				panic(err)
 			}
 			result := tpl.String()
-			log.Println(result)
+			//log.Println(result)
 			newLines := strings.Split(result, "\n")
 			// Remove the original line and inject newLines at position i
 			lines = append(lines[:i], append(newLines, lines[i+1:]...)...)

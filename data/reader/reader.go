@@ -25,7 +25,7 @@ func listSlideFiles(directory string) ([]string, error) {
 	return slideFiles, nil
 }
 
-func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.ReadOptions, error) {
+func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) ([]types.Slide, types.ReadOptions, error) {
 	content, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, ro, err
@@ -40,7 +40,7 @@ func readSlideFile(filename string, ro types.ReadOptions) ([]types.Slide, types.
 	slides := []types.Slide{}
 
 	var slide strings.Builder
-	lastIndex := 1
+	lastIndex := 1 + lastPageNumber
 	replacers := map[string]string{}
 	currentFontSize := ro.DefaultFontSize
 	currentBackgroundColor := ro.DefaultBackgroundColor

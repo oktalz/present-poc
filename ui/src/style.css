@@ -24,10 +24,23 @@ a, a:visited {
   margin-right: 0px;
   bottom: 0px;
   position:absolute;
-  right : 5px;
+  right : 2vw;
   font-style: oblique;
   font-size: 4vh;
   color: rgb(107, 109, 109);
+}
+
+.page-footer{
+  bottom: 0px;
+  margin: 0;
+  padding: 0;
+  position:absolute;
+  font-style: oblique;
+}
+
+code {
+  max-height: 69vh;
+  overflow: auto; /* Optional: Add scrollbars if content exceeds the height */
 }
 
 .presenter-time{
@@ -186,6 +199,7 @@ div.ap-wrapper div.ap-player {
 }
 
 .tab {
+  display: flex;
   width: fit-content;
   padding-left: 5px;
   padding-right: 5px;
@@ -204,9 +218,9 @@ div.ap-wrapper div.ap-player {
   border: none;
   outline: none;
   cursor: pointer;
-  padding-left: 1vh;
-  padding-right: 1vh;
-  padding-top: 1vh;
+  padding-left: 0.5vw;
+  padding-right: 0.5vw;
+  padding-top: 0.5vh;
   transition: 0.3s;
   margin-left: 0.5vw;
 }
@@ -286,7 +300,7 @@ div.ap-wrapper div.ap-player {
     overflow: auto;
     overflow-x: auto; 
     overflow-y: auto; 
-
+    z-index: 10;
   }
   
 

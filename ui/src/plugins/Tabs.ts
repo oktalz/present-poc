@@ -52,7 +52,7 @@ export default function zbTable(md: MarkdownIt) {
         }
         if (tabsHeader != "") {
             tabsHeader = `<div class="tab">` + tabsHeader + `</div>`
-            tabs = tabsHeader + `<br>`+ tabs + tabFooter + `</div>`
+            tabs = tabsHeader + ``+ tabs + tabFooter + `</div>`
         }
         if (tabs == `<div class="tabs">`) {
             return false
