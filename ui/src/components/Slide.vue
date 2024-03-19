@@ -2,6 +2,9 @@
   <div class="presenter-time" v-if="presenterMode">
     {{timer}}
   </div>
+  <div class="presenter-current-time" v-if="presenterMode">
+    {{timeCurrent}}
+  </div>
   <div class="presenter-comment" v-if="presenterMode">
     {{slides?.[state.page].notes}}
   </div>
@@ -93,6 +96,8 @@ import zbTable from '../plugins/Table';
 import zbImage from '../plugins/Image';
 import zbFontAwesome from '../plugins/FontAwesome';
 
+//const emits = defineEmits(['updateData']);
+
 export default defineComponent({
   props: {
     syncMessage: Object,
@@ -102,8 +107,15 @@ export default defineComponent({
       // Perform actions based on the prop change
       oldValue = oldValue
       this.state.myID = newValue.ID
-      this.state.page = newValue.Slide
+      if (newValue.Slide > -1){
+        this.state.page = newValue.Slide
+      }
       this.setPage(false)
+      
+      if (newValue.Slides && newValue.Slides.length != 0) {
+        this.slides = newValue.Slides
+      }
+
     }
   },
   components: {
@@ -299,8 +311,16 @@ export default defineComponent({
       }
       return false
     },
+
+    handleMouseScrool: function () {
+      return
+    },
+    handleMouseWheel: function () {
+      return
+    },
     handleKeyPress: function (e: KeyboardEvent) {
       const keyCode = e.key;
+      console.log(keyCode)
 
       let activeElement = document.activeElement;
       if (activeElement != null) {
@@ -341,6 +361,10 @@ export default defineComponent({
         return
       }
       window.location.hash = (this.state.page+1).toString()
+      
+      if (!this.slides[this.state.page]){
+        return
+      }
       if (this.slides[this.state.page].background == ""){
         document.body.style.backgroundImage = 'none'
       }else{
@@ -362,28 +386,13 @@ export default defineComponent({
           }, 10);
         }
       }
-      const baseUrl = import.meta.env.VITE_BASE_URL
-      if (this.state.myID == -1){
-        return
-      }
       if (!isLocal) {
         return
-      }
-      fetch(baseUrl + "/update", {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'text/plain'
-              },
-              body: JSON.stringify({
-                Author: this.state.myID,
-                Slide: this.state.page
-              })
-          })
-          .then(response => response.text())
-          // .then(data => {
-          //   return processData(data)
-          // })
-      //console.log(this.slides[this.state.page])
+      }      
+      this.$emit('updateData',{
+        Author: this.state.myID,
+        Slide: this.state.page
+      })
     }
   },
   created() {
@@ -394,6 +403,8 @@ export default defineComponent({
   },
   mounted() {
     window.addEventListener('keydown', this.handleKeyPress)
+    window.addEventListener('wheel', this.handleMouseWheel, { passive: false })
+    window.addEventListener('scroll', this.handleMouseScrool, { passive: false })
     this.$nextTick(function () {
       this.setPage(true)
       setTimeout(() => {
@@ -405,11 +416,13 @@ export default defineComponent({
   },
   unmounted() {
     window.removeEventListener('keydown', this.handleKeyPress)
+    window.removeEventListener('wheel', this.handleMouseWheel)
+    window.removeEventListener('scroll', this.handleMouseScrool)
   },
   setup() {
     const state = reactive({
         page: 0,
-        myID: -1,
+        myID: "",
         terminal: [] as string[],        
         terminal_loading: false,
         player: [] as any
@@ -520,6 +533,7 @@ export default defineComponent({
 
     let presenterMode = window.location.pathname == '/notes/'
     let timer = ref(`00:00`)
+    let timeCurrent = ref(`00:00`)
     let counter = 0;
     if (presenterMode) {
       setInterval(function() {
@@ -528,13 +542,19 @@ export default defineComponent({
           console.log((minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
           counter++;
           timer.value = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds
+
+          let now = new Date();
+          let hours = now.getHours();
+          minutes = now.getMinutes();
+          seconds = now.getSeconds();
+          timeCurrent.value = (hours < 10 ? "0" : "") + hours + ":" + (minutes < 10 ? "0" : "") + minutes //+ ":" + (seconds < 10 ? "0" : "") + seconds;
       }, 1000);
     }
 
     let showMenu = ref(false)
 
     return {
-      slides, md, state, presenterMode, timer, showMenu
+      slides, md, state, presenterMode, timer, timeCurrent, showMenu
     }
   }
 });

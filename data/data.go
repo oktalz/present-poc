@@ -3,57 +3,41 @@ package data
 import (
 	"sync"
 
+	"github.com/oklog/ulid/v2"
 	"gitlab.com/fer-go/present/data/reader"
 	"gitlab.com/fer-go/present/fsnotify"
 	"gitlab.com/fer-go/present/types"
 )
 
 var (
-	mu           sync.RWMutex
-	presentation []types.Slide
-	chSyncEvent  map[int]chan SyncEvent
-	chUpdate     chan SyncEvent
+	muPresentation sync.RWMutex
+	presentation   []types.Slide
 )
 
-type SyncEvent struct {
-	ID     int  `json:"ID"`
-	Author int  `json:"Author"`
-	Slide  int  `json:"Slide"`
-	Reload bool `json:"Reload"`
+type Message struct {
+	ID     ulid.ULID
+	Author ulid.ULID
+	Msg    []byte
+	Slides []types.Slide
+	Slide  int
+	Reload bool
 }
 
 func Presentation() []types.Slide {
-	mu.RLock()
-	defer mu.RUnlock()
+	muPresentation.RLock()
+	defer muPresentation.RUnlock()
 	result := make([]types.Slide, len(presentation))
 	copy(result, presentation)
 	return result
 }
 
 func SetPresentation(p []types.Slide) {
-	mu.Lock()
-	defer mu.Unlock()
+	muPresentation.Lock()
+	defer muPresentation.Unlock()
 	presentation = p
 }
 
-func Subscribe() (int, chan SyncEvent) {
-	mu.Lock()
-	defer mu.Unlock()
-	ch := make(chan SyncEvent)
-	id := len(chSyncEvent) + 1
-	chSyncEvent[id] = ch
-	return id, ch
-}
-
-func Init(channelMap map[int]chan SyncEvent, update chan SyncEvent) {
-	chSyncEvent = channelMap
-	chUpdate = update
-	curState := SyncEvent{
-		ID:     0,
-		Author: 0,
-		Slide:  0,
-		Reload: true,
-	}
+func Init(server Server) {
 
 	filesModified := fsnotify.FileWatcher()
 
@@ -66,32 +50,12 @@ func Init(channelMap map[int]chan SyncEvent, update chan SyncEvent) {
 		for {
 			select {
 			case <-filesModified:
-				mu.Lock()
+				muPresentation.Lock()
 				presentation = reader.ReadFiles()
-				for id, ch := range chSyncEvent {
-					ch <- SyncEvent{
-						ID:     id,
-						Author: 0,
-						Reload: true,
-					}
-				}
-				// reset all watchers
-				chSyncEvent = make(map[int]chan SyncEvent)
-				mu.Unlock()
-			case update := <-chUpdate:
-				if update.Slide == curState.Slide {
-					continue
-				}
-				curState = update
-				mu.RLock()
-				for id, ch := range chSyncEvent {
-					if id == update.Author {
-						continue
-					}
-					update.ID = id
-					ch <- update
-				}
-				mu.RUnlock()
+				server.Broadcast(Message{
+					Reload: true,
+				})
+				muPresentation.Unlock()
 			}
 		}
 	}()

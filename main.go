@@ -2,6 +2,7 @@ package main
 
 import (
 	"io/fs"
+	"log"
 	"net/http"
 	"os"
 
@@ -11,6 +12,7 @@ import (
 )
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	zipFlag := false
 	for _, arg := range os.Args[1:] {
 		if arg == "zip" {
@@ -48,17 +50,15 @@ func main() {
 		os.Exit(0)
 		return
 	}
-
-	channels := make(map[int]chan data.SyncEvent)
-	chUpdate := make(chan data.SyncEvent)
-	data.Init(channels, chUpdate)
+	wsServer := data.NewServer()
+	data.Init(wsServer)
 
 	http.Handle("/api", handlers.API())
 	http.Handle("/exec", handlers.Exec())
 	http.Handle("/cast", handlers.CastWS())
 	http.Handle("/asciinema", handlers.Asciinema())
-	http.Handle("/update", handlers.Update(chUpdate))
-	http.Handle("/sync", handlers.Sync())
+
+	http.Handle("/ws", handlers.WS(wsServer))
 
 	// Serve static files
 	sub, err := fs.Sub(dist, "ui/dist")

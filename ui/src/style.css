@@ -47,7 +47,20 @@ code {
   margin-left: 0px;
   bottom: 0px;
   position:absolute;
-  left : 5px;
+  left : 51vw;
+  padding-top: 1vh;
+  padding-right: 1vh;
+  color: rgb(107, 109, 109);
+  font-size: 10vh;
+  background-color: bisque;
+  z-index: 1000;
+}
+
+.presenter-current-time{
+  margin-left: 0px;
+  bottom: 0vh;
+  position:absolute;
+  right : 51vw;  
   padding-top: 1vh;
   padding-right: 1vh;
   color: rgb(107, 109, 109);
