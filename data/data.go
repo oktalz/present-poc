@@ -1,11 +1,14 @@
 package data
 
 import (
+	"fmt"
+	"log"
 	"sync"
 
 	"github.com/oklog/ulid/v2"
 	"gitlab.com/fer-go/present/data/reader"
 	"gitlab.com/fer-go/present/fsnotify"
+	"gitlab.com/fer-go/present/markdown"
 	"gitlab.com/fer-go/present/types"
 )
 
@@ -52,6 +55,16 @@ func Init(server Server) {
 			case <-filesModified:
 				muPresentation.Lock()
 				presentation = reader.ReadFiles()
+				for i := range presentation {
+					res, err := markdown.Convert(presentation[i].Markdown)
+					if err != nil {
+						log.Println(err)
+					}
+					presentation[i].Html = res.String()
+					fmt.Println(i)
+					fmt.Println(presentation[i].Markdown)
+					fmt.Println(presentation[i].Html)
+				}
 				server.Broadcast(Message{
 					Reload: true,
 				})

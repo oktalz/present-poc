@@ -2,6 +2,7 @@ package reader
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -9,8 +10,12 @@ import (
 )
 
 func ReadFiles() []types.Slide {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 	ro := types.ReadOptions{
-		DevUrl:          `http://localhost:8080/`,
+		DevUrl:          `http://localhost:` + port + `/`,
 		DefaultFontSize: "3.5vh",
 		EveryDashIsACut: false,
 	}
@@ -74,11 +79,13 @@ func ReadFiles() []types.Slide {
 		hasCastBlockBefore := strings.Contains(slide.Markdown, ".cast.before")
 		if hasCastBlockBefore {
 			lines := strings.Split(slide.Markdown, "\n")
-			for index, line := range lines {
+			for index := 0; index < len(lines); index++ {
+				line := lines[index]
 				if strings.HasPrefix(line, ".cast.before") {
 					newLine := strings.Replace(line, ".cast.before", ".cast.before .", 1)
 					lines[index] = newLine
-					tc := parseCommandBlock(lines, index, nil, nil)
+					var tc types.TerminalCommand
+					tc, lines = parseCommandBlock(lines, index, nil, nil)
 					var c types.Cast
 					if slide.Cast != nil {
 						c = *slide.Cast
@@ -96,14 +103,29 @@ func ReadFiles() []types.Slide {
 			}
 		}
 
+		hasCastStream := strings.Contains(slide.Markdown, ".cast.stream")
+		if hasCastStream {
+			lines := strings.Split(slide.Markdown, "\n")
+			for index, line := range lines {
+				if strings.HasPrefix(line, ".cast.stream") {
+					slide.HasCastStreamed = true
+					lines = append(lines[:index], lines[index+1:]...)
+					slide.Markdown = strings.Join(lines, "\n")
+					break
+				}
+			}
+		}
+
 		hasCastBlockAfter := strings.Contains(slide.Markdown, ".cast.after")
 		if hasCastBlockAfter {
 			lines := strings.Split(slide.Markdown, "\n")
-			for index, line := range lines {
+			for index := 0; index < len(lines); index++ {
+				line := lines[index]
 				if strings.HasPrefix(line, ".cast.after") {
 					newLine := strings.Replace(line, ".cast.after", ".cast.after .", 1)
 					lines[index] = newLine
-					tc := parseCommandBlock(lines, index, nil, nil)
+					var tc types.TerminalCommand
+					tc, lines = parseCommandBlock(lines, index, nil, nil)
 					var c types.Cast
 					if slide.Cast != nil {
 						c = *slide.Cast
@@ -149,9 +171,13 @@ func ReadFiles() []types.Slide {
 		hasCastBlockEdit := strings.Contains(slide.Markdown, ".cast.block")
 		if hasCastBlockEdit {
 			lines := strings.Split(slide.Markdown, "\n")
-			for index, line := range lines {
+			fmt.Println("lines", lines)
+			//for index, line := range lines {
+			for index := 0; index < len(lines); index++ {
+				line := lines[index]
 				if strings.HasPrefix(line, ".cast.block") {
-					tc := parseCommandBlock(lines, index, codeBlockShowStart, codeBlockShowEnd)
+					var tc types.TerminalCommand
+					tc, lines = parseCommandBlock(lines, index, codeBlockShowStart, codeBlockShowEnd)
 					var c types.Cast
 					if slide.Cast != nil {
 						c = *slide.Cast

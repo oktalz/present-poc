@@ -152,7 +152,7 @@ pre {
   .page-break {
     page-break-after: always;
   }
-   {
+  .hidden {
     overflow: hidden;
   }
   .run-button {

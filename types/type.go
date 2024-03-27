@@ -40,13 +40,16 @@ type Slide struct {
 	UseTmpFolder          bool              `json:"-"`
 	CanEdit               bool              `json:"can_edit"`
 	HasCast               bool              `json:"cast"`
+	HasCastStreamed       bool              `json:"-"`
 	HasRun                bool              `json:"run"`
 	HasTerminal           bool              `json:"terminal"`
 	BackgroundImage       string            `json:"background"`
 	BackgroundColor       string            `json:"background_color"`
 	PageNumber            int               `json:"page"`
+	PageIndex             int               `json:"-"`
 	PrintPage             int               `json:"print_page"`
 	FontSize              string            `json:"font_size"`
+	Html                  string            `json:"html"`
 }
 
 type TerminalOutputLine struct {

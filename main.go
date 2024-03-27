@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"io/fs"
 	"log"
 	"net/http"
@@ -81,6 +82,13 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	go func() {
+		err = http.ListenAndServe(":8081", newUI())
+		if err != nil {
+			panic(err)
+		}
+	}()
+
 	err = http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		panic(err)

@@ -26,7 +26,7 @@ func parseCommand(command string) types.TerminalCommand {
 	return tc
 }
 
-func parseCommandBlock(lines []string, index int, codeBlockShowStart, codeBlockShowEnd *int) types.TerminalCommand {
+func parseCommandBlock(lines []string, index int, codeBlockShowStart, codeBlockShowEnd *int) (types.TerminalCommand, []string) {
 	tc := parseCommand(lines[index])
 	var codeHeader string
 	var code string
@@ -73,7 +73,7 @@ func parseCommandBlock(lines []string, index int, codeBlockShowStart, codeBlockS
 		Footer: codeFooter,
 	}
 	tc.TmpDir = true
-	return tc
+	return tc, lines
 }
 
 func replaceWithConditionImage(str, oldStr, newStr, httpStr string) string {

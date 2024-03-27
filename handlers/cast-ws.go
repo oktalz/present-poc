@@ -29,6 +29,7 @@ func castWS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer c.Close()
+	log.Println("connected")
 
 	ch := make(chan string, 10)
 
@@ -41,13 +42,6 @@ func castWS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
-	if err != nil {
-		err = c.WriteMessage(mt, []byte(err.Error()))
-		if err != nil {
-			log.Println("write:", err)
-		}
-		return
-	}
 	payload, err := parseJSONData(string(bodyBytes))
 	if err != nil {
 		err = c.WriteMessage(mt, []byte(err.Error()))
@@ -114,23 +108,26 @@ func castWS(w http.ResponseWriter, r *http.Request) {
 		cmd.Dir = workingDir
 		if cmd.App != "" {
 			go exec.CmdStreamWS(cmd, ch)
-			lines := []string{}
-			for line := range ch {
-				lines = append(lines, line)
+			if presentation[slide].HasCastStreamed {
+				// this is for streaming
+				for line := range ch {
+					err = c.WriteMessage(mt, []byte(line))
+					if err != nil {
+						log.Println("write:", err)
+						return
+					}
+				}
+			} else {
+				lines := []string{}
+				for line := range ch {
+					lines = append(lines, line)
+				}
+				err = c.WriteMessage(mt, []byte(strings.Join(lines, "<br>")))
+				if err != nil {
+					log.Println("write:", err)
+					return
+				}
 			}
-			err = c.WriteMessage(mt, []byte(strings.Join(lines, "<br>")))
-			if err != nil {
-				log.Println("write:", err)
-				return
-			}
-			// this is for streaming
-			// for line := range ch {
-			// 	err = c.WriteMessage(mt, []byte(line))
-			// 	if err != nil {
-			// 		log.Println("write:", err)
-			// 		return
-			// 	}
-			// }
 			break
 		}
 
