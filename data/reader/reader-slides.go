@@ -9,7 +9,7 @@ import (
 	"gitlab.com/fer-go/present/types"
 )
 
-func ReadFiles() []types.Slide {
+func ReadFiles() types.Presentation {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -25,19 +25,22 @@ func ReadFiles() []types.Slide {
 		panic(err)
 	}
 
-	var presentationFiles []types.Slide
+	var presentationFiles types.Presentation
 	lastPageNumber := 0
 
-	var presentationFile []types.Slide
+	var presentationFile types.Presentation
 	for _, slide := range slides {
-		if len(presentationFiles) > 1 {
-			lastPageNumber = presentationFiles[len(presentationFiles)-1].PageNumber
+		if len(presentationFiles.Slides) > 1 {
+			lastPageNumber = presentationFiles.Slides[len(presentationFiles.Slides)-1].PageNumber
 		}
 		presentationFile, ro, err = readSlideFile(slide, ro, lastPageNumber)
 		if err != nil {
 			panic(err)
 		}
-		presentationFiles = append(presentationFiles, presentationFile...)
+		presentationFiles.Slides = append(presentationFiles.Slides, presentationFile.Slides...)
+		if presentationFile.Title != "" {
+			presentationFiles.Title = presentationFile.Title
+		}
 	}
 
 	presentations := make([]types.Slide, 0)
@@ -46,7 +49,7 @@ func ReadFiles() []types.Slide {
 	var codeBlockShowEnd *int
 	_ = codeBlockShowStart
 	_ = codeBlockShowEnd
-	for _, slide := range presentationFiles {
+	for _, slide := range presentationFiles.Slides {
 		if defaultBackend != "" {
 			slide.BackgroundImage = defaultBackend
 		}
@@ -171,7 +174,7 @@ func ReadFiles() []types.Slide {
 		hasCastBlockEdit := strings.Contains(slide.Markdown, ".cast.block")
 		if hasCastBlockEdit {
 			lines := strings.Split(slide.Markdown, "\n")
-			fmt.Println("lines", lines)
+			//fmt.Println("lines", lines)
 			//for index, line := range lines {
 			for index := 0; index < len(lines); index++ {
 				line := lines[index]
@@ -258,5 +261,8 @@ func ReadFiles() []types.Slide {
 	}
 	presentations[len(presentations)-1].PrintPage = printPage
 
-	return presentations
+	return types.Presentation{
+		Slides: presentations,
+		Title:  presentationFiles.Title,
+	}
 }

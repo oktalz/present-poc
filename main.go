@@ -2,10 +2,10 @@ package main
 
 import (
 	_ "embed"
-	"io/fs"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"gitlab.com/fer-go/present/archive"
 	"gitlab.com/fer-go/present/data"
@@ -13,6 +13,17 @@ import (
 )
 
 func main() {
+	// Start the server
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	var portInt int
+	var err error
+	if portInt, err = strconv.Atoi(port); err != nil {
+		panic(err)
+	}
+
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	zipFlag := false
 	for _, arg := range os.Args[1:] {
@@ -54,40 +65,19 @@ func main() {
 	wsServer := data.NewServer()
 	data.Init(wsServer)
 
-	http.Handle("/api", handlers.API())
-	http.Handle("/exec", handlers.Exec())
+	// http.Handle("/api", handlers.API())
+	// http.Handle("/exec", handlers.Exec())
 	http.Handle("/cast", handlers.CastWS())
 	http.Handle("/asciinema", handlers.Asciinema())
-
 	http.Handle("/ws", handlers.WS(wsServer))
 
-	// Serve static files
-	sub, err := fs.Sub(dist, "ui/dist")
-	if err != nil {
-		panic(err)
-	}
+	http.Handle("/{$}", handlers.Homepage(portInt))
+
 	wd, err = os.Getwd()
 	if err != nil {
 		panic(err)
 	}
-	handler := &fallbackFileServer{
-		primary:   http.FileServer(http.FS(sub)),
-		secondary: http.FileServer(http.Dir(wd)),
-	}
-	// http.Handle("/", http.FileServer(http.FS(sub)))
-	http.Handle("/", handler)
-
-	// Start the server
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-	go func() {
-		err = http.ListenAndServe(":8081", newUI())
-		if err != nil {
-			panic(err)
-		}
-	}()
+	http.Handle("/", http.FileServer(http.Dir(wd)))
 
 	err = http.ListenAndServe(":"+port, nil)
 	if err != nil {

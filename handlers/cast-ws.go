@@ -63,14 +63,14 @@ func castWS(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
-	presentation := data.Presentation()
-	if slide < 0 || slide >= int64(len(presentation)) {
+	slides := data.Presentation().Slides
+	if slide < 0 || slide >= int64(len(slides)) {
 		http.Error(w, "Invalid slide number", http.StatusBadRequest)
 	}
-	tc := presentation[slide].TerminalCommand
-	tcBefore := presentation[slide].TerminalCommandBefore
-	tcAfter := presentation[slide].TerminalCommandAfter
-	if presentation[slide].CanEdit {
+	tc := slides[slide].TerminalCommand
+	tcBefore := slides[slide].TerminalCommandBefore
+	tcAfter := slides[slide].TerminalCommandAfter
+	if slides[slide].CanEdit {
 		for i := range tc {
 			tc[i].Code.Code = payload.Code[tc[i].Index]
 		}
@@ -108,7 +108,7 @@ func castWS(w http.ResponseWriter, r *http.Request) {
 		cmd.Dir = workingDir
 		if cmd.App != "" {
 			go exec.CmdStreamWS(cmd, ch)
-			if presentation[slide].HasCastStreamed {
+			if slides[slide].HasCastStreamed {
 				// this is for streaming
 				for line := range ch {
 					err = c.WriteMessage(mt, []byte(line))

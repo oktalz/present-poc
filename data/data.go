@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"log"
 	"sync"
 
@@ -14,27 +13,30 @@ import (
 
 var (
 	muPresentation sync.RWMutex
-	presentation   []types.Slide
+	presentation   types.Presentation
 )
 
 type Message struct {
 	ID     ulid.ULID
 	Author ulid.ULID
 	Msg    []byte
-	Slides []types.Slide
 	Slide  int
 	Reload bool
 }
 
-func Presentation() []types.Slide {
+func Presentation() types.Presentation {
 	muPresentation.RLock()
 	defer muPresentation.RUnlock()
-	result := make([]types.Slide, len(presentation))
-	copy(result, presentation)
+	slides := make([]types.Slide, len(presentation.Slides))
+	copy(slides, presentation.Slides)
+	result := types.Presentation{
+		Slides: slides,
+		Title:  presentation.Title,
+	}
 	return result
 }
 
-func SetPresentation(p []types.Slide) {
+func SetPresentation(p types.Presentation) {
 	muPresentation.Lock()
 	defer muPresentation.Unlock()
 	presentation = p
@@ -50,26 +52,20 @@ func Init(server Server) {
 	}()
 
 	go func() {
-		for {
-			select {
-			case <-filesModified:
-				muPresentation.Lock()
-				presentation = reader.ReadFiles()
-				for i := range presentation {
-					res, err := markdown.Convert(presentation[i].Markdown)
-					if err != nil {
-						log.Println(err)
-					}
-					presentation[i].Html = res.String()
-					fmt.Println(i)
-					fmt.Println(presentation[i].Markdown)
-					fmt.Println(presentation[i].Html)
+		for range filesModified {
+			muPresentation.Lock()
+			presentation = reader.ReadFiles()
+			for i := range presentation.Slides {
+				res, err := markdown.Convert(presentation.Slides[i].Markdown)
+				if err != nil {
+					log.Println(err)
 				}
-				server.Broadcast(Message{
-					Reload: true,
-				})
-				muPresentation.Unlock()
+				presentation.Slides[i].Html = res
 			}
+			server.Broadcast(Message{
+				Reload: true,
+			})
+			muPresentation.Unlock()
 		}
 	}()
 }

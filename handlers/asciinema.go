@@ -14,11 +14,11 @@ func asciinema(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
-	presentations := data.Presentation()
-	if slide < 0 || slide >= int64(len(presentations)) {
+	slides := data.Presentation().Slides
+	if slide < 0 || slide >= int64(len(slides)) {
 		http.Error(w, "Invalid slide number", http.StatusBadRequest)
 	}
-	err = json.NewEncoder(w).Encode(presentations[slide].Asciinema)
+	err = json.NewEncoder(w).Encode(slides[slide].Asciinema)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

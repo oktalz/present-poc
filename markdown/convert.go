@@ -2,17 +2,24 @@ package markdown
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"strings"
 
+	"github.com/oklog/ulid/v2"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer/html"
 )
 
-func Convert(source string) (bytes.Buffer, error) {
+type blockData struct {
+	ID   ulid.ULID
+	Data string
+}
+
+var blocks []blockData
+
+func Convert(source string) (string, error) {
 	md := goldmark.New(
 		goldmark.WithExtensions(extension.GFM),
 		goldmark.WithParserOptions(
@@ -26,13 +33,17 @@ func Convert(source string) (bytes.Buffer, error) {
 	)
 	var buf bytes.Buffer
 	if err := md.Convert([]byte(prepare(md, source)), &buf); err != nil {
-		return bytes.Buffer{}, err
+		return "", err
 	}
-	return buf, nil
+	res := buf.String()
+	for index := len(blocks) - 1; index >= 0; index-- {
+		res = strings.ReplaceAll(res, blocks[index].ID.String(), blocks[index].Data)
+	}
+	blocks = nil
+	return res, nil
 }
 
 func prepare(md goldmark.Markdown, fileContent string) string {
-
 	lines := strings.Split(fileContent, "\n")
 	for i := 0; i < len(lines); i++ {
 		if strings.Contains(lines[i], ".image(") || strings.Contains(lines[i], ":image(") {
@@ -56,10 +67,8 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 			data = data[7:dotImageIndex]
 
 			parts := strings.SplitN(data, ` `, 2)
-			log.Println(parts)
+			//log.Println(parts)
 			_ = parts
-			//<img src="http://localhost:8080/assets/images/3.png"
-			//style=" object-fit: contain; width: auto; height: 50vh;" "=""></p></div>
 			html := `<img src="` + parts[0] + `" `
 			width := `auto`
 			height := `auto`
@@ -90,16 +99,14 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 			data := lines[i][end+2:]
 			end2 := strings.Index(data, ")")
 			data = data[:end2]
-			solution := createCleanMD(md, data)
-			html := `<span style="color: ` + color + `;">` + solution + `</span>`
+			id := createCleanMD(md, data)
+			html := `<span style="color: ` + color + `;">` + id.String() + `</span>`
 			data = strings.ReplaceAll(lines[i], `{`+color+`}(`+data+`)`, html)
 			lines[i] = data
 			i--
 		}
 	}
 	for i := 0; i < len(lines); i++ {
-		fmt.Println(i)
-		fmt.Println(lines[i])
 		if i >= len(lines) {
 			break
 		}
@@ -133,10 +140,9 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 				}
 				buf.WriteString(line)
 			}
-			//solution := createCleanMD(md, buf.String())
 			solution := prepare(md, buf.String())
-			solution = createCleanMD(md, solution)
-			lines[i] = lines[i] + "\n" + solution + `</div>`
+			id := createCleanMD(md, solution)
+			lines[i] = lines[i] + "\n" + id.String() + `</div>`
 			lines = append(lines[:i+1], lines[endLine+1:]...)
 		}
 		//if strings.HasPrefix(lines[i], ".style ") {
@@ -166,10 +172,10 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 			tdData := ""
 			for currLine = i + 1; currLine < len(lines); currLine++ {
 				if lines[currLine] == ".table.end" {
-					solution := createCleanMD(md, tdData)
+					id := createCleanMD(md, tdData)
 					//solution := prepare(md, tdData)
 					if trStarted {
-						lines[currLine] = solution + `</td></tr></table>`
+						lines[currLine] = id.String() + `</td></tr></table>`
 					} else {
 						lines[currLine] = `</table>`
 					}
@@ -179,11 +185,11 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 				if lines[currLine] == ".tr" {
 					if trStarted {
 						if tdData != "" {
-							solution := createCleanMD(md, tdData)
+							id := createCleanMD(md, tdData)
 							//solution := prepare(md, tdData)
 							tdData = ""
 							tdStarted = false
-							lines[currLine] = solution + `</td></tr><tr>`
+							lines[currLine] = id.String() + `</td></tr><tr>`
 						} else {
 							lines[currLine] = `</tr><tr>`
 						}
@@ -196,17 +202,17 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 					tdStarted = false
 					line := lines[currLine]
 					if tdData != "" {
-						solution := createCleanMD(md, tdData)
+						id := createCleanMD(md, tdData)
 						//solution := prepare(md, tdData)
-						lines[currLine] = solution + `</td><td>`
+						lines[currLine] = id.String() + `</td><td>`
 					} else {
 						lines[currLine] = `<td>`
 					}
 					parts := strings.Split(line, " ")
 					if len(parts) > 1 && strings.Join(parts[1:], " ") != "" {
-						solution := createCleanMD(md, strings.Join(parts[1:], " "))
+						id := createCleanMD(md, strings.Join(parts[1:], " "))
 						//solution := prepare(md, strings.Join(parts[1:], " "))
-						lines[currLine] += solution + `</td>`
+						lines[currLine] += id.String() + `</td>`
 					} else {
 						tdStarted = true
 					}
@@ -243,9 +249,9 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 				}
 				buf.WriteString(line)
 			}
-			//solution := createCleanMD(md, buf.String())
-			solution := prepare(md, buf.String())
-			lines[i] = `<div style="text-align:center">` + solution + `</div>`
+			id := createCleanMD(md, prepare(md, buf.String()))
+			//solution := prepare(md, buf.String())
+			lines[i] = `<div style="text-align:center">` + id.String() + `</div>`
 			lines = append(lines[:i+1], lines[endLine+1:]...)
 		}
 	}
@@ -257,16 +263,19 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 	return fileContent
 }
 
-func createCleanMD(md goldmark.Markdown, data string) string {
+func createCleanMD(md goldmark.Markdown, data string) ulid.ULID {
 	var buf bytes.Buffer
+	id := ulid.Make()
 	if err := md.Convert([]byte(data), &buf); err != nil {
-		return ""
+		blocks = append(blocks, blockData{ID: id, Data: ""})
+		return id
 	}
 	solution := strings.TrimPrefix(buf.String(), "<p>")
 	solution = strings.TrimSuffix(solution, "\n")
 	solution = strings.TrimSuffix(solution, "</p>")
 
-	return solution
+	blocks = append(blocks, blockData{ID: id, Data: solution})
+	return id
 }
 
 func convertStyle(md goldmark.Markdown, line string) (result string, isBlock bool) {
@@ -280,7 +289,7 @@ func convertStyle(md goldmark.Markdown, line string) (result string, isBlock boo
 		partStyle = partStyle[index+1:]
 	}
 	parts := strings.SplitN(partStyle, `"`, 3)
-	log.Println(parts)
+	//log.Println(parts)
 	_ = parts
 	if len(parts) == 1 || len(parts) == 3 && parts[2] == "" {
 		parts := strings.SplitN(partStyle, ` `, 2)
@@ -290,8 +299,8 @@ func convertStyle(md goldmark.Markdown, line string) (result string, isBlock boo
 		return line, true
 	}
 	if len(parts) == 3 {
-		solution := createCleanMD(md, parts[2])
-		line = partBefore + `<div style='` + parts[1] + `'>` + solution + `</div>` + partAfter
+		id := createCleanMD(md, parts[2])
+		line = partBefore + `<div style='` + parts[1] + `'>` + id.String() + `</div>` + partAfter
 	}
 	if len(parts) == 2 {
 		line = partBefore + `<div style='` + parts[1] + `'>` + partAfter

@@ -25,10 +25,11 @@ func listSlideFiles(directory string) ([]string, error) {
 	return slideFiles, nil
 }
 
-func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) ([]types.Slide, types.ReadOptions, error) {
+func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) (types.Presentation, types.ReadOptions, error) {
+	title := ""
 	content, err := os.ReadFile(filename)
 	if err != nil {
-		return nil, ro, err
+		return types.Presentation{}, ro, err
 	}
 
 	fileContent := string(content)
@@ -168,6 +169,11 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) ([
 			lines[index] = ""
 			continue
 		}
+		if strings.HasPrefix(line, ".title") {
+			title = strings.TrimPrefix(line, ".title ")
+			lines[index] = ""
+			continue
+		}
 		if strings.HasPrefix(line, ".slide.background-color") {
 			currentBackgroundColor = strings.TrimPrefix(line, ".slide.background-color ")
 			lines[index] = ""
@@ -228,7 +234,10 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) ([
 			slides[index].Markdown = strings.ReplaceAll(slides[index].Markdown, pattern, data)
 		}
 	}
-	return slides, ro, nil
+	return types.Presentation{
+		Slides: slides,
+		Title:  title,
+	}, ro, nil
 }
 
 func readFile(filename string) (string, error) {

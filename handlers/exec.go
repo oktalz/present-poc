@@ -14,11 +14,11 @@ func execute(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
-	presentations := data.Presentation()
-	if slide < 0 || slide >= int64(len(presentations)) {
+	slides := data.Presentation().Slides
+	if slide < 0 || slide >= int64(len(slides)) {
 		http.Error(w, "Invalid slide number", http.StatusBadRequest)
 	}
-	_, err = w.Write(exec.Cmd(presentations[slide].Terminal))
+	_, err = w.Write(exec.Cmd(slides[slide].Terminal))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

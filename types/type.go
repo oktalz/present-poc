@@ -52,6 +52,11 @@ type Slide struct {
 	Html                  string            `json:"html"`
 }
 
+type Presentation struct {
+	Slides []Slide
+	Title  string
+}
+
 type TerminalOutputLine struct {
 	Timestamp string
 	Line      string

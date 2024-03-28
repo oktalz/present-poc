@@ -8,6 +8,7 @@ require (
 	github.com/gorilla/websocket v1.5.1
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/yuin/goldmark v1.7.0
+	nhooyr.io/websocket v1.8.10
 )
 
 require (
