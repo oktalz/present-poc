@@ -226,11 +226,11 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 				}
 			}
 		}
-		if strings.HasPrefix(lines[i], ".center") || strings.HasPrefix(lines[i], "::: center") {
+		if strings.HasPrefix(lines[i], ".center") {
 			// first find the .center.end line
 			var endLine int
 			for endLine = i + 1; endLine < len(lines); endLine++ {
-				if lines[endLine] == ".center.end" || lines[endLine] == ":::" {
+				if lines[endLine] == ".center.end" {
 					break
 				}
 			}

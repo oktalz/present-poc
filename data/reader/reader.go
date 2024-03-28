@@ -33,12 +33,6 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) (t
 	}
 
 	fileContent := string(content)
-	fileContent = strings.ReplaceAll(fileContent, ".center.end", ":::")
-	fileContent = strings.ReplaceAll(fileContent, ".center", "::: center")
-	// fileContent = strings.ReplaceAll(fileContent, ".center.end", `</div>`)
-	// fileContent = strings.ReplaceAll(fileContent, ".center", `<div style="text-align:center">`)
-	fileContent = replaceWithConditionImage(fileContent, ".image(", ":image("+ro.DevUrl, ":image(")
-
 	lines := strings.Split(fileContent, "\n")
 	slides := []types.Slide{}
 
