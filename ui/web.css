@@ -103,16 +103,20 @@ code {
   margin-right: 0px;
   top: 0px;
   position:absolute;
-  right : 5px;
+  right : 0;
   padding-top: 1vh;
   padding-left: 1vh;
   padding-right: 1vh;
   color: rgb(0, 0, 0);
-  font-size: 1em;
+  font-size: 3.5vh;
   background-color: #00ADD8;
   z-index: 1000;
   overflow-y: auto !important;
   height: 100%;
+}
+
+.menu-hidden {
+  display: none;
 }
 
 p {
@@ -234,6 +238,60 @@ hr {
   animation: spinner 1s ease infinite;
 }
 
+.tablinks {
+  font-size: 3.5vh;
+  border-left: 2px solid rgb(190, 190, 190) !important;
+  border-top: 2px solid rgb(190, 190, 190) !important;
+  border-right: 2px solid rgb(190, 190, 190) !important;
+  border-top-left-radius: 1vh;
+  border-top-right-radius: 1vh;
+  color: black;
+  background-color: #fdf6e3;
+  text-align: center;
+  cursor: pointer;
+}
+
+.tab {
+  display: flex;
+  width: fit-content;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  font-family: monospace;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: white;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding-left: 0.5vw;
+  padding-right: 0.5vw;
+  padding-top: 0.5vh;
+  transition: 0.3s;
+  margin-left: 0.5vw;
+}
+.tabs pre {
+  margin-block-start: 0;
+}
+.hidden-tab {
+  display: none;
+}
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #F3F3F3;
+}
+
 @media print {
   html, body {
   }
@@ -259,6 +317,9 @@ hr {
     display: none;
   }
   .page-not-print-visible{
+    display: none;
+  }
+  .menu {
     display: none;
   }
 }

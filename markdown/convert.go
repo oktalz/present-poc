@@ -254,6 +254,65 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 			lines[i] = `<div style="text-align:center">` + id.String() + `</div>`
 			lines = append(lines[:i+1], lines[endLine+1:]...)
 		}
+		if strings.HasPrefix(lines[i], ".tab") {
+			var currLine int
+			lines[i] = `<div class="tab">`
+			tabContent := ""
+			activeID := ""
+			currentTabID := ""
+			tabs := []string{}
+			tabsID := []string{}
+			for currLine = i + 1; currLine < len(lines); currLine++ {
+				if lines[currLine] == ".tabs.end" {
+					if tabContent != "" {
+						tabs = append(tabs, tabContent)
+						tabsID = append(tabsID, currentTabID)
+						tabContent = ""
+					}
+					lines[currLine] = `</div><div class="tabs">`
+					//time to create footers
+					for index, data := range tabs {
+						contentID := createCleanMD(md, prepare(md, data))
+						class := " hidden-tab"
+						id := tabsID[index]
+						if id == activeID {
+							class = ""
+						}
+						lines[currLine] += `<div class="tabcontent` + class + `" id="` + id + `">` + contentID.String() + `</div>`
+					}
+					lines[currLine] += `</div>`
+					break
+				}
+				if strings.HasPrefix(lines[currLine], ".tab") {
+					if tabContent != "" {
+						tabs = append(tabs, tabContent)
+						tabsID = append(tabsID, currentTabID)
+						tabContent = ""
+					}
+					parts := strings.Split(lines[currLine], " ")
+					tabName := parts[1]
+					tabActive := ""
+					currentTabID = ulid.Make().String()
+					if strings.HasSuffix(parts[0], ".active") {
+						tabActive = " active"
+						activeID = currentTabID
+					}
+					lines[currLine] = `<button class="tablinks` + tabActive + `" onclick="tabChangeGlobal('` + currentTabID + `')" id='tab-` + currentTabID + `'>` + tabName + `</button>`
+					continue
+				}
+				tabContent += "\n" + lines[currLine]
+				lines = append(lines[:currLine], lines[currLine+1:]...)
+				currLine -= 1
+			}
+			_ = tabs
+		}
+
+		// 	}
+		// 	//id := createCleanMD(md, prepare(md, buf.String()))
+		// 	//solution := prepare(md, buf.String())
+		// 	//lines[i] = `<div style="text-align:center">` + id.String() + `</div>`
+		// 	//lines = append(lines[:i+1], lines[endLine+1:]...)
+		// }
 	}
 	fileContent = strings.Join(lines, "\n")
 

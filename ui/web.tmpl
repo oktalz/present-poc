@@ -20,8 +20,9 @@
   </script>
 </head>
 <body>
-<div id="app">
+<div id="app">  
   <div class="" id="spinner"></div>
+  {{template "menu" .}}
   {{- range .Slides -}}
     {{template "slide" .}}
   {{- end -}}
@@ -52,4 +53,18 @@
   {{- if ne .PrintPage 0}}
     <div class="page-break"></div>
   {{- end}}
+{{ end }}
+
+{{ define "menu" }}
+  <div class="menu menu-hidden" id="menu">
+    <table>
+      {{- range .Menu -}}
+      <tr>        
+          <td onclick="setPage({{.Link}})" style="cursor: pointer;">{{.Page}}</td>
+          <td>&nbsp;&nbsp;&nbsp;</td>
+          <td onclick="setPage({{.Link}})" style="cursor: pointer;">{{.Title}}</td>
+      </tr>
+      {{- end}}
+    </table>
+  </div>
 {{ end }}

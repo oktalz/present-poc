@@ -52,9 +52,17 @@ type Slide struct {
 	Html                  string            `json:"html"`
 }
 
+type Menu struct {
+	Link  int
+	Page  int
+	Title string
+}
+
 type Presentation struct {
-	Slides []Slide
-	Title  string
+	Slides    []Slide
+	Menu      []Menu
+	Title     string
+	Replacers map[string]string
 }
 
 type TerminalOutputLine struct {

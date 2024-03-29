@@ -39,6 +39,7 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) (t
 	var slide strings.Builder
 	lastIndex := 1 + lastPageNumber
 	replacers := map[string]string{}
+	replacersAfter := map[string]string{}
 	currentFontSize := ro.DefaultFontSize
 	currentBackgroundColor := ro.DefaultBackgroundColor
 	defaultEveryDashIsACut := ro.EveryDashIsACut
@@ -77,6 +78,19 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) (t
 	for index := 0; index < len(lines); index++ {
 		line := lines[index]
 
+		if strings.HasPrefix(line, ".replace.after") {
+			// we have a .replace.after line
+			templateLine := strings.TrimPrefix(line, ".replace.after ")
+			data := strings.SplitN(templateLine, " ", 2)
+			// if replacers[data[0]] == "" { // replacing original is allowed
+			if len(data) > 1 {
+				replacersAfter[data[0]] = data[1]
+			} else {
+				replacersAfter[data[0]] = ""
+			}
+			// }
+			continue
+		}
 		if strings.HasPrefix(line, ".replace") {
 			// we have a .replace line
 			templateLine := strings.TrimPrefix(line, ".replace ")
@@ -229,8 +243,9 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) (t
 		}
 	}
 	return types.Presentation{
-		Slides: slides,
-		Title:  title,
+		Slides:    slides,
+		Title:     title,
+		Replacers: replacersAfter,
 	}, ro, nil
 }
 

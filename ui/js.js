@@ -3,6 +3,7 @@ console.log("page is"+page)
 setPage(page);
 var spinner = false
 var myID = ""
+var showMenu = false
 
 function setSpinner(value){
     spinner = value
@@ -27,7 +28,6 @@ function getSlideElements() {
 }
 
 function setPage(newPage) { 
-  console.log("newPage is "+newPage)
   if (newPage < -2){
     return
   }
@@ -40,6 +40,11 @@ function setPage(newPage) {
   }
   window.location.hash = page.toString();
   updateSlideVisibility(page);
+  menu = document.getElementById('menu')
+  if (menu != null) {
+    menu.classList.add('menu-hidden')
+    showMenu = false
+  }
 }
 
 function updateSlideVisibility(page) {
@@ -82,6 +87,14 @@ document.addEventListener('keydown', function(e) {
   if (keyCode == 'r' ) {
     castTerminal()
   }
+  if (keyCode == 'm' ) {
+    showMenu = !showMenu
+    if (showMenu) {
+      document.getElementById('menu').classList.remove('menu-hidden');
+    } else {
+      document.getElementById('menu').classList.add('menu-hidden');
+    }
+  }
   if (keyCode == 'c' ) {
     const terminalElement = document.getElementById('terminal-'+page);
     terminalElement.innerHTML = ''
@@ -106,6 +119,11 @@ window.addEventListener('wheel', function(event) {
     if (elementUnderMouse.classList.contains('hljs') && (elementUnderMouse instanceof HTMLElement && elementUnderMouse.isContentEditable)) {
         return;
     }
+  }
+  const hoveredElements = document.querySelectorAll(':hover');
+  const menuElements = Array.from(hoveredElements).filter((el) => el.classList.contains('menu'));
+  if (menuElements.length > 0) {
+    return;
   }
 
   const scrollDirection = event.deltaY > 0 ? 'downward' : 'upward';
@@ -136,3 +154,26 @@ document.addEventListener('click', function(event) {
     castTerminal()
   }
 });
+
+function tabChangeGlobal(tabID){
+  console.log(tabID)
+  let pageDIV = document.getElementById("slide-"+page);
+  let tablinks = Array.from(pageDIV.querySelectorAll(".tablinks"));
+  console.log(tablinks)
+  for (let i = 0; i < tablinks.length; i++) {
+    if (tablinks[i] && tablinks[i].getAttribute('id') === "tab-"+tabID) {
+      tablinks[i].classList.add("active");
+    } else {          
+      tablinks[i].classList.remove("active");
+    }
+  }
+  tablinks = Array.from(pageDIV.querySelectorAll(".tabcontent"));
+  console.log(tablinks)
+  for (let i = 0; i < tablinks.length; i++) {
+    if (tablinks[i] && tablinks[i].getAttribute('id') === tabID) {
+      tablinks[i].classList.remove("hidden-tab");          
+    } else {
+      tablinks[i].classList.add("hidden-tab");
+    }       
+  }
+}

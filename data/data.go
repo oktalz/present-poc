@@ -2,6 +2,7 @@ package data
 
 import (
 	"log"
+	"strings"
 	"sync"
 
 	"github.com/oklog/ulid/v2"
@@ -29,8 +30,11 @@ func Presentation() types.Presentation {
 	defer muPresentation.RUnlock()
 	slides := make([]types.Slide, len(presentation.Slides))
 	copy(slides, presentation.Slides)
+	menu := make([]types.Menu, len(presentation.Menu))
+	copy(menu, presentation.Menu)
 	result := types.Presentation{
 		Slides: slides,
+		Menu:   menu,
 		Title:  presentation.Title,
 	}
 	return result
@@ -59,6 +63,9 @@ func Init(server Server) {
 				res, err := markdown.Convert(presentation.Slides[i].Markdown)
 				if err != nil {
 					log.Println(err)
+				}
+				for old, new := range presentation.Replacers {
+					res = strings.ReplaceAll(res, old, new)
 				}
 				presentation.Slides[i].Html = res
 			}

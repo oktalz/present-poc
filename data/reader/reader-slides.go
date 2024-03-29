@@ -261,8 +261,49 @@ func ReadFiles() types.Presentation {
 	}
 	presentations[len(presentations)-1].PrintPage = printPage
 
-	return types.Presentation{
-		Slides: presentations,
-		Title:  presentationFiles.Title,
+	//ok now setup the menu
+	menu := make([]types.Menu, 0)
+	for i, p := range presentations {
+		title := ""
+		lines := strings.Split(p.Markdown, "\n")
+		for _, line := range lines {
+			index := strings.LastIndex(line, "#")
+			if index > -1 {
+				title = line[index+1:]
+				index := strings.LastIndex(title, `"`)
+				if index > -1 {
+					title = title[index+1:]
+				}
+				title = strings.Trim(title, ` #*`)
+				break
+			}
+		}
+		if len(menu) > 0 {
+			if menu[len(menu)-1].Title == title {
+				menu[len(menu)-1].Link = i
+				menu[len(menu)-1].Page = p.PageNumber
+			} else {
+				menu = append(menu, types.Menu{
+					Link:  i,
+					Page:  p.PrintPage,
+					Title: title,
+				})
+			}
+		} else {
+			menu = append(menu, types.Menu{
+				Link:  i,
+				Page:  p.PrintPage,
+				Title: title,
+			})
+		}
+
 	}
+
+	p := types.Presentation{
+		Slides:    presentations,
+		Menu:      menu,
+		Title:     presentationFiles.Title,
+		Replacers: presentationFile.Replacers,
+	}
+	return p
 }

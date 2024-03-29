@@ -15,6 +15,7 @@ import (
 
 type TemplateData struct {
 	Slides []types.Slide
+	Menu   []types.Menu
 	Title  string
 	Port   int
 }
@@ -37,6 +38,7 @@ func Homepage(port int) http.Handler {
 		err = tmpl.Execute(&out, TemplateData{
 			Slides: slides,
 			Title:  presentation.Title,
+			Menu:   presentation.Menu,
 			Port:   port,
 		})
 		if err != nil {
