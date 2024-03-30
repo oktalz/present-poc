@@ -70,6 +70,7 @@ text that is `highlighted`
 text that is `highlighted`
 ```
 .================================
+.// # Headers
 # Size 1
 ## Size 2
 ### Size 3
@@ -218,21 +219,21 @@ you can define mini templates #hello1# in sentence
 ```
 
 .================================
-# transitions - advanced
+# transitions - advanced -1
 
 .replace #empty#
-.replace #check# \o/
+.replace #check1# :white_check_mark:
 
 - option one #empty#
 - option two 
-.cut #empty#.#check#
+.cut #empty#.#check1#
 
 .cut
 `.cut ORIGINAL.END_RESULT` -> replaces one template with another on transition
 
 ```txt
 #dot#short -hashtag-empty-hashtag- 
-#dot#short -hashtag-check-hashtag- :fas-check:
+#dot#short -hashtag-check-hashtag- :white_check_mark:
 
 - option one -hashtag-empty-hashtag-
 - option two 
@@ -240,12 +241,12 @@ you can define mini templates #hello1# in sentence
 
 ```
 .================================
-# transitions - advanced #2
+# transitions - advanced - 2
 
-.replace #check# o
-.replace #spinner# x 
+.replace #check# :large_blue_circle:
+.replace #spinner# :white_circle:
 
-{green}(#spinner#) line one
+#spinner# line one
 .cut #spinner#.#check#
 
 {green}(#spinner#) line two
@@ -256,8 +257,8 @@ you can define mini templates #hello1# in sentence
 `.cut ORIGINAL.END_RESULT ORIG2.END2` -> more than one replaces can be used
 
 ```txt
-#dot#short -hashtag-check-hashtag- :fas-circle-check:
-#dot#short -hashtag-spinner-hashtag- :fa-spinner#fa-spin:
+#dot#short -hashtag-check-hashtag- :large_blue_circle:
+#dot#short -hashtag-spinner-hashtag- :white_circle:
 
 {green}(-hashtag-spinner-hashtag-) line one
 #dot#cut -hashtag-spinner-hashtag-.-hashtag-check-hashtag-
@@ -477,6 +478,8 @@ func main() {
   fmt.Println(res)
 }
 ```
+
+📜 use `r` key to run the code and `c` to close the terminal
 .================================
 .TITLE Code - Omiting the code
 
@@ -547,8 +550,9 @@ func main() {
 #dot#cast hello-world go run .
 ```
 - no need to have code displayed
-- **NOTE**: example does not work if *Go* is not installed
-- **NOTE**: any kind of terminal command can be executed
+
+:warning: example does not work if *Go* is not installed
+:warning: any kind of terminal command can be executed
 .===
 .TITLE Slides
 

@@ -1,0 +1,99 @@
+.global.font-size 4vh
+
+.replace.after #dot# .
+.replace.after -hashtag- #
+.replace.after #backtick# `
+.replace.after #equal# =
+
+.template TITLE
+.style "font-size: 3.5vh" ## {{ . }}
+____________
+.template.end
+
+.template CAST_FOLDER
+.cast {{ . }} go run .
+.template.end
+
+.template CAST
+.cast.before go mod init x
+.cast.block.edit main.go go run .
+.template.end
+
+.template CAST_FILE
+.cast.block.edit {{ . }} go run .
+.template.end
+
+.================================
+.TITLE Links
+
+.slide.link #link0#
+.slide.link.next #linkNothing#
+
+pick :cat: or :dog: (click with mouse)
+.center
+.style font-size: 35vh;
+.link.#link1#{:cat:} .link.#link2#{:dog:}
+.style.end
+.center.end
+
+
+- see source for code
+
+.================================
+.TITLE Links :cat:
+
+.slide.link #link1#
+.slide.link.next #link3#
+
+.center
+.style font-size: 55vh;
+:cat:
+.style.end
+.center.end
+.================================
+.TITLE Links :dog:
+
+.slide.link #link2#
+.slide.link.previous #link0#
+.slide.link.next #link3#
+
+.center
+.style font-size: 55vh;
+:dog:
+.style.end
+.center.end
+.================================
+.TITLE Links :confused:
+
+no pick ?
+
+.center
+.style font-size: 55vh;
+:confused:
+.style.end
+.center.end
+
+.slide.link #linkNothing#
+.slide.link.next #linkEndloop#
+.slide.link.previous #link0#
+.================================
+.TITLE Links :cat: & :dog:
+
+happy path
+
+.center
+.style font-size: 55vh;
+:+1:
+.style.end
+.center.end
+
+.slide.link #link3#
+.slide.link.previous #link0#
+.slide.link.next #linkEndloop#
+.================================
+.TITLE Links 
+
+next slide from all paths
+
+.slide.link #linkEndloop#
+.slide.link.previous #link0#

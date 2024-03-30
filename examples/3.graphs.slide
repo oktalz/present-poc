@@ -1,0 +1,110 @@
+.global.font-size 4vh
+
+.replace.after #dot# .
+.replace.after -hashtag- #
+.replace.after #backtick# `
+.replace.after #equal# =
+
+.template TITLE
+.style "font-size: 3.5vh" ## {{ . }}
+____________
+.template.end
+
+.template CAST_FOLDER
+.cast {{ . }} go run .
+.template.end
+
+.template CAST
+.cast.before go mod init x
+.cast.block.edit main.go go run .
+.template.end
+
+.template CAST_FILE
+.cast.block.edit {{ . }} go run .
+.template.end
+
+.================================
+.TITLE Graphs - mermaid
+
+```mermaid
+graph LR;
+   subgraph K8s
+        API
+    end
+
+   subgraph ControllerSG[Ingress Controller]
+        K8sInformers
+
+        subgraph LoopSG[Event Loop &nbsp&nbsp&nbsp&nbsp]
+                
+                Event{Event}
+                Event --> K8sEV[k8s event]
+                K8sEV --> Storage[Storage + Runtime]
+                Storage --> Loop
+                Event --> Command            
+                Command --> Config[Update configuration]
+                Config --> Loop
+                Loop --> Event
+        end
+   end
+
+   API --> K8sInformers
+   K8sInformers --> Event
+```
+
+```txt
+#backtick##backtick##backtick#mermaid
+mermaid code
+#backtick##backtick##backtick#
+```
+
+.================================
+.TITLE Graphs - mermaid
+
+```mermaid
+graph LR;
+   subgraph K8s
+        API
+    end
+
+   subgraph ControllerSG[Ingress Controller]
+        K8sInformers
+
+        subgraph LoopSG[Event Loop &nbsp&nbsp&nbsp&nbsp]
+                
+                Event{Event}
+                Event --> K8sEV[k8s event]
+                K8sEV --> Storage[Storage + Runtime]
+                Storage --> Loop
+                Event --> Command            
+                Command --> Config[Update configuration]
+                Config --> Loop
+                Loop --> Event
+        end
+   end
+
+   API --> K8sInformers
+   K8sInformers --> Event
+```
+
+```txt
+#backtick##backtick##backtick#mermaid
+mermaid code
+#backtick##backtick##backtick#
+```
+
+.================================
+.//# Emoji
+.TITLE Emoji
+
+:joy: :star: :exclamation: :fire: :+1: 
+:speech_balloon: :thought_balloon: :warning: :construction:
+
+😂 ⭐ ❗ 🔥 👍 💬 💭 ⚠️ 🚧
+
+```txt
+:joy: :star: :exclamation: :fire: :+1: 
+:speech_balloon: :thought_balloon: :warning: :construction:
+
+😂 ⭐ ❗ 🔥 👍 💬 💭 ⚠️ 🚧
+```

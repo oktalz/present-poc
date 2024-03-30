@@ -2,10 +2,12 @@ package reader
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
 
+	"gitlab.com/fer-go/present/markdown"
 	"gitlab.com/fer-go/present/types"
 )
 
@@ -240,6 +242,84 @@ func ReadFiles() types.Presentation {
 			}
 		}
 
+		hasLink := strings.Contains(slide.Markdown, ".slide.link.next")
+		if hasLink {
+			lines := strings.Split(slide.Markdown, "\n")
+			for index, line := range lines {
+				if strings.HasPrefix(line, ".slide.link.next") {
+					link := strings.TrimPrefix(line, ".slide.link.next ")
+					slide.LinkNext = link
+					lines = append(lines[:index], lines[index+1:]...)
+					slide.Markdown = strings.Join(lines, "\n")
+					break
+				}
+			}
+		}
+
+		hasLink = strings.Contains(slide.Markdown, ".slide.link.previous")
+		if hasLink {
+			lines := strings.Split(slide.Markdown, "\n")
+			for index, line := range lines {
+				if strings.HasPrefix(line, ".slide.link.previous") {
+					link := strings.TrimPrefix(line, ".slide.link.previous ")
+					slide.LinkPrev = link
+					lines = append(lines[:index], lines[index+1:]...)
+					slide.Markdown = strings.Join(lines, "\n")
+					break
+				}
+			}
+		}
+
+		hasLink = strings.Contains(slide.Markdown, ".slide.link")
+		if hasLink {
+			lines := strings.Split(slide.Markdown, "\n")
+			for index, line := range lines {
+				if strings.HasPrefix(line, ".slide.link") {
+					link := strings.TrimPrefix(line, ".slide.link ")
+					slide.Link = link
+					lines = append(lines[:index], lines[index+1:]...)
+					slide.Markdown = strings.Join(lines, "\n")
+					break
+				}
+			}
+		}
+		hasLink = strings.Contains(slide.Markdown, ".link.")
+		if hasLink {
+			lines := strings.Split(slide.Markdown, "\n")
+			for index := 0; index < len(lines); index++ {
+				line := lines[index]
+				if strings.Contains(line, ".link.") {
+					strIndex := strings.Index(line, ".link.")
+					line := line[strIndex:]
+					link := strings.TrimPrefix(line, ".link.")
+					strIndex = strings.Index(link, "{")
+					if strIndex < 1 {
+						continue
+					}
+					page := link[:strIndex]
+					data := link[strIndex+1:]
+					strIndex = strings.Index(data, "}")
+					if strIndex < 1 {
+						continue
+					}
+					data = data[:strIndex]
+					toReplace := `.link.` + page + `{` + data + `}`
+					_ = toReplace
+					_ = page
+					log.Println(data)
+
+					id := markdown.CreateCleanMD(data)
+					html := `<span onclick="setPage(` + page + `)" style="cursor: pointer;">` + id.String() + `</span>`
+					lines[index] = strings.Replace(lines[index], toReplace, html, 1)
+					_ = link
+					_ = index
+					//lines = append(lines[:index], lines[index+1:]...)
+					slide.Markdown = strings.Join(lines, "\n")
+					index--
+				}
+			}
+		}
+
 		presentations = append(presentations, slide)
 	}
 
@@ -296,7 +376,25 @@ func ReadFiles() types.Presentation {
 				Title: title,
 			})
 		}
+	}
 
+	links := make(map[string]int, 0)
+	for index, p := range presentations {
+		if p.Link != "" {
+			links[p.Link] = index
+		}
+	}
+	for link, page := range links {
+		for index := 0; index < len(presentations); index++ {
+			p := presentations[index]
+			presentations[index].Markdown = strings.ReplaceAll(p.Markdown, link, strconv.Itoa(page))
+			if p.LinkNext == link {
+				presentations[index].LinkNext = strconv.Itoa(page)
+			}
+			if p.LinkPrev == link {
+				presentations[index].LinkPrev = strconv.Itoa(page)
+			}
+		}
 	}
 
 	p := types.Presentation{

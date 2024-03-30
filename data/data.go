@@ -69,6 +69,8 @@ func Init(server Server) {
 				}
 				presentation.Slides[i].Html = res
 			}
+
+			markdown.ResetBlocks()
 			server.Broadcast(Message{
 				Reload: true,
 			})

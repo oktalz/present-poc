@@ -1,5 +1,5 @@
 var page = /^#?\d+$/.test(window.location.hash) ? parseInt(window.location.hash.slice(1), 10) : 0;
-console.log("page is"+page)
+console.log("page is "+page)
 setPage(page);
 var spinner = false
 var myID = ""
@@ -69,16 +69,20 @@ document.addEventListener('keydown', function(e) {
     }
   }
   if (keyCode == 'ArrowRight' || keyCode == 'ArrowDown' || keyCode == 'PageDown' || keyCode == ' ' ) {
+    oldPage = page;
     page = page + 1;
-    setPage(page);
+    target = getPageUp(oldPage,page);
+    setPage(target);
     updateData({
       Author: myID,
       Slide: page
     })
   }
   if (keyCode == 'ArrowLeft' || keyCode == 'ArrowUp' || keyCode == 'PageUp') {
+    oldPage = page;    
     page = page - 1;
-    setPage(page);  
+    target = getPageDown(oldPage,page);
+    setPage(target);  
     updateData({
       Author: myID,
       Slide: page
@@ -129,16 +133,20 @@ window.addEventListener('wheel', function(event) {
   const scrollDirection = event.deltaY > 0 ? 'downward' : 'upward';
   //console.log(`Mouse scroll ${scrollDirection}: ${Math.abs(event.deltaY)} pixels`);
   if (scrollDirection == 'downward') {
+      oldPage = page;
       page = page + 1;
-      setPage(page);
+      target = getPageUp(oldPage,page);
+      setPage(target);
       updateData({
         Author: myID,
         Slide: page
       })
   }
   if (scrollDirection == 'upward') {
+      oldPage = page;
       page = page - 1;
-      setPage(page);
+      target = getPageDown(oldPage,page);
+      setPage(target);
       updateData({
         Author: myID,
         Slide: page

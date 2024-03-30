@@ -35,3 +35,10 @@ tasks:
     desc: 'run the project'
     cmds:
       - go run . 
+
+  sync:
+    desc: 'download all external libraries'
+    cmds:
+      - mkdir -p ui/static
+      - wget -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
+      - wget -O ui/static/highlight.min.js https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js

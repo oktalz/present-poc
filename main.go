@@ -1,7 +1,9 @@
 package main
 
 import (
+	"embed"
 	_ "embed"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -73,14 +75,26 @@ func main() {
 
 	http.Handle("/{$}", handlers.Homepage(portInt))
 
+	sub, err := fs.Sub(dist, "ui/static")
+	if err != nil {
+		panic(err)
+	}
 	wd, err = os.Getwd()
 	if err != nil {
 		panic(err)
 	}
-	http.Handle("/", http.FileServer(http.Dir(wd)))
+	handler := &fallbackFileServer{
+		primary:   http.FileServer(http.FS(sub)),
+		secondary: http.FileServer(http.Dir(wd)),
+	}
+	http.Handle("/", handler)
+	//http.Handle("/", http.FileServer(http.Dir(wd)))
 
 	err = http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		panic(err)
 	}
 }
+
+//go:embed ui/static
+var dist embed.FS

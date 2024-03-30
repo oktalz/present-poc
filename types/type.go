@@ -29,27 +29,30 @@ type TerminalCommand struct {
 }
 
 type Slide struct {
-	Markdown              string            `json:"markdown"`
-	Notes                 string            `json:"notes"`
-	Terminal              TerminalCommand   `json:"-"`
-	Asciinema             *Asciinema        `json:"asciinema,omitempty"`
-	Cast                  *Cast             `json:"-"`
-	TerminalCommandBefore []TerminalCommand `json:"-"`
-	TerminalCommand       []TerminalCommand `json:"-"`
-	TerminalCommandAfter  []TerminalCommand `json:"-"`
-	UseTmpFolder          bool              `json:"-"`
-	CanEdit               bool              `json:"can_edit"`
-	HasCast               bool              `json:"cast"`
-	HasCastStreamed       bool              `json:"-"`
-	HasRun                bool              `json:"run"`
-	HasTerminal           bool              `json:"terminal"`
-	BackgroundImage       string            `json:"background"`
-	BackgroundColor       string            `json:"background_color"`
-	PageNumber            int               `json:"page"`
-	PageIndex             int               `json:"-"`
-	PrintPage             int               `json:"print_page"`
-	FontSize              string            `json:"font_size"`
-	Html                  string            `json:"html"`
+	Markdown              string
+	Notes                 string
+	Terminal              TerminalCommand
+	Asciinema             *Asciinema
+	Cast                  *Cast
+	TerminalCommandBefore []TerminalCommand
+	TerminalCommand       []TerminalCommand
+	TerminalCommandAfter  []TerminalCommand
+	UseTmpFolder          bool
+	CanEdit               bool
+	HasCast               bool
+	HasCastStreamed       bool
+	HasRun                bool
+	HasTerminal           bool
+	BackgroundImage       string
+	BackgroundColor       string
+	PageNumber            int
+	PageIndex             int
+	PrintPage             int
+	FontSize              string
+	Html                  string
+	Link                  string
+	LinkNext              string
+	LinkPrev              string
 }
 
 type Menu struct {

@@ -9,7 +9,8 @@
     {{template "css" .}}
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="highlight.min.js"></script>
+  <script src="mermaid.min.js"></script>
   <script>
     hljs.highlightAll(); 
     maxPage = {{len .Slides }} - 1;
@@ -17,6 +18,25 @@
   </script>
   <script>
     {{template "js" .}}  
+  </script>
+  <script>mermaid.initialize({startOnLoad: true});</script>
+  <script>
+  window.getPageDown = function(start, target) {
+  {{- range .Slides -}}
+    {{if ne .LinkPrev ""}}
+    if (start == {{.PageIndex}}) { return {{ .LinkPrev }} };
+    {{end}}
+  {{- end -}}
+    return target;
+  };
+  window.getPageUp = function(start, target) {
+  {{- range .Slides -}}
+    {{if ne .LinkNext ""}}
+    if (start == {{.PageIndex}}) { return {{ .LinkNext }} };
+    {{end}}
+  {{- end -}}
+    return target;
+  };
   </script>
 </head>
 <body>
