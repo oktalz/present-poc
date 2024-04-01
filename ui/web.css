@@ -20,6 +20,10 @@ a, a:visited {
   height: 100%;
 }
 
+.box-overflow{
+  overflow-y: auto;
+}
+
 
 .page-num{
   margin-right: 0px;

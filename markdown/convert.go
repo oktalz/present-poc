@@ -289,6 +289,20 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			lines[i] = `<div style="text-align:center">` + id.String() + `</div>`
 			lines = append(lines[:i+1], lines[endLine+1:]...)
 		}
+		if strings.HasPrefix(lines[i], ".slide.enable.overflow") {
+			centerLines := lines[i+1:]
+			var buf bytes.Buffer
+			for index, line := range centerLines {
+				if index > 0 {
+					buf.WriteString("\n")
+				}
+				buf.WriteString(line)
+			}
+			id := CreateCleanMD(prepare(md, buf.String()))
+			// solution := prepare(md, buf.String())
+			lines[i] = `<div class="box-overflow">` + id.String() + `</div>`
+			lines = lines[:i+1]
+		}
 		if strings.HasPrefix(lines[i], ".tab") { //nolint:nestif
 			var currLine int
 			lines[i] = `<div class="tab">`

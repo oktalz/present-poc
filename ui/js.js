@@ -118,7 +118,11 @@ window.addEventListener('wheel', function(event) {
     }
   }
   const hoveredElements = document.querySelectorAll(':hover');
-  const menuElements = Array.from(hoveredElements).filter((el) => el.classList.contains('menu'));
+  menuElements = Array.from(hoveredElements).filter((el) => el.classList.contains('menu'));
+  if (menuElements.length > 0) {
+    return;
+  }
+  menuElements = Array.from(hoveredElements).filter((el) => el.classList.contains('box-overflow'));
   if (menuElements.length > 0) {
     return;
   }

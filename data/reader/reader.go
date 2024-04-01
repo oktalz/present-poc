@@ -8,31 +8,36 @@ import (
 	"gitlab.com/fer-go/present/types"
 )
 
-func listSlideFiles(directory string) ([]string, error) {
+func listSlideFiles(directory string) ([]string, bool, error) {
 	var slideFiles []string
+	hasHeaderFile := false
 
 	files, err := os.ReadDir(directory)
 	if err != nil {
-		return nil, err
+		return nil, hasHeaderFile, err
 	}
 
 	for _, file := range files {
 		if !file.IsDir() && strings.HasSuffix(file.Name(), ".slide") {
+			if file.Name() == "_.slide" {
+				hasHeaderFile = true
+				continue
+			}
 			slideFiles = append(slideFiles, filepath.Join(directory, file.Name()))
 		}
 	}
 
-	return slideFiles, nil
+	return slideFiles, hasHeaderFile, nil
 }
 
-func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) (types.Presentation, types.ReadOptions, error) { //nolint:funlen,gocognit,maintidx
+func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, headerFile string) (types.Presentation, types.ReadOptions, error) { //nolint:funlen,gocognit,maintidx
 	title := ""
 	content, err := os.ReadFile(filename)
 	if err != nil {
 		return types.Presentation{}, ro, err
 	}
 
-	fileContent := string(content)
+	fileContent := headerFile + string(content)
 	lines := strings.Split(fileContent, "\n")
 	slides := []types.Slide{}
 

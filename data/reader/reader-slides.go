@@ -2,6 +2,7 @@ package reader
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -15,9 +16,19 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 		EveryDashIsACut: false,
 	}
 
-	slides, err := listSlideFiles(".")
+	slides, hasHeaderFile, err := listSlideFiles(".")
 	if err != nil {
 		panic(err)
+	}
+	headerFile := ""
+	if hasHeaderFile {
+		headerFileBytes, err := os.ReadFile("_.slide")
+		if err != nil {
+			panic(err)
+		}
+		headerFile = string(headerFileBytes)
+		headerFile = strings.TrimSpace(headerFile)
+		headerFile = strings.ReplaceAll(headerFile, "\r\n", "\n")
 	}
 
 	var presentationFiles types.Presentation
@@ -28,7 +39,7 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 		if len(presentationFiles.Slides) > 1 {
 			lastPageNumber = presentationFiles.Slides[len(presentationFiles.Slides)-1].PageNumber
 		}
-		presentationFile, ro, err = readSlideFile(slide, ro, lastPageNumber)
+		presentationFile, ro, err = readSlideFile(slide, ro, lastPageNumber, headerFile)
 		if err != nil {
 			panic(err)
 		}
