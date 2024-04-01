@@ -385,7 +385,7 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 		}
 	}
 	for link, page := range links {
-		for index := range len(presentations) - 1 {
+		for index := range len(presentations) {
 			p := presentations[index]
 			presentations[index].Markdown = strings.ReplaceAll(p.Markdown, link, strconv.Itoa(page))
 			if p.LinkNext == link {
