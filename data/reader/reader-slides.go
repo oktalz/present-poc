@@ -2,7 +2,6 @@ package reader
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 
@@ -306,7 +305,7 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 					toReplace := `.link.` + page + `{` + data + `}`
 					_ = toReplace
 					_ = page
-					log.Println(data)
+					// log.Println(data)
 
 					id := markdown.CreateCleanMD(data)
 					html := `<span onclick="setPage(` + page + `)" style="cursor: pointer;">` + id.String() + `</span>`
@@ -339,7 +338,9 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 			}
 		}
 	}
-	presentations[len(presentations)-1].PrintPage = printPage
+	if len(presentations) > 0 {
+		presentations[len(presentations)-1].PrintPage = printPage
+	}
 
 	// ok now setup the menu
 	menu := make([]types.Menu, 0)
