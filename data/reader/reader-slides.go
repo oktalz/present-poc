@@ -43,6 +43,12 @@ func ReadFiles() types.Presentation {
 		if presentationFile.Title != "" {
 			presentationFiles.Title = presentationFile.Title
 		}
+		if presentationFiles.Replacers == nil {
+			presentationFiles.Replacers = make(map[string]string)
+		}
+		for k, v := range presentationFile.Replacers {
+			presentationFiles.Replacers[k] = v
+		}
 	}
 
 	presentations := make([]types.Slide, 0)
@@ -176,8 +182,8 @@ func ReadFiles() types.Presentation {
 		hasCastBlockEdit := strings.Contains(slide.Markdown, ".cast.block")
 		if hasCastBlockEdit {
 			lines := strings.Split(slide.Markdown, "\n")
-			//fmt.Println("lines", lines)
-			//for index, line := range lines {
+			// fmt.Println("lines", lines)
+			// for index, line := range lines {
 			for index := 0; index < len(lines); index++ {
 				line := lines[index]
 				if strings.HasPrefix(line, ".cast.block") {
@@ -313,7 +319,7 @@ func ReadFiles() types.Presentation {
 					lines[index] = strings.Replace(lines[index], toReplace, html, 1)
 					_ = link
 					_ = index
-					//lines = append(lines[:index], lines[index+1:]...)
+					// lines = append(lines[:index], lines[index+1:]...)
 					slide.Markdown = strings.Join(lines, "\n")
 					index--
 				}
@@ -341,7 +347,7 @@ func ReadFiles() types.Presentation {
 	}
 	presentations[len(presentations)-1].PrintPage = printPage
 
-	//ok now setup the menu
+	// ok now setup the menu
 	menu := make([]types.Menu, 0)
 	for i, p := range presentations {
 		title := ""
@@ -401,7 +407,7 @@ func ReadFiles() types.Presentation {
 		Slides:    presentations,
 		Menu:      menu,
 		Title:     presentationFiles.Title,
-		Replacers: presentationFile.Replacers,
+		Replacers: presentationFiles.Replacers,
 	}
 	return p
 }

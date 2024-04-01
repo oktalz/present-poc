@@ -116,7 +116,7 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) (t
 					break
 				}
 				notesSB.WriteString(line)
-				notesSB.WriteString("\n")
+				notesSB.WriteString("<br>")
 				index++
 			}
 

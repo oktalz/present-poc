@@ -48,12 +48,11 @@ func Homepage(port int) http.Handler {
 		str := out.String()
 		str = strings.ReplaceAll(str, " ", "")
 
-		//fmt.Print(str)
+		// fmt.Print(str)
 		_, err = w.Write([]byte(str))
 		if err != nil {
 			log.Println(err)
 			return
 		}
-
 	})
 }

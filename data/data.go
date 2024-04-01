@@ -47,7 +47,6 @@ func SetPresentation(p types.Presentation) {
 }
 
 func Init(server Server) {
-
 	filesModified := fsnotify.FileWatcher()
 
 	// initial read

@@ -75,17 +75,3 @@ func parseCommandBlock(lines []string, index int, codeBlockShowStart, codeBlockS
 	tc.TmpDir = true
 	return tc, lines
 }
-
-func replaceWithConditionImage(str, oldStr, newStr, httpStr string) string {
-	var sb strings.Builder
-	parts := strings.Split(str, oldStr)
-	for i, part := range parts {
-		if i > 0 && !strings.HasPrefix(part, "http") {
-			sb.WriteString(newStr)
-		} else if i > 0 {
-			sb.WriteString(httpStr)
-		}
-		sb.WriteString(part)
-	}
-	return sb.String()
-}

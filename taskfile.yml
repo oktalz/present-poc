@@ -4,6 +4,10 @@ version: '3'
 includes:
   ci: taskfile-ci.yml 
 
+vars:
+  BOXICONS_VERSION: 2.1.4
+  HIGHLIGHT_JS_VERSION: 11.9.0
+
 tasks:
 
   tools:
@@ -36,9 +40,16 @@ tasks:
     cmds:
       - go run . 
 
-  sync:
+  external:
     desc: 'download all external libraries'
     cmds:
       - mkdir -p ui/static
-      - wget -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
-      - wget -O ui/static/highlight.min.js https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js
+      - wget -q -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
+      - wget -q -O ui/static/highlight.min.js https://cdnjs.cloudflare.com/ajax/libs/highlight.js/{{.HIGHLIGHT_JS_VERSION}}/highlight.min.js
+      - wget -q -O ui/static/highlight.min.css https://cdnjs.cloudflare.com/ajax/libs/highlight.js/{{.HIGHLIGHT_JS_VERSION}}/styles/default.min.css
+      - wget -q -O ui/static/boxicons.js https://unpkg.com/boxicons@{{.BOXICONS_VERSION}}/dist/boxicons.js
+      - wget -q -O ui/static/boxicons.min.css https://unpkg.com/boxicons@{{.BOXICONS_VERSION}}/css/boxicons.min.css
+      - mkdir -p ui/static/fonts
+      - wget -q -O ui/static/fonts/boxicons.woff2 https://cdn.jsdelivr.net/npm/boxicons@latest/fonts/boxicons.woff2
+      - wget -q -O ui/static/fonts/boxicons.woff https://cdn.jsdelivr.net/npm/boxicons@latest/fonts/boxicons.woff
+      - wget -q -O ui/static/fonts/boxicons.ttf https://cdn.jsdelivr.net/npm/boxicons@latest/fonts/boxicons.ttf

@@ -101,7 +101,7 @@ func castWS(w http.ResponseWriter, r *http.Request) {
 	if len(tcBefore) > 0 {
 		for i := range tcBefore {
 			tcBefore[i].Dir = workingDir
-			_ = exec.CmdStream(tcBefore[i])
+			exec.CmdStream(tcBefore[i])
 		}
 	}
 	for _, cmd := range tc {
@@ -135,10 +135,9 @@ func castWS(w http.ResponseWriter, r *http.Request) {
 	if tcAfter != nil {
 		for i := range tcBefore {
 			tcAfter[i].Dir = workingDir
-			_ = exec.CmdStream(tcAfter[i])
+			exec.CmdStream(tcAfter[i])
 		}
 	}
-
 }
 
 func CastWS() http.Handler {

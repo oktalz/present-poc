@@ -24,7 +24,17 @@ ____________
 .title Present
 .================================
 .center
+.notes
+Hello,
+this is a new tool called present written in Go
+pages are generated with Go templates and displayed in browser.
+For printing, general idea is to use printing in browser, but unfortunatelly, 
+this will only work in chromium like browsers. 
+Before we start, I need to mention that if you open it in multiple tabs simultaniously 
+it will syncronize your presentation.
 
+Lets show some of the features
+.notes.end
 &nbsp;
 
 .style "font-size: 3.8em;text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;" **Present tool with Go**
@@ -40,6 +50,17 @@ ____________
 .================================
 &nbsp;
 
+.notes
+
+
+
+
+
+As is says on the screen, most of examples will show a code block
+that will demonstrate how to write the code, 
+but best way is of course to see the source directly.
+.notes.end
+
 Most examples will have a demo with effects and a code (in code block)
 
 ```txt
@@ -47,6 +68,13 @@ Most examples will have a demo with effects and a code (in code block)
 ```
 .================================
 &nbsp;
+
+.notes
+basically everything supported in common mark 
+(sort of standard for markdown format is supported here)
+plus there are some aditional features needed for presentations
+and some helper functions that will help with writting presentation
+.notes.end
 
 text that is **Bold**
 
@@ -105,6 +133,18 @@ text that is `highlighted`
 .================================
 &nbsp;
 
+.notes
+what you will notice is that most of 'special' commands
+start with a dot in front of them 
+(so its clear they are not part of the standard markdown)
+
+so first one present, is here to help 
+with centering the information.
+
+beside starting of block, to end it 
+you need to write .center.end
+.notes.end
+
 .center
 text that is **Bold** and centered
 
@@ -120,6 +160,14 @@ a second line
 ```
 .================================
 # .style
+
+.notes
+second one is style, style can be used in tow ways:
+first one you see here, where after the keyword 
+quotation marks are surrounding the HTML style and 
+everything after the quotation marks is 
+data on which style will be applied
+.notes.end
 
 ```txt
 #dot#style "html style" text to format
@@ -143,6 +191,13 @@ a second line
 .================================
 &nbsp;
 
+.notes
+one of the keywords that is not using dot in front is coloring
+is not acctually a keyword but a combination of braces and parenthesis 
+where in braces you specify color in HTML format
+and in parenthesis you specify data that needs to be in that color
+.notes.end
+
 you can also set colors {red}(to text), {green}(green)
 ```md
 you can also set colors #brace#red}(to text), #brace#green}(green)
@@ -156,7 +211,12 @@ in fact any hex color like #brace##4ebaea}(#4ebaea) works
 ```
 
 .================================
+.notes
+compared to standard markdown, new line is a new line,
+similar what is github doing
+.notes.end
 For space between paragraph use empty line.
+line two is its own line
 
 second line
 
@@ -168,7 +228,7 @@ like this
 
 ```txt
 For space between paragraph use empty line.
-This will actually be put in the same line
+line two is its own line
 
 second line
 
@@ -180,12 +240,19 @@ like this
 ```
 .================================
 # transitions
+.notes
+this is an example of transitions
+.notes.end
 
 - line one
 .cut
 - line two
 .cut
 - line three
+.notes
+where with `cut` you can add content to the screen,
+but page does not change
+.notes.end
 
 use `.cut` (needs to be on start of the line)
 
@@ -199,6 +266,17 @@ use `.cut` (needs to be on start of the line)
 
 .================================
 # #dot#replace
+
+.notes
+replace is used when same text needs 
+to be used in multiple places, so instead of 
+copying text you can write it once.
+
+also as I will show soon, this can be used with transitions
+to have some kind of dynamic changes on slide
+
+key can be anything, but readability  i use hashtag as shown in this example
+.notes.end
 
 ### one line template
 
@@ -223,6 +301,10 @@ you can define mini templates #hello1# in sentence
 
 .replace #empty#
 .replace #check1# :white_check_mark:
+.notes
+so lets see how we can use replace with transaitions
+we have two options, and we want to show that one is the correct one
+.notes.end
 
 - option one #empty#
 - option two 
@@ -230,7 +312,13 @@ you can define mini templates #hello1# in sentence
 
 .cut
 `.cut ORIGINAL.END_RESULT` -> replaces one template with another on transition
-
+.notes
+we can use cut and after that keyword mention what replace command is 
+replaced with new content.
+in this case we define two replace blocks, 
+one that is empty and second one
+that contains checkmark
+.notes.end
 ```txt
 #dot#short -hashtag-empty-hashtag- 
 #dot#short -hashtag-check-hashtag- :white_check_mark:
@@ -242,6 +330,9 @@ you can define mini templates #hello1# in sentence
 ```
 .================================
 # transitions - advanced - 2
+.notes
+let see another more complex example
+.notes.end
 
 .replace #check# :large_blue_circle:
 .replace #spinner# :white_circle:
@@ -255,7 +346,13 @@ you can define mini templates #hello1# in sentence
 `.cut ORIGINAL.END_RESULT` -> replaces one template with another on transition
 
 `.cut ORIGINAL.END_RESULT ORIG2.END2` -> more than one replaces can be used
+.notes
+each cut or transition can have multiple replaces, 
+and effect of the first change must be 
+accounted for on second one
 
+jsut as a note, multiple replaces can be used on one transition
+.notes.end
 ```txt
 #dot#short -hashtag-check-hashtag- :large_blue_circle:
 #dot#short -hashtag-spinner-hashtag- :white_circle:
@@ -267,6 +364,30 @@ you can define mini templates #hello1# in sentence
 #dot#cut -hashtag-spinner-hashtag-.-hashtag-check-hashtag-
 ```
 .================================
+## Tables
+.notes
+even though tables are not offitially part of the 
+markdown specification, they can be used and format 
+is the same as on most popular implementations
+.notes.end
+
+| First Header  | Second Header |
+|:-------------:| -------------:|
+| Content Cell 1 | Content Cell 2 |
+| Content Cell 3 | Content Cell 4 |
+
+```text
+| First Header  | Second Header |
+|:-------------:| -------------:|
+| Content Cell 1 | Content Cell 2 |
+| Content Cell 3 | Content Cell 4 |
+```
+.================================
+## Tables
+.notes
+however, aditional format was added
+that is more HTML like, but this one does not allow formating
+.notes.end
 
 .table
 .tr
@@ -282,22 +403,28 @@ you can define mini templates #hello1# in sentence
 .table.end
 
 ```txt
-.table
-.tr
-.td table row 1 column 1
-.td
+#dot#table
+#dot#tr
+#dot#td table row 1 column 1
+#dot#td
  table row 1 column 2
-.tr
-.td 2-1
-.td 2-2
-.tr
-.td 3-1
-.td 3-2
-.table.end
+#dot#tr
+#dot#td 2-1
+#dot#td 2-2
+#dot#tr
+#dot#td 3-1
+#dot#td 3-2
+#dot#table.end
 ```
 
 .================================
 # Images
+.notes
+images can be defined with keyword image, there is a specific format
+where after th eimage, width and height are specified, 
+its important to note that size can be define in any html format
+like pixels, but due to scaling, units relative to screen are best
+.notes.end
 
 .image(https://go.dev/images/gophers/biplane.svg 25vw:25vh)
 
@@ -311,6 +438,10 @@ you can define mini templates #hello1# in sentence
 .================================
 # Images
 
+.notes
+of course, combination of different keywords can be used
+.notes.end
+
 .center
 .image(assets/images/1.png 25vw:25vh)
 .center.end
@@ -323,6 +454,11 @@ you can define mini templates #hello1# in sentence
 
 .================================
 # Images - full screen
+.notes
+if we want to keep image size relative to width or height 
+that is also possible, we can just omit the width or height
+.notes.end
+
 ```txt
 #dot#center
 #dot#image(assets/images/2.png :100vh)
@@ -354,6 +490,12 @@ you can define mini templates #hello1# in sentence
 .================================
 # Images - absolute position & transition
 
+.notes
+in some occations, more complex style can be used
+to exactly specify whre image is shown.
+as seen here, even apsolute position is used
+.notes.end
+
 ```txt
 #dot#style "position: absolute; top: 15vh; right: 15vh; transform: rotate(35deg);" #dot#image(assets/images/3.png :50vh)
 #dot#style "position: absolute; top: 15vh; left: 37vw; transform: rotate(180deg);" #dot#image(assets/images/4.png 26vw:50vh)
@@ -368,6 +510,22 @@ you can define mini templates #hello1# in sentence
 .================================
 .TITLE Templates - part one
 
+.notes
+we have shown replace directive, that is used to replace part of text
+but only as a single line.
+in ordered to have more complex system, Templates keyword is added.
+
+this allows you to create more complex solutios
+one of the obvious applications is using them with headers of the page
+in a way, this allows you to add custom keywords
+
+as seen here, you first define template specify its name and content
+to use it, you have to use the newly defined template keyword and 
+content that will replaced.
+
+standard golang templating can be used here
+.notes.end
+
 ```txt
 #dot#template TITLE
 #dot#style "font-size: 3.5vh" ## {{ . }}
@@ -379,6 +537,14 @@ ____________
 
 - templates can be defined on start page and used in all others
 .================================
+.notes
+since Go templating also allows using multiple params
+we can do that here too, 
+you define what are they, and then on call, 
+you can write text separated by space. 
+this is one limititation of this sytem, but if space is needed, 
+HTML non breaking space can be used
+.notes.end
 .template GOTITLE .Title .Extra .Last
 .style "font-size: 3.5vh" ## {{ .Title }} - {{ .Extra }} {{ .Last }}
 ____________
@@ -396,10 +562,15 @@ ____________
 ```
 
 - Go Templating can be used in templates
-- multiple atributes are separated by string
+- multiple atributes are separated by space
   - params do not exists, whole line is used for `{{.}}`
 .================================
 .TITLE Code
+
+.notes
+code blocks are also supported, 
+and standard coloring is applied to them
+.notes.end
 
 ```go
 func main() {
@@ -437,6 +608,18 @@ if x == 1:
 ```
 
 .================================
+.notes
+what is new here though is you can specify aditional commands
+before the block
+before and after are ones that are executed but result is not displayed.
+they are usefull to for exampel setup the environment or to clear aftewards.
+
+the most important one is the one where you specify two things.
+name of the file where that block is saved and the command to run
+
+also since screen height s limited, only part of the code can be displayed
+
+.notes.end
 .TITLE Code - Running
 
 ### before any code block aditional commands can be added
@@ -449,17 +632,21 @@ if x == 1:
 
 - command to run on block that will be returned and displayed
 
-  .cast.block <filename> <cmd>
+  .cast.block &lt;filename> &lt;cmd>
 
 - command to display only part of the code
 
   .cast.block.show start:stop
-
-- adding `.edit` will allow code to be eddited in presentation
-
-  .cast.block.edit <filename> <cmd>
 .================================
 .TITLE Code - Running Example (editable)
+.notes
+when we have those commands a small button 
+to run the code will be displayed
+also run can be triggered with simply pressing 'r'
+
+after running the code, result will be displayed 
+in the window on top of the presentation
+.notes.end
 
 .CAST
 ```go
@@ -482,6 +669,9 @@ func main() {
 📜 use `r` key to run the code and `c` to close the terminal
 .================================
 .TITLE Code - Omiting the code
+.notes
+as saidr before, we can show only specific part of the code
+.notes.end
 
 `.cast.block.show start:stop` will display code only within [start,stop] indexes within the block
 
@@ -514,11 +704,16 @@ func main() {
 
 .================================
 .TITLE Code - Result
+.notes
+code is usually executed nad returned
+sometimes is usefull to show how much time
+execution of specific commands took 
+.notes.end
 
 .cast.stream
 .cast.block.show 8:10
 .CAST
-```
+```go
 package main
 
 import (
@@ -534,12 +729,28 @@ func main() {
 ```
 
 .cut
+.notes
+adding cast.stream will trigger streaming of data
+.notes.end
 - code is usually executed nad returned
-- for streamed output add `.cast.stream` lin in front of code
+- for streamed output add `.cast.stream` line in front of code
   - executed in background
 
 .================================
 .TITLE Code - Running code from folder
+.notes
+since some examples can be complex, 
+commands can be executed from specific folder
+that is prepared in advance
+
+this does not require showing of the code on screen
+of course, in order to execution to workd properly, 
+all aplications used needs to be installed.
+for example, shown command is not able to be executed
+if *Go* is not installed
+
+any kind of terminal command can be executed
+.notes.end
 
 - command to execute specific command in specified folder and return result
 
@@ -555,6 +766,10 @@ func main() {
 :warning: any kind of terminal command can be executed
 .===
 .TITLE Slides
+.notes
+since we want to have multiple slides, we needs to have them separated somwhow
+as seens here, multiple ways are allowed
+.notes.end
 
 slide separator is `.===` or `.---` (needs to be on start of the line)
 
@@ -565,13 +780,19 @@ slide separator is `.===` or `.---` (needs to be on start of the line)
 .================================
 .TITLE Notes
 
-.notes 
-invisible on a slide but available to see on presentation notes page
+.notes
+for presentations, sometimes is usefull to have notes.
+In order to define them use notes keyword
+
+to see them, append ?notes to URL.
+tabs will sync with each other
+
+also, you can just write comments that are only seen in file
 .notes.end
 
 ```txt
 #dot#notes 
-invisible on a slide but available to see on presentation notes page
+my comment
 #dot#notes.end
 ```
 
@@ -579,9 +800,14 @@ invisible on a slide but available to see on presentation notes page
 ```txt
 #dot#// in file comment, no seen anywhere
 ```
+by default [http://localhost:8080/?notes#40](http://localhost:8080/?notes#40) -> open in different tab
 
+tabs will sync with each other
 .================================
 .TITLE Settings
+
+.notes
+.notes.end
 
 ```txt
 #dot#title seen as tab name

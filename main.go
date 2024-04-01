@@ -88,7 +88,7 @@ func main() {
 		secondary: http.FileServer(http.Dir(wd)),
 	}
 	http.Handle("/", handler)
-	//http.Handle("/", http.FileServer(http.Dir(wd)))
+	// http.Handle("/", http.FileServer(http.Dir(wd)))
 
 	err = http.ListenAndServe(":"+port, nil)
 	if err != nil {

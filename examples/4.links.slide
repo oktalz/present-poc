@@ -4,6 +4,8 @@
 .replace.after -hashtag- #
 .replace.after #backtick# `
 .replace.after #equal# =
+.replace.after #brace# {
+.replace.after #div# &lt;div&gt;
 
 .template TITLE
 .style "font-size: 3.5vh" ## {{ . }}
@@ -19,10 +21,7 @@ ____________
 .cast.block.edit main.go go run .
 .template.end
 
-.template CAST_FILE
-.cast.block.edit {{ . }} go run .
-.template.end
-
+.title Present
 .================================
 .TITLE Links
 

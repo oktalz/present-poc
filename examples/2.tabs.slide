@@ -4,6 +4,8 @@
 .replace.after -hashtag- #
 .replace.after #backtick# `
 .replace.after #equal# =
+.replace.after #brace# {
+.replace.after #div# &lt;div&gt;
 
 .template TITLE
 .style "font-size: 3.5vh" ## {{ . }}
@@ -19,10 +21,7 @@ ____________
 .cast.block.edit main.go go run .
 .template.end
 
-.template CAST_FILE
-.cast.block.edit {{ . }} go run .
-.template.end
-
+.title Present
 .================================
 .replace #tab1# .active
 .replace #tab2# 
@@ -30,9 +29,8 @@ ____________
 
 .replace #active# .active
 .replace #empty# 
+.TITLE Tabs
 
-## tabs
-_______
 .tabs
 .tab#tab1# go.mod
 .cast.block go.mod
@@ -68,11 +66,12 @@ func main() {
 .cut #active#.#empty# #tab3#.#active#
 
 .================================
-## tabs - live stream
+.TITLE Tabs - live stream
 .cast.before go mod init x
 .cast.stream
 .cast.block.show 0:11
 .cast.block main.go go run .
+
 ```go
 package main
 

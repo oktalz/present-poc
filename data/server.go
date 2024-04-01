@@ -7,9 +7,7 @@ import (
 	"github.com/oklog/ulid/v2"
 )
 
-var (
-	muWS sync.RWMutex
-)
+var muWS sync.RWMutex
 
 type Server interface {
 	Register() (id ulid.ULID, ch chan Message)
@@ -48,7 +46,7 @@ func (s *server) Unregister(id ulid.ULID) {
 func (s *server) Broadcast(msg Message) {
 	muWS.RLock()
 	defer muWS.RUnlock()
-	//log.Println("broadcast", msg.Author)
+	// log.Println("broadcast", msg.Author)
 	for _, ch := range s.clients {
 		go func(ch chan Message, msg Message) {
 			ch <- msg

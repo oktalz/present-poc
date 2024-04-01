@@ -30,7 +30,7 @@ func WS(server data.Server) http.Handler {
 		msg := data.Message{
 			ID:     id,
 			Author: ulid.ULID{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-			//Slides: data.Presentation(),
+			// Slides: data.Presentation(),
 			Slide: int(atomic.LoadInt64(&CurrentSlide)),
 		}
 

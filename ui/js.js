@@ -8,19 +8,12 @@ var showMenu = false
 function setSpinner(value){
     spinner = value
     if (value) {
-        document.getElementById("spinner").classList.add("spinner")
+        document.getElementById("run-"+page+"-refresh").classList.remove("closed")
+        document.getElementById("run-"+page+"").classList.add("closed")
     } else {
-        document.getElementById("spinner").classList.remove("spinner")
+        document.getElementById("run-"+page+"-refresh").classList.add("closed")
+        document.getElementById("run-"+page+"").classList.remove("closed")
     }
-    
-    document.querySelectorAll('.run').forEach(function(d) {
-      if (spinner) {
-        d.classList.add("closed")
-      } else {
-        d.classList.remove("closed")
-      }
-    })
-    
 }
 
 function getSlideElements() {
@@ -156,8 +149,8 @@ window.addEventListener('wheel', function(event) {
 
 document.addEventListener('click', function(event) {
   var targetId = event.target.id;
-  if (targetId && targetId.startsWith('run-')) {
-    var pageNumber = targetId.substring(4); // strip 'run-' prefix
+  if (targetId && targetId.startsWith('run-icon-')) {
+    var pageNumber = targetId.substring(9); // strip 'run-' prefix
     console.log(`Clicked run button for page ${pageNumber}`);
     castTerminal()
   }

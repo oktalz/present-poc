@@ -59,7 +59,7 @@ code {
   overflow: auto; /* Optional: Add scrollbars if content exceeds the height */
 }
 
-.presenter-time{
+.presenter-time {
   margin-left: 0px;
   bottom: 0px;
   position:absolute;
@@ -67,12 +67,12 @@ code {
   padding-top: 1vh;
   padding-right: 1vh;
   color: rgb(107, 109, 109);
-  font-size: 10vh;
+  font-size: 12vh;
   background-color: bisque;
   z-index: 1000;
 }
 
-.presenter-current-time{
+.presenter-current-time {
   margin-left: 0px;
   bottom: 0vh;
   position:absolute;
@@ -80,12 +80,12 @@ code {
   padding-top: 1vh;
   padding-right: 1vh;
   color: rgb(107, 109, 109);
-  font-size: 10vh;
+  font-size: 12vh;
   background-color: bisque;
   z-index: 1000;
 }
 
-.presenter-comment{
+.presenter-comment {
   margin-right: 0px;
   top: 0px;
   position:absolute;
@@ -94,7 +94,7 @@ code {
   padding-left: 1vh;
   padding-right: 1vh;
   color: rgb(107, 109, 109);
-  font-size: 8vh;
+  font-size: 5vh;
   background-color: bisque;
   z-index: 1000;
 }
@@ -172,7 +172,7 @@ hr {
   margin-bottom: 0.5em;
 }
 
-.run {
+.run2 {
   display: inline-block;
   background-color: antiquewhite;
   font-size: 4vh;
@@ -185,6 +185,13 @@ hr {
   border: 2px solid black;
   border-bottom-left-radius: 1vh;
   border-bottom-right-radius: 1vh;
+}
+
+.run {
+  display: inline-block;
+  font-size: 7vh;
+  font-family: cursive;
+  cursor: pointer;  
 }
 
 .closed {
@@ -218,24 +225,17 @@ hr {
   z-index: 10;
 }
 
-@keyframes spinner {
-  to {transform: rotate(360deg);}
+.rotating-icon {
+  animation: rotate2 2s infinite linear; /* Rotate for 3 seconds infinitely */
 }
- 
-.spinner:before {
-  content: '';
-  box-sizing: border-box;
-  position: absolute;
-  top: 2vh;
-  right: 3vh;
-  width: 6vh;
-  height: 6vh;
-  margin: 0;
-  border-radius: 50%;
-  border: 0.6vh solid transparent;
-  border-top-color: #00ADD8;
-  border-bottom-color: #00ADD8;
-  animation: spinner 1s ease infinite;
+
+@keyframes rotate2 {
+  from {
+    transform: rotate(0deg); /* Start from 0 degrees */
+  }
+  to {
+    transform: rotate(360deg); /* End at 360 degrees (full rotation) */
+  }
 }
 
 .tablinks {
@@ -313,13 +313,19 @@ hr {
   .run {
     display: none;
   }
-  .spinner:before {
-    display: none;
-  }
   .page-not-print-visible{
     display: none;
   }
   .menu {
+    display: none;
+  }
+  .presenter-current-time {
+    display: none;
+  }
+  .presenter-time {
+    display: none;
+  }
+  .presenter-comment {
     display: none;
   }
 }

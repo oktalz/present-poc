@@ -8,9 +8,11 @@
   <style>
     {{template "css" .}}
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <link rel="stylesheet" href="highlight.min.css">
   <script src="highlight.min.js"></script>
   <script src="mermaid.min.js"></script>
+  <script src="boxicons.js"></script>
+  <link href="boxicons.min.css" rel='stylesheet'>
   <script>
     hljs.highlightAll(); 
     maxPage = {{len .Slides }} - 1;
@@ -42,6 +44,7 @@
 <body>
 <div id="app">  
   <div class="" id="spinner"></div>
+  {{template "notes" .}}
   {{template "menu" .}}
   {{- range .Slides -}}
     {{template "slide" .}}
@@ -53,10 +56,16 @@
 
 {{ define "slide" }}
   <div class="slide hidden {{if eq .PrintPage 0}}page-not-print-visible{{end}}" id="slide-{{.PageIndex}}" style="font-size: {{.FontSize}}; background-image: url('{{.BackgroundImage}}');">
+  <div class="presenter-comment closed" id="notes-{{.PageIndex}}">
+    {{.Notes}}
+  </div>
   <div class="page-header">  
     {{- if .HasCast }}
     <div class="run" id="run-{{.PageIndex}}">
-      >_
+      <i class='bx bxs-right-arrow' id="run-icon-{{.PageIndex}}" style="color: #00ADD8;"></i>
+    </div>
+    <div class="run closed" id="run-{{.PageIndex}}-refresh">
+      <i class='bx bx-refresh rotating-icon' style="color: #00ADD8;"></i>
     </div>
     {{- end }}
   </div>
@@ -86,5 +95,19 @@
       </tr>
       {{- end}}
     </table>
+  </div>
+{{ end }}
+
+{{ define "notes" }}
+  <div class="presenter-time closed" id="presenter-time-top">    
+    <span style="cursor: pointer;">
+      <i class='bx bx-pause' onclick="notesPause=true"></i>
+      <i class='bx bx-play' onclick="notesPause=false"></i>
+      <i class='bx bx-reset' onclick="notesCounter=0;document.getElementById('presenter-time').innerHTML='00:00'"></i>
+    </span>
+    <span id="presenter-time"></span>
+  </div>
+  <div class="presenter-current-time closed" id="presenter-current-time">
+    
   </div>
 {{ end }}

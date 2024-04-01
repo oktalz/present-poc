@@ -13,4 +13,30 @@ document.addEventListener("DOMContentLoaded", function() {
     }      
   });
   startWebsocket();
+  notesPause = false
+  notesCounter = 0
+  if (window.location.search.indexOf('notes') != -1) {
+    document.getElementById("presenter-time-top").classList.remove("closed");
+    document.getElementById("presenter-current-time").classList.remove("closed");
+    elements = document.getElementsByClassName("presenter-comment");
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].classList.remove("closed");
+    }
+    setInterval(function() {
+      let minutes = Math.floor(notesCounter / 60);
+      let seconds = notesCounter % 60;
+      if (!notesPause) {
+        notesCounter++;
+        value = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds
+        document.getElementById("presenter-time").innerHTML = value;
+      }     
+
+      let now = new Date();
+      let hours = now.getHours();
+      minutes = now.getMinutes();
+      seconds = now.getSeconds();
+      value = (hours < 10 ? "0" : "") + hours + ":" + (minutes < 10 ? "0" : "") + minutes 
+      document.getElementById("presenter-current-time").innerHTML = value;
+    }, 1000);
+  }
 });
