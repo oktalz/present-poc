@@ -7,6 +7,7 @@ import (
 )
 
 func parseCommand(command string) types.TerminalCommand {
+	//nolint:godox
 	parts := strings.Split(command, " ") // TODO handle go run . "some param in quotes" 1 2 ...
 	tc := types.TerminalCommand{
 		Index: -1,
@@ -54,7 +55,7 @@ func parseCommandBlock(lines []string, index int, codeBlockShowStart, codeBlockS
 		if i < codeStart {
 			codeHeader += lines[i] + "\n"
 			lines = removeElementFromSlice(lines, i)
-			i = i - 1
+			i--
 			codeStart--
 			codeEnd--
 			continue
@@ -62,7 +63,7 @@ func parseCommandBlock(lines []string, index int, codeBlockShowStart, codeBlockS
 		if i > codeEnd {
 			codeFooter += lines[i] + "\n"
 			lines = removeElementFromSlice(lines, i)
-			i = i - 1
+			i--
 			continue
 		}
 		code += lines[i] + "\n"

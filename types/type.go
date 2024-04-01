@@ -49,7 +49,7 @@ type Slide struct {
 	PageIndex             int
 	PrintPage             int
 	FontSize              string
-	Html                  string
+	HTML                  string
 	Link                  string
 	LinkNext              string
 	LinkPrev              string
@@ -74,7 +74,6 @@ type TerminalOutputLine struct {
 }
 
 type ReadOptions struct {
-	DevUrl                 string
 	DefaultFontSize        string
 	DefaultBackgroundColor string
 	EveryDashIsACut        bool

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"bytes"
-	_ "embed"
 	"log"
 	"net/http"
 	"strings"
@@ -21,7 +20,7 @@ type TemplateData struct {
 }
 
 func Homepage(port int) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		presentation := data.Presentation()
 		slides := presentation.Slides
 		for i := range slides {
@@ -29,7 +28,7 @@ func Homepage(port int) http.Handler {
 		}
 		w.Header().Set("Content-Type", "text/html")
 		w.WriteHeader(http.StatusOK)
-		tmpl, err := template.New("web").Parse(string(ui.WebTemplate))
+		tmpl, err := template.New("web").Parse(string(ui.WebTemplate()))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

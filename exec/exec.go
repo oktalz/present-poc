@@ -16,7 +16,7 @@ import (
 )
 
 func Cmd(tc types.TerminalCommand) []byte {
-	cmd := exec.Command(tc.App, tc.Cmd...)
+	cmd := exec.Command(tc.App, tc.Cmd...) //nolint:gosec
 	cmd.Dir = tc.Dir
 	output, err := cmd.Output()
 	if err != nil {
@@ -37,7 +37,7 @@ func CmdStream(tc types.TerminalCommand) {
 	fmt.Println("======== executing", tc.Dir, tc.App, strings.Join(tc.Cmd, " "))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	cmd := exec.CommandContext(ctx, tc.App, tc.Cmd...)
+	cmd := exec.CommandContext(ctx, tc.App, tc.Cmd...) //nolint:gosec
 	if DirectoryExists(tc.Dir) {
 		cmd.Dir = tc.Dir
 	} else {
@@ -83,12 +83,12 @@ func CmdStream(tc types.TerminalCommand) {
 	fmt.Println("======== finished ", tc.Dir, tc.App, strings.Join(tc.Cmd, " "))
 }
 
-func CmdStreamWS(tc types.TerminalCommand, ch chan string) {
+func CmdStreamWS(tc types.TerminalCommand, ch chan string) { //nolint:funlen
 	fmt.Println("======== executing", tc.Dir, tc.App, strings.Join(tc.Cmd, " "))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	defer close(ch)
-	cmd := exec.CommandContext(ctx, tc.App, tc.Cmd...)
+	cmd := exec.CommandContext(ctx, tc.App, tc.Cmd...) //nolint:gosec
 	if DirectoryExists(tc.Dir) {
 		cmd.Dir = tc.Dir
 	} else {

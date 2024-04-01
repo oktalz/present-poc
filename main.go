@@ -2,19 +2,19 @@ package main
 
 import (
 	"embed"
-	_ "embed"
 	"io/fs"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"gitlab.com/fer-go/present/archive"
 	"gitlab.com/fer-go/present/data"
 	"gitlab.com/fer-go/present/handlers"
 )
 
-func main() {
+func main() { //nolint:funlen
 	// Start the server
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -34,8 +34,8 @@ func main() {
 			break
 		}
 	}
-	wd := ""
-	if !zipFlag && len(os.Args) > 1 {
+	var wd string                     //nolint:varnamelen
+	if !zipFlag && len(os.Args) > 1 { //nolint:nestif
 		// osarg could be also an url, in that case i need to download the targx, unzip it
 
 		wd = os.Args[1]
@@ -89,8 +89,14 @@ func main() {
 	}
 	http.Handle("/", handler)
 	// http.Handle("/", http.FileServer(http.Dir(wd)))
+	server := &http.Server{
+		Addr:         ":" + port,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  15 * time.Second,
+	}
 
-	err = http.ListenAndServe(":"+port, nil)
+	err = server.ListenAndServe()
 	if err != nil {
 		panic(err)
 	}

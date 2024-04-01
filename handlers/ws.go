@@ -14,17 +14,17 @@ import (
 
 var CurrentSlide = int64(-10)
 
-func WS(server data.Server) http.Handler {
+func WS(server data.Server) http.Handler { //nolint:funlen
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		c, err := websocket.Accept(w, r, nil)
+		conn, err := websocket.Accept(w, r, nil)
 		if err != nil {
 			log.Println("accept:", err)
 			return
 		}
-		defer c.Close(websocket.StatusAbnormalClosure, "error? ")
+		defer conn.Close(websocket.StatusAbnormalClosure, "error? ")
 
 		// register with server
-		id, serverEvent := server.Register()
+		id, serverEvent := server.Register() //nolint:varnamelen
 		defer server.Unregister(id)
 		browserEvent := make(chan data.Message)
 		msg := data.Message{
@@ -35,17 +35,17 @@ func WS(server data.Server) http.Handler {
 		}
 
 		buf, _ := json.Marshal(msg)
-		err = c.Write(context.Background(), websocket.MessageText, buf)
+		err = conn.Write(context.Background(), websocket.MessageText, buf) //nolint:contextcheck
 		if err != nil {
 			log.Println("write:", err)
 			return
 		}
 
 		ctx := context.Background()
-		go func(ctx context.Context) {
+		go func(ctx context.Context) { //nolint:contextcheck
 			defer ctx.Done()
 			for {
-				_, message, err := c.Read(context.Background())
+				_, message, err := conn.Read(context.Background()) //nolint:contextcheck
 				if err != nil {
 					log.Println("read:", id, err)
 					return
@@ -76,7 +76,7 @@ func WS(server data.Server) http.Handler {
 				if msg.Reload {
 					msg.Slide = int(CurrentSlide)
 				}
-				err = c.Write(context.Background(), websocket.MessageText, buf)
+				err = conn.Write(context.Background(), websocket.MessageText, buf) //nolint:contextcheck
 				if err != nil {
 					log.Println("write:", err)
 					return

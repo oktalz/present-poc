@@ -23,8 +23,7 @@ func getOSPath(filePath string) string {
 
 	if fileInfo.IsDir() {
 		return filePath
-	} else {
-		fmt.Println(filePath, "is not a directory")
 	}
+	fmt.Println(filePath, "is not a directory")
 	return filePath
 }

@@ -66,7 +66,7 @@ func Init(server Server) {
 				for old, new := range presentation.Replacers {
 					res = strings.ReplaceAll(res, old, new)
 				}
-				presentation.Slides[i].Html = res
+				presentation.Slides[i].HTML = res
 			}
 
 			markdown.ResetBlocks()

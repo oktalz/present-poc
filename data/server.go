@@ -11,12 +11,12 @@ var muWS sync.RWMutex
 
 type Server interface {
 	Register() (id ulid.ULID, ch chan Message)
-	Unregister(ulid.ULID)
+	Unregister(id ulid.ULID)
 	Broadcast(msg Message)
 	Send(id ulid.ULID, msg Message)
 }
 
-func NewServer() *server {
+func NewServer() *server { //nolint:revive
 	return &server{
 		clients: make(map[ulid.ULID]chan Message),
 	}
@@ -26,7 +26,7 @@ type server struct {
 	clients map[ulid.ULID]chan Message
 }
 
-func (s *server) Register() (id ulid.ULID, ch chan Message) {
+func (s *server) Register() (id ulid.ULID, ch chan Message) { //nolint:nonamedreturns
 	muWS.Lock()
 	defer muWS.Unlock()
 	id = ulid.Make()

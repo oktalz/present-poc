@@ -8,7 +8,7 @@ import (
 	"gitlab.com/fer-go/present/data"
 )
 
-func asciinema(w http.ResponseWriter, r *http.Request) {
+func asciinema(w http.ResponseWriter, r *http.Request) { //nolint:varnamelen
 	slideStr := r.URL.Query().Get("slide")
 	slide, err := strconv.ParseInt(slideStr, 10, 64)
 	if err != nil {

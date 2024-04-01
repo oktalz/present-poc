@@ -7,7 +7,7 @@ import (
 	"gitlab.com/fer-go/present/data"
 )
 
-func api(w http.ResponseWriter, r *http.Request) {
+func api(w http.ResponseWriter, _ *http.Request) {
 	err := json.NewEncoder(w).Encode(data.Presentation())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

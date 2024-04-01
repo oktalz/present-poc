@@ -7,9 +7,9 @@ import (
 )
 
 func applyTemplate(lines []string, templateName string, templateVars []string, templateContent string) []string {
-	for i := 0; i < len(lines); i++ {
+	for i := 0; i < len(lines); i++ { //nolint:varnamelen
 		line := lines[i]
-		if strings.HasPrefix(line, "."+templateName) {
+		if strings.HasPrefix(line, "."+templateName) { //nolint:nestif
 			trim := strings.TrimPrefix(line, "."+templateName)
 			trim = strings.TrimPrefix(trim, " ")
 			parts := strings.Split(trim, " ")

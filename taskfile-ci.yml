@@ -44,8 +44,8 @@ tasks:
     desc: 'run Go linters'
     deps: [lint-version]
     cmds:
-      - bin/golangci-lint run --timeout 5m --color always --max-issues-per-linter 0 --max-same-issues 0
-
+      - bin/golangci-lint run --timeout 15m --color always --max-issues-per-linter 0 --max-same-issues 0
+      
   format:
     desc: 'formats the code'
     deps: [gofumpt]

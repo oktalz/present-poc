@@ -1,0 +1,48 @@
+---
+linters-settings:
+  golint:
+    min-confidence: 0
+  gocyclo:
+    min-complexity: 42
+  cyclop:
+    max-complexity: 42
+  gocognit:
+    min-complexity: 42
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 200
+  goconst:
+    min-len: 2
+    min-occurrences: 3
+
+linters:
+  enable-all: true
+  disable:
+    - nlreturn
+    - wsl
+    - wrapcheck
+    - gomnd
+    - depguard # while it might be usefull for, the way how it works is not ideal
+    - varnamelen # while it is usefull for, the way how it works its dumb
+    - musttag
+    - ireturn
+    - exhaustruct
+    - gochecknoglobals
+    - lll
+    - nestif
+    # rest are in deprecated state
+    - varcheck
+    - structcheck
+    - scopelint
+    - nosnakecase
+    - maligned
+    - interfacer
+    - ifshort
+    - golint
+    - exhaustivestruct
+    - deadcode
+
+issues:
+  exclude:
+    - "use of `fmt.Println` forbidden by pattern"

@@ -3,11 +3,14 @@ package archive
 import (
 	"archive/tar"
 	"compress/gzip"
+	"errors"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 )
+
+var ErrMaxSizeExceeded = errors.New("file size exceeds the maximum limit of 256 MB")
 
 // Gzip compresses the files in the srcDir directory and writes the compressed data to the destTar file.
 func Gzip(srcDir string, destTar string) error {
@@ -57,7 +60,7 @@ func Gzip(srcDir string, destTar string) error {
 		}
 		defer f.Close()
 
-		if _, err := io.CopyN(tarWriter, f, fi.Size()); err != nil && err != io.EOF {
+		if _, err := io.CopyN(tarWriter, f, fi.Size()); err != nil && errors.Is(err, io.EOF) {
 			return err
 		}
 
@@ -69,7 +72,9 @@ func Gzip(srcDir string, destTar string) error {
 
 // UnGzip decompresses the .tar.gz file specified by srcTarGz and unpacks it to a temporary directory.
 // It then sets the temporary directory as the current working directory.
-func UnGzip(srcTarGz string) error {
+func UnGzip(srcTarGz string) error { //nolint:funlen
+	const maxArchiveSize = 256 * 1024 * 1024
+
 	// Open the gzip file
 	gzipFile, err := os.Open(srcTarGz)
 	if err != nil {
@@ -102,6 +107,10 @@ func UnGzip(srcTarGz string) error {
 	// Extract the tar archive
 	for {
 		header, err := tarReader.Next()
+		fileSize := header.Size
+		if fileSize > maxArchiveSize {
+			return ErrMaxSizeExceeded
+		}
 		if err == io.EOF {
 			break // End of archive
 		}
@@ -122,7 +131,7 @@ func UnGzip(srcTarGz string) error {
 			if err != nil {
 				return err
 			}
-			if _, err := io.Copy(outFile, tarReader); err != nil {
+			if _, err := io.Copy(outFile, tarReader); err != nil { //nolint:gosec
 				outFile.Close()
 				return err
 			}

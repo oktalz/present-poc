@@ -29,8 +29,8 @@ type fallbackFileServer struct {
 	secondary http.Handler
 }
 
-func (s *fallbackFileServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	rw := responseWriter{
+func (s *fallbackFileServer) ServeHTTP(w http.ResponseWriter, r *http.Request) { //nolint:varnamelen
+	rw := responseWriter{ //nolint:exhaustruct
 		CustomHeader: make(http.Header),
 		StatusCode:   http.StatusOK,
 	}

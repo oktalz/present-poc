@@ -66,18 +66,14 @@ func Convert(source string) (string, error) {
 	return res, nil
 }
 
-func prepare(md goldmark.Markdown, fileContent string) string {
+func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,gocognit,gocyclo,unparam,cyclop,maintidx
 	lines := strings.Split(fileContent, "\n")
 	for i := 0; i < len(lines); i++ {
-		if strings.Contains(lines[i], ".image(") || strings.Contains(lines[i], ":image(") {
-			//:image(http://localhost:8080/assets/images/3.png :50vh)
-			//<div style="position: absolute; top: 35vh; left: 15vh; transform: rotate(-15deg);"><p><img src="http://localhost:8080/assets/images/3.png" style=" object-fit: contain; width: auto; height: 50vh;" "=""></p></div>
+		if strings.Contains(lines[i], ".image(") {
+			// .image(http://localhost:8080/assets/images/3.png :50vh)
+			// <div style="position: absolute; top: 35vh; left: 15vh; transform: rotate(-15deg);"><p><img src="http://localhost:8080/assets/images/3.png" style=" object-fit: contain; width: auto; height: 50vh;" "=""></p></div>
 			imageType := `.image(`
 			dotImageIndex := strings.Index(lines[i], ".image(")
-			if dotImageIndex == -1 {
-				dotImageIndex = strings.Index(lines[i], `:image(`)
-				imageType = `:image(`
-			}
 			if dotImageIndex == -1 {
 				continue
 			}
@@ -114,7 +110,7 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 		}
 		for strings.Contains(lines[i], ".bx{") {
 			indexStart := strings.Index(lines[i], ".bx{")
-			chunk := lines[i][indexStart:]
+			chunk := lines[i][indexStart:] //nolint:gocritic
 			indexEnd := strings.Index(chunk, "}")
 			if indexEnd == -1 {
 				break
@@ -127,14 +123,16 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 			_ = result
 		}
 		if strings.Contains(lines[i], "{") && strings.Contains(lines[i], "}(") {
-			//{red}(to text)
-			//<span id="md-convert" style="color: red;">to text</span>
-
+			// {red}(to text)
+			// <span id="md-convert" style="color: red;">to text</span>
 			start := strings.Index(lines[i], "{") + 1
 			end := strings.Index(lines[i], "}(")
 			color := lines[i][start:end]
 			data := lines[i][end+2:]
 			end2 := strings.Index(data, ")")
+			if end2 == -1 {
+				continue
+			}
 			data = data[:end2]
 			id := CreateCleanMD(prepare(md, data))
 			html := `<span style="color: ` + color + `;">` + id.String() + `</span>`
@@ -150,7 +148,7 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 		index := strings.Index(lines[i], ".style ")
 		isStyleBlock := false
 		for index != -1 {
-			lines[i], isStyleBlock = convertStyle(md, lines[i])
+			lines[i], isStyleBlock = convertStyle(lines[i])
 			index = strings.Index(lines[i], ".style ")
 			if index != -1 {
 				log.Println(lines[i])
@@ -216,7 +214,7 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 					} else {
 						lines[currLine] = `</table>`
 					}
-					trStarted = false
+					trStarted = false //nolint:wastedassign
 					break
 				}
 				if lines[currLine] == ".tr" {
@@ -259,7 +257,7 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 				if tdStarted {
 					tdData += "\n" + lines[currLine]
 					lines = append(lines[:currLine], lines[currLine+1:]...)
-					currLine -= 1
+					currLine--
 				}
 			}
 		}
@@ -291,7 +289,7 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 			lines[i] = `<div style="text-align:center">` + id.String() + `</div>`
 			lines = append(lines[:i+1], lines[endLine+1:]...)
 		}
-		if strings.HasPrefix(lines[i], ".tab") {
+		if strings.HasPrefix(lines[i], ".tab") { //nolint:nestif
 			var currLine int
 			lines[i] = `<div class="tab">`
 			tabContent := ""
@@ -304,7 +302,7 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 					if tabContent != "" {
 						tabs = append(tabs, tabContent)
 						tabsID = append(tabsID, currentTabID)
-						tabContent = ""
+						tabContent = "" //nolint:wastedassign
 					}
 					lines[currLine] = `</div><div class="tabs">`
 					// time to create footers
@@ -339,7 +337,7 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 				}
 				tabContent += "\n" + lines[currLine]
 				lines = append(lines[:currLine], lines[currLine+1:]...)
-				currLine -= 1
+				currLine--
 			}
 			_ = tabs
 		}
@@ -353,8 +351,6 @@ func prepare(md goldmark.Markdown, fileContent string) string {
 	}
 	fileContent = strings.Join(lines, "\n")
 
-	// TODO: remove this
-	fileContent = strings.ReplaceAll(fileContent, ".style.end", `</div>`)
 	fileContent = strings.ReplaceAll(fileContent, "____________", `<hr>`)
 	return fileContent
 }
@@ -375,9 +371,9 @@ func CreateCleanMD(data string) ulid.ULID {
 	return id
 }
 
-func convertStyle(md goldmark.Markdown, line string) (result string, isBlock bool) {
+func convertStyle(line string) (result string, isBlock bool) { //nolint:nonamedreturns
 	index := strings.Index(line, ".style ")
-	partBefore := line[:index]
+	partBefore := line[:index] //nolint:gocritic
 	partStyle := line[index:]
 	partAfter := ""
 	index = strings.Index(partStyle[1:], ".style ")

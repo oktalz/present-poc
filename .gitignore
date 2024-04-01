@@ -1,7 +1,5 @@
 .vscode/*
 bin/*
-fergo/*
-meet-2023-11/*
-meet-2024-02/*
-meet-2024-01/*
 __debug_bin*
+present
+.local/*

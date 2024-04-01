@@ -3,7 +3,6 @@ package reader
 import (
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 	"strings"
 
@@ -11,13 +10,8 @@ import (
 	"gitlab.com/fer-go/present/types"
 )
 
-func ReadFiles() types.Presentation {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,maintidx
 	ro := types.ReadOptions{
-		DevUrl:          `http://localhost:` + port + `/`,
 		DefaultFontSize: "3.5vh",
 		EveryDashIsACut: false,
 	}
@@ -155,7 +149,7 @@ func ReadFiles() types.Presentation {
 		}
 
 		hasCastBlockShow := strings.Contains(slide.Markdown, ".cast.block.show")
-		if hasCastBlockShow {
+		if hasCastBlockShow { //nolint:nestif
 			lines := strings.Split(slide.Markdown, "\n")
 			for index, line := range lines {
 				if strings.HasPrefix(line, ".cast.block.show") {
@@ -187,13 +181,13 @@ func ReadFiles() types.Presentation {
 			for index := 0; index < len(lines); index++ {
 				line := lines[index]
 				if strings.HasPrefix(line, ".cast.block") {
-					var tc types.TerminalCommand
-					tc, lines = parseCommandBlock(lines, index, codeBlockShowStart, codeBlockShowEnd)
+					var terminalCommand types.TerminalCommand
+					terminalCommand, lines = parseCommandBlock(lines, index, codeBlockShowStart, codeBlockShowEnd)
 					var c types.Cast
 					if slide.Cast != nil {
 						c = *slide.Cast
 					}
-					slide.TerminalCommand = append(slide.TerminalCommand, tc)
+					slide.TerminalCommand = append(slide.TerminalCommand, terminalCommand)
 					slide.Cast = &c
 					slide.HasRun = true
 					slide.HasCast = true
@@ -290,13 +284,13 @@ func ReadFiles() types.Presentation {
 			}
 		}
 		hasLink = strings.Contains(slide.Markdown, ".link.")
-		if hasLink {
+		if hasLink { //nolint:nestif
 			lines := strings.Split(slide.Markdown, "\n")
 			for index := 0; index < len(lines); index++ {
 				line := lines[index]
 				if strings.Contains(line, ".link.") {
 					strIndex := strings.Index(line, ".link.")
-					line := line[strIndex:]
+					line := line[strIndex:] //nolint:gocritic
 					link := strings.TrimPrefix(line, ".link.")
 					strIndex = strings.Index(link, "{")
 					if strIndex < 1 {
@@ -330,13 +324,13 @@ func ReadFiles() types.Presentation {
 	}
 
 	printPage := 1
-	for i := 0; i < len(presentations)-1; i++ {
+	for i := range len(presentations) - 1 {
 		if presentations[i].PageNumber != presentations[i+1].PageNumber && presentations[i].PrintPage == 0 {
 			presentations[i].PrintPage = printPage
 			printPage++
 		}
 	}
-	shift := 0
+	var shift int
 	for i := 1; i < len(presentations)-1; i++ {
 		if presentations[i].PageNumber < presentations[i-1].PageNumber {
 			if presentations[i].PageNumber == 1 {
@@ -391,7 +385,7 @@ func ReadFiles() types.Presentation {
 		}
 	}
 	for link, page := range links {
-		for index := 0; index < len(presentations); index++ {
+		for index := range len(presentations) - 1 {
 			p := presentations[index]
 			presentations[index].Markdown = strings.ReplaceAll(p.Markdown, link, strconv.Itoa(page))
 			if p.LinkNext == link {
@@ -403,11 +397,10 @@ func ReadFiles() types.Presentation {
 		}
 	}
 
-	p := types.Presentation{
+	return types.Presentation{
 		Slides:    presentations,
 		Menu:      menu,
 		Title:     presentationFiles.Title,
 		Replacers: presentationFiles.Replacers,
 	}
-	return p
 }

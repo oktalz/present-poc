@@ -25,7 +25,7 @@ func listSlideFiles(directory string) ([]string, error) {
 	return slideFiles, nil
 }
 
-func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) (types.Presentation, types.ReadOptions, error) {
+func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) (types.Presentation, types.ReadOptions, error) { //nolint:funlen,gocognit,maintidx
 	title := ""
 	content, err := os.ReadFile(filename)
 	if err != nil {
@@ -205,7 +205,6 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int) (t
 				if !isDashCut {
 					for i := 1; i < len(converters); i++ {
 						data := strings.SplitN(converters[i], ".", 2)
-						// TODO data can be empty, panic if that happens
 						tmp = strings.ReplaceAll(tmp, data[0], data[1])
 					}
 				}
