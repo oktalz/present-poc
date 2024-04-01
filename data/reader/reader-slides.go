@@ -39,7 +39,7 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 		if len(presentationFiles.Slides) > 1 {
 			lastPageNumber = presentationFiles.Slides[len(presentationFiles.Slides)-1].PageNumber
 		}
-		presentationFile, ro, err = readSlideFile(slide, ro, lastPageNumber, headerFile)
+		presentationFile, ro, err = readSlideFile(slide, ro, lastPageNumber, headerFile+"\n")
 		if err != nil {
 			panic(err)
 		}

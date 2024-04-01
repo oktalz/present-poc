@@ -1,27 +1,3 @@
-.global.font-size 4vh
-
-.replace.after #dot# .
-.replace.after -hashtag- #
-.replace.after #backtick# `
-.replace.after #equal# =
-.replace.after #brace# {
-.replace.after #div# &lt;div&gt;
-
-.template TITLE
-.style "font-size: 3.5vh" ## {{ . }}
-____________
-.template.end
-
-.template CAST_FOLDER
-.cast {{ . }} go run .
-.template.end
-
-.template CAST
-.cast.before go mod init x
-.cast.block.edit main.go go run .
-.template.end
-
-.title Present
 .================================
 .TITLE Links
 
@@ -34,7 +10,6 @@ pick :cat: or :dog: (click with mouse)
 .link.#link1#{:cat:} .link.#link2#{:dog:}
 .style.end
 .center.end
-
 
 - see source for code
 

@@ -24,7 +24,6 @@ a, a:visited {
   overflow-y: auto;
 }
 
-
 .page-num{
   margin-right: 0px;
   bottom: 0px;
@@ -124,12 +123,12 @@ code {
 }
 
 p {
-  margin-block-start: 0.5em;
-  margin-block-end: 0.5em;
+  margin-block-start: 1vh;
+  margin-block-end: 1vh;
 }
 pre {
-  margin-block-start: 0.5em;
-  margin-block-end: 0.5em;
+  margin-block-start: 1vh;
+  margin-block-end: 1vh;
 }
 
 .slide {
@@ -173,7 +172,7 @@ hr {
   color: #333;  /* old IE */
   background-color: #333;  /* Modern Browsers */
   margin: 0;
-  margin-bottom: 0.5em;
+  margin-bottom: 1vh;
 }
 
 .run2 {
@@ -231,6 +230,11 @@ hr {
 
 .rotating-icon {
   animation: rotate2 2s infinite linear; /* Rotate for 3 seconds infinitely */
+}
+
+ul {
+  margin-block-start: 1vh;
+  margin-block-end: 1vh;
 }
 
 @keyframes rotate2 {
