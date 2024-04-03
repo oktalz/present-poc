@@ -20,6 +20,7 @@ type Cast struct {
 
 type TerminalCommand struct {
 	Dir      string
+	DirFixed bool
 	App      string
 	Cmd      []string
 	Code     Code

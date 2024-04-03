@@ -95,8 +95,12 @@ func castWS(w http.ResponseWriter, r *http.Request) { //nolint:funlen,gocognit
 
 	if len(tcBefore) > 0 {
 		for i := range tcBefore {
-			tcBefore[i].Dir = workingDir
-			exec.CmdStream(tcBefore[i]) //nolint:contextcheck
+			if tcBefore[i].DirFixed {
+				go exec.CmdStream(tcBefore[i]) //nolint:contextcheck
+			} else {
+				tcBefore[i].Dir = workingDir
+				exec.CmdStream(tcBefore[i]) //nolint:contextcheck
+			}
 		}
 	}
 	for _, cmd := range terminalCommand {

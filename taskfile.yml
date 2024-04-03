@@ -44,7 +44,8 @@ tasks:
     desc: 'download all external libraries'
     cmds:
       - mkdir -p ui/static
-      - wget -q -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
+      - wget -q -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js      
+      #- wget -q -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs
       - wget -q -O ui/static/highlight.min.js https://cdnjs.cloudflare.com/ajax/libs/highlight.js/{{.HIGHLIGHT_JS_VERSION}}/highlight.min.js
       - wget -q -O ui/static/highlight.min.css https://cdnjs.cloudflare.com/ajax/libs/highlight.js/{{.HIGHLIGHT_JS_VERSION}}/styles/default.min.css
       - wget -q -O ui/static/boxicons.js https://unpkg.com/boxicons@{{.BOXICONS_VERSION}}/dist/boxicons.js

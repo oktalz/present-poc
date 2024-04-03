@@ -91,11 +91,59 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 			}
 		}
 
-		hasCastBlockBefore := strings.Contains(slide.Markdown, ".cast.before")
+		hasCastBlockBefore := strings.Contains(slide.Markdown, ".cast.parralel")
 		if hasCastBlockBefore {
 			lines := strings.Split(slide.Markdown, "\n")
 			for index := 0; index < len(lines); index++ {
 				line := lines[index]
+				if strings.HasPrefix(line, ".cast.parralel") {
+					// newLine := strings.Replace(line, ".cast.before.dir", ".cast.before.dir .", 1)
+					// lines[index] = newLine
+					var tc types.TerminalCommand
+					tc, lines = parseCommandBlock(lines, index, nil, nil)
+					tc.DirFixed = true
+					var c types.Cast
+					if slide.Cast != nil {
+						c = *slide.Cast
+					}
+					slide.TerminalCommandBefore = append(slide.TerminalCommandBefore, tc)
+					slide.Cast = &c
+					slide.HasRun = true
+					slide.HasCast = true
+					slide.UseTmpFolder = true
+					slide.CanEdit = true
+					lines = append(lines[:index], lines[index+1:]...)
+					slide.Markdown = strings.Join(lines, "\n")
+					index--
+				}
+			}
+		}
+
+		hasCastBlockBefore = strings.Contains(slide.Markdown, ".cast.before")
+		if hasCastBlockBefore {
+			lines := strings.Split(slide.Markdown, "\n")
+			for index := 0; index < len(lines); index++ {
+				line := lines[index]
+				if strings.HasPrefix(line, ".cast.parralel") {
+					// newLine := strings.Replace(line, ".cast.before.dir", ".cast.before.dir .", 1)
+					// lines[index] = newLine
+					var tc types.TerminalCommand
+					tc, lines = parseCommandBlock(lines, index, nil, nil)
+					tc.DirFixed = true
+					var c types.Cast
+					if slide.Cast != nil {
+						c = *slide.Cast
+					}
+					slide.TerminalCommandBefore = append(slide.TerminalCommandBefore, tc)
+					slide.Cast = &c
+					slide.HasRun = true
+					slide.HasCast = true
+					slide.UseTmpFolder = true
+					slide.CanEdit = true
+					lines = append(lines[:index], lines[index+1:]...)
+					slide.Markdown = strings.Join(lines, "\n")
+					index--
+				}
 				if strings.HasPrefix(line, ".cast.before") {
 					newLine := strings.Replace(line, ".cast.before", ".cast.before .", 1)
 					lines[index] = newLine
@@ -113,7 +161,7 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 					slide.CanEdit = true
 					lines = append(lines[:index], lines[index+1:]...)
 					slide.Markdown = strings.Join(lines, "\n")
-					break
+					index--
 				}
 			}
 		}
