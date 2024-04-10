@@ -167,12 +167,12 @@ h1, h2, h3, h4, h5, h6, pre {
 
 hr {
   border: none;
-  height: 2px;
+  height: 0.2vh;
   /* Set the hr color */
   color: #333;  /* old IE */
   background-color: #333;  /* Modern Browsers */
   margin: 0;
-  margin-bottom: 1vh;
+  margin-bottom: 2vh;
 }
 
 .run2 {
@@ -298,6 +298,11 @@ ul {
 /* Create an active/current tablink class */
 .tab button.active {
   background-color: #F3F3F3;
+}
+
+pre > svg {
+  max-width: 94vw!important;
+  max-height: 94vh!important;
 }
 
 @media print {

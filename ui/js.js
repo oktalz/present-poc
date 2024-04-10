@@ -81,8 +81,13 @@ document.addEventListener('keydown', function(e) {
       Slide: page
     })
   }
-  if (keyCode == 'r' ) {
+  if (keyCode == 'r' || keyCode == 'e' ) {
     castTerminal()
+  }
+  if (keyCode == 'c' || keyCode == 'b' ) {
+    const terminalElement = document.getElementById('terminal-'+page);
+    terminalElement.innerHTML = ''
+    terminalElement.classList.add('closed');
   }
   if (keyCode == 'm' ) {
     showMenu = !showMenu
@@ -91,11 +96,6 @@ document.addEventListener('keydown', function(e) {
     } else {
       document.getElementById('menu').classList.add('menu-hidden');
     }
-  }
-  if (keyCode == 'c' ) {
-    const terminalElement = document.getElementById('terminal-'+page);
-    terminalElement.innerHTML = ''
-    terminalElement.classList.add('closed');
   }
 });
 

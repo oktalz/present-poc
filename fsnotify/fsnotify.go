@@ -45,6 +45,7 @@ func FileWatcher() chan struct{} {
 					}()
 					mu.Unlock()
 					log.Println("modified file:", event.Name)
+					<-time.After(100 * time.Millisecond)
 					filesModified <- struct{}{}
 				}
 			case err, ok := <-watcher.Errors:
