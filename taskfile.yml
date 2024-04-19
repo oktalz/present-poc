@@ -7,6 +7,7 @@ includes:
 vars:
   BOXICONS_VERSION: 2.1.4
   HIGHLIGHT_JS_VERSION: 11.9.0
+  MERMAID_JS_VERSION: 10.9.0
 
 tasks:
 
@@ -40,11 +41,39 @@ tasks:
     cmds:
       - go run . 
 
+  mermaidjs-check-latest-version:
+      desc: 'check if mermaid.js is up to date'
+      silent: true
+      cmds:
+        - |
+          if [ "{{.LATEST_VERSION}}" != "v{{.MERMAID_JS_VERSION}}" ]; then
+            echo "mermaid.js can be updated from v{{.MERMAID_JS_VERSION}} to {{.LATEST_VERSION}}"
+          fi
+      vars:
+        LATEST_VERSION: 
+          sh: curl --silent "https://api.github.com/repos/mermaid-js/mermaid/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'        
+
+  highlightjs-check-latest-version:
+      desc: 'check if highlight.js is up to date'
+      silent: true
+      cmds:
+        - |
+          if [ "{{.LATEST_VERSION}}" != "{{.HIGHLIGHT_JS_VERSION}}" ]; then
+            echo "highlight.js can be updated from v{{.HIGHLIGHT_JS_VERSION}} to {{.LATEST_VERSION}}"
+          fi
+      vars:
+        LATEST_VERSION: 
+          sh: curl --silent "https://api.github.com/repos/highlightjs/highlight.js/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'        
+
   external:
     desc: 'download all external libraries'
+    deps:
+      - task: highlightjs-check-latest-version
+      - task: mermaidjs-check-latest-version
     cmds:
       - mkdir -p ui/static
-      - wget -q -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js      
+      #- wget -q -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js      
+      - wget -q -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid@{{.MERMAID_JS_VERSION}}/dist/mermaid.min.js      
       #- wget -q -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs
       - wget -q -O ui/static/highlight.min.js https://cdnjs.cloudflare.com/ajax/libs/highlight.js/{{.HIGHLIGHT_JS_VERSION}}/highlight.min.js
       - wget -q -O ui/static/highlight.min.css https://cdnjs.cloudflare.com/ajax/libs/highlight.js/{{.HIGHLIGHT_JS_VERSION}}/styles/default.min.css
