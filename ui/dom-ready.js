@@ -15,6 +15,14 @@ document.addEventListener("DOMContentLoaded", function() {
   startWebsocket();
   notesPause = false
   notesCounter = 0
+
+  // Get all elements with id 'd2-svg'
+  var svgElements = document.querySelectorAll('#d2-svg');
+  // Loop through each of them
+  svgElements.forEach(function(svg) {
+    correctD2Graph(svg);
+  });  
+
   if (window.location.search.indexOf('notes') != -1) {
     document.getElementById("presenter-time-top").classList.remove("closed");
     document.getElementById("presenter-current-time").classList.remove("closed");

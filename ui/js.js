@@ -61,7 +61,7 @@ document.addEventListener('keydown', function(e) {
         return;
     }
   }
-  if (keyCode == 'ArrowRight' || keyCode == 'ArrowDown' || keyCode == 'PageDown' || keyCode == ' ' ) {
+  if (keyCode == 'ArrowRight' || keyCode == 'ArrowUp' || keyCode == 'PageDown' || keyCode == ' ' ) {
     oldPage = page;
     page = page + 1;
     target = getPageUp(oldPage,page);
@@ -71,7 +71,7 @@ document.addEventListener('keydown', function(e) {
       Slide: page
     })
   }
-  if (keyCode == 'ArrowLeft' || keyCode == 'ArrowUp' || keyCode == 'PageUp') {
+  if (keyCode == 'ArrowLeft' || keyCode == 'ArrowDown' || keyCode == 'PageUp') {
     oldPage = page;    
     page = page - 1;
     target = getPageDown(oldPage,page);
@@ -181,4 +181,12 @@ function tabChangeGlobal(tabID){
       tablinks[i].classList.add("hidden-tab");
     }       
   }
+}
+
+function correctD2Graph(svg){
+  svg.setAttribute('width', "100%");
+  svg.setAttribute('height', "100%");
+  svg.parentElement.setAttribute('width', "100%");
+  svg.parentElement.setAttribute('height', "100%");
+  svg.parentElement.setAttribute('preserveAspectRatio', "YMin meet");
 }

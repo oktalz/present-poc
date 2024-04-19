@@ -7,12 +7,14 @@ import (
 	"sync"
 
 	"github.com/oklog/ulid/v2"
+	d2 "github.com/oktalz/goldmark-d2"
 	"github.com/yuin/goldmark"
 	emoji "github.com/yuin/goldmark-emoji"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer/html"
 	"go.abhg.dev/goldmark/mermaid"
+	"oss.terrastruct.com/d2/d2layouts/d2dagrelayout"
 )
 
 type blockData struct {
@@ -32,6 +34,11 @@ func GetMD() goldmark.Markdown {
 			goldmark.WithExtensions(extension.GFM),
 			goldmark.WithExtensions(&mermaid.Extender{
 				NoScript: true,
+			}),
+			goldmark.WithExtensions(&d2.Extender{
+				// Defaults when omitted
+				Layout: d2dagrelayout.DefaultLayout,
+				//ThemeID: d2themescatalog.,
 			}),
 			goldmark.WithExtensions(
 				emoji.Emoji,
