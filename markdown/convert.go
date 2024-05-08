@@ -38,7 +38,7 @@ func GetMD() goldmark.Markdown {
 			goldmark.WithExtensions(&d2.Extender{
 				// Defaults when omitted
 				Layout: d2dagrelayout.DefaultLayout,
-				//ThemeID: d2themescatalog.,
+				// ThemeID: d2themescatalog.,
 			}),
 			goldmark.WithExtensions(
 				emoji.Emoji,

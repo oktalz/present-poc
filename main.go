@@ -15,6 +15,8 @@ import (
 )
 
 func main() { //nolint:funlen
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.SetOutput(os.Stderr)
 	// Start the server
 	port := os.Getenv("PORT")
 	if port == "" {
