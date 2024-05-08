@@ -107,17 +107,18 @@ func UnGzip(srcTarGz string) error { //nolint:funlen
 	// Extract the tar archive
 	for {
 		header, err := tarReader.Next()
+		if err == io.EOF || header == nil {
+			break // End of archive
+		}
 		fileSize := header.Size
 		if fileSize > maxArchiveSize {
 			return ErrMaxSizeExceeded
-		}
-		if err == io.EOF {
-			break // End of archive
 		}
 		if err != nil {
 			return err
 		}
 
+		// fmt.Println(header.Name, header.Typeflag)
 		switch header.Typeflag {
 		case tar.TypeDir: // Directory
 			if err := os.MkdirAll(header.Name, 0o755); err != nil {
