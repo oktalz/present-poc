@@ -34,19 +34,23 @@ function startWebsocket() {
           }
         }
     });
-    
+
     socket.onclose = () => {
       console.log('Socket is closed');
-      socket.close(); 
+      socket.close();
       socket = null
       myID = ""
-      setTimeout(startWebsocket, 5000)    
+      setTimeout(startWebsocket, 5000)
     };
   }
 
   function updateData(data) {
     console.log("updateData send", data)
-    
+    let adminPWD = localStorage.getItem('admin-token');
+    if (adminPWD != "") {
+      data.Admin = adminPWD
+    }
+
     if (socket === null) {
       console.log("socket is null, skipping send")
       return

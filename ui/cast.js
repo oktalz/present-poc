@@ -6,7 +6,7 @@ function castTerminal(){
     if (terminalElement == null) {
         return
     }
-    setSpinner(true)   
+    setSpinner(true)
     terminalElement.innerHTML = ''
     terminalElement.classList.remove('closed');
     codeText = ''
@@ -19,7 +19,12 @@ function castTerminal(){
 
     // Connection opened
     socket.addEventListener('open', () => {
-        let body = JSON.stringify({slide: pageNum, code: codeText})
+        let data = {slide: pageNum, code: codeText}
+        let adminPWD = localStorage.getItem('admin-token');
+        if (adminPWD != "") {
+            data.Admin = adminPWD
+        }
+        let body = JSON.stringify(data)
         console.log(body)
         socket.send(body);
         //this.CheckTabState(codeText)
@@ -31,15 +36,15 @@ function castTerminal(){
         terminalElement.innerHTML += event.data + '<br>'
         // if (this.state.terminal[this.state.page] != "") {
         // this.state.terminal[this.state.page] += '<br>'
-        // } 
+        // }
         // this.state.terminal[this.state.page] += event.data
         //this.CheckTabState(codeText)
     });
 
     socket.onclose = () => {
         console.log('Socket is closed');
-        socket.close();  
-        setSpinner(false)     
+        socket.close();
+        setSpinner(false)
     };
-    
+
 }

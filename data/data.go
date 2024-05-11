@@ -20,6 +20,7 @@ var (
 type Message struct {
 	ID     ulid.ULID
 	Author ulid.ULID
+	Admin  string
 	Msg    []byte
 	Slide  int
 	Reload bool

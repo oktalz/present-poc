@@ -4,19 +4,34 @@ import (
 	"embed"
 	"io/fs"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/joho/godotenv"
 
 	"gitlab.com/fer-go/present/archive"
 	"gitlab.com/fer-go/present/data"
 	"gitlab.com/fer-go/present/handlers"
 )
 
+func RandomString() string {
+	chars := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+	var sb []rune
+	rand.Seed(time.Now().UnixNano())
+	for i := 0; i < 12; i++ {
+		sb = append(sb, chars[rand.Intn(len(chars))])
+	}
+	return string(sb)
+}
+
 func main() { //nolint:funlen
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.SetOutput(os.Stderr)
+
+	_ = godotenv.Load()
 	// Start the server
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -71,9 +86,18 @@ func main() { //nolint:funlen
 
 	// http.Handle("/api", handlers.API())
 	// http.Handle("/exec", handlers.Exec())
-	http.Handle("/cast", handlers.CastWS())
+	adminPWD := os.Getenv("ADMIN")
+	if adminPWD != "" {
+		log.Println("admin token is set")
+		log.Println("☢☢☢")
+		log.Println("set localStorage.setItem('admin-token', '') in browser !!!")
+		log.Println("set correct token !!! 🙈🙉🙊")
+	}
+
+	// http.Handle("/cast", handlers.Cast())
+	http.Handle("/cast", handlers.CastWS(wsServer, adminPWD))
 	http.Handle("/asciinema", handlers.Asciinema())
-	http.Handle("/ws", handlers.WS(wsServer))
+	http.Handle("/ws", handlers.WS(wsServer, adminPWD))
 
 	http.Handle("/{$}", handlers.Homepage(portInt))
 
@@ -98,6 +122,7 @@ func main() { //nolint:funlen
 		IdleTimeout:  15 * time.Second,
 	}
 
+	log.Println("Listening on", server.Addr)
 	err = server.ListenAndServe()
 	if err != nil {
 		panic(err)

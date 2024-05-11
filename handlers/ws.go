@@ -14,7 +14,7 @@ import (
 
 var CurrentSlide = int64(-10)
 
-func WS(server data.Server) http.Handler { //nolint:funlen
+func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		conn, err := websocket.Accept(w, r, nil)
 		if err != nil {
@@ -58,6 +58,7 @@ func WS(server data.Server) http.Handler { //nolint:funlen
 				}
 				browserEvent <- data.Message{
 					Author: id,
+					Admin:  msg.Admin,
 					Msg:    message,
 					Slide:  msg.Slide,
 				}
@@ -65,6 +66,10 @@ func WS(server data.Server) http.Handler { //nolint:funlen
 			}
 		}(ctx)
 
+		isAdmin := false
+		if adminPwd == "" {
+			isAdmin = true
+		}
 		for {
 			select {
 			case msg := <-serverEvent:
@@ -87,7 +92,13 @@ func WS(server data.Server) http.Handler { //nolint:funlen
 					Slide:  msg.Slide,
 					Reload: false,
 				}
-				server.Broadcast(body)
+
+				if msg.Admin == adminPwd {
+					isAdmin = true
+				}
+				if isAdmin {
+					server.Broadcast(body)
+				}
 			case <-ctx.Done():
 				return
 			}

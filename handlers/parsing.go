@@ -3,6 +3,7 @@ package handlers
 import "encoding/json"
 
 type RequestPayload struct {
+	Admin string   `json:"admin"`
 	Slide int      `json:"slide"`
 	Code  []string `json:"code"`
 }
