@@ -1,4 +1,8 @@
-const baseUrl = 'localhost:'+port
+let port = location.port
+if (port == "") {
+  port = 80
+}
+const baseUrl = window.location.hostname+':'+port
 socket = null
 
 function startWebsocket() {
