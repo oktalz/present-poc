@@ -16,7 +16,9 @@ var CurrentSlide = int64(-10)
 
 func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		conn, err := websocket.Accept(w, r, nil)
+		conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
+			InsecureSkipVerify: true,
+		})
 		if err != nil {
 			log.Println("accept:", err)
 			return
