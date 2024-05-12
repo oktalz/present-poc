@@ -129,6 +129,33 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			lines[i] = strings.Replace(lines[i], ".bx{"+data+"}", id.String(), 1)
 			_ = result
 		}
+		if strings.Contains(lines[i], ".{") && strings.Contains(lines[i], "}(") {
+			// .{background-color: aqua;}(to text)
+			// <span style="background-color: aqua;">to text</span>
+			start := strings.Index(lines[i], ".{") + 2
+			end := strings.Index(lines[i], "}(")
+			style := lines[i][start:end]
+			data := lines[i][end+2:]
+			end2 := strings.Index(data, ")")
+			if end2 == -1 {
+				continue
+			}
+			data = data[:end2]
+			id := CreateCleanMD(prepare(md, data))
+			html := `<span style="` + style + `">` + id.String() + `</span>`
+			data = strings.ReplaceAll(lines[i], `.{`+style+`}(`+data+`)`, html)
+			lines[i] = data
+			i--
+		}
+		if strings.Contains(lines[i], ".raw{") && strings.Contains(lines[i], "}") {
+			start := strings.Index(lines[i], ".raw{") + 5
+			end := strings.Index(lines[i], "}")
+			raw := lines[i][start:end]
+			id := CreateCleanRAW(raw)
+			data := strings.ReplaceAll(lines[i], `.raw{`+raw+`}`, id.String())
+			lines[i] = data
+			i--
+		}
 		if strings.Contains(lines[i], "{") && strings.Contains(lines[i], "}(") {
 			// {red}(to text)
 			// <span id="md-convert" style="color: red;">to text</span>
@@ -389,6 +416,12 @@ func CreateCleanMD(data string) ulid.ULID {
 	solution = strings.TrimSuffix(solution, "</p>")
 
 	blocks = append(blocks, blockData{ID: id, Data: solution})
+	return id
+}
+
+func CreateCleanRAW(data string) ulid.ULID {
+	id := ulid.Make()
+	blocks = append(blocks, blockData{ID: id, Data: data})
 	return id
 }
 
