@@ -3,10 +3,14 @@ if (port == "") {
   port = 80
 }
 const baseUrl = window.location.hostname+':'+port
+let webSocketType = "ws"
+if (location.protocol == "https:") {
+  webSocketType = "wss"
+}
 socket = null
 
 function startWebsocket() {
-    socket = new WebSocket('ws://'+baseUrl+"/ws");
+    socket = new WebSocket(webSocketType+'://'+baseUrl+"/ws");
 
     // Connection opened
     socket.addEventListener('open', () => {

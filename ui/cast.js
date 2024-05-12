@@ -15,7 +15,7 @@ function castTerminal(){
         codeText = Array.from(codeElements).map(codeElement => codeElement.innerText);
     }
 
-    const socket = new WebSocket('ws://'+baseUrl+"/cast");
+    const socket = new WebSocket(webSocketType+'://'+baseUrl+"/cast");
 
     // Connection opened
     socket.addEventListener('open', () => {
