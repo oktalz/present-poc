@@ -5,9 +5,11 @@ import (
 	"io/fs"
 	"log"
 	"math/rand"
+	"net"
 	"net/http"
 	"os"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -116,17 +118,52 @@ func main() { //nolint:funlen
 	http.Handle("/", handler)
 	// http.Handle("/", http.FileServer(http.Dir(wd)))
 	server := &http.Server{
-		Addr:         ":" + port,
+		//		Addr:         ":" + port,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
 		IdleTimeout:  15 * time.Second,
 	}
 
-	log.Println("Listening on", server.Addr)
-	err = server.ListenAndServe()
-	if err != nil {
-		panic(err)
+	// log.Println("Listening on", server.Addr)
+	// err = server.ListenAndServe()
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	var errList []error
+	wg := new(sync.WaitGroup)
+	// Create a TCP listener for IPv4
+	ln4, err := net.Listen("tcp4", ":"+port)
+	if err == nil {
+		wg.Add(1)
+		go func() {
+			if err := server.Serve(ln4); err != nil {
+				log.Fatal(err)
+			}
+			wg.Done()
+		}()
+	} else {
+		errList = append(errList, err)
 	}
+
+	// Create a TCP listener for IPv6
+	ln6, err := net.Listen("tcp6", "[::]:"+port)
+	if err == nil {
+		wg.Add(1)
+		go func() {
+			if err := server.Serve(ln6); err != nil {
+				log.Fatal(err)
+			}
+			wg.Done()
+		}()
+	} else {
+		errList = append(errList, err)
+	}
+	if len(errList) > 1 {
+		panic(errList)
+	}
+
+	wg.Wait()
 }
 
 //go:embed ui/static
