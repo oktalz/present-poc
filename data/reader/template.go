@@ -12,6 +12,14 @@ func applyTemplate(lines []string, templateName string, templateVars []string, t
 		if strings.HasPrefix(line, "."+templateName) { //nolint:nestif
 			trim := strings.TrimPrefix(line, "."+templateName)
 			trim = strings.TrimPrefix(trim, " ")
+			trim = strings.ReplaceAll(trim, ")", "&#41;")
+			trim = strings.ReplaceAll(trim, "(", "&#40;")
+			trim = strings.ReplaceAll(trim, "{", "&#123;")
+			trim = strings.ReplaceAll(trim, "}", "&#125;")
+			trim = strings.ReplaceAll(trim, ".", "&#46;")
+			trim = strings.ReplaceAll(trim, "_", "&#95;")
+			trim = strings.ReplaceAll(trim, "-", "&#45;")
+			trim = strings.ReplaceAll(trim, `"`, "&#34;")
 			parts := strings.Split(trim, " ")
 			var data any
 			dataMap := map[string]string{}

@@ -19,8 +19,37 @@ type TemplateData struct {
 	Port   int
 }
 
-func Homepage(port int) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+func Homepage(port int, loginPage []byte) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// user, pass, _ := r.BasicAuth()
+		// var cookie *http.Cookie
+		// var err error
+		// if user == "" || pass == "" {
+		// 	cookie, err = r.Cookie("present")
+		// 	if err == nil {
+		// 		// Cookie exists, you can access its value using cookie.Value
+		// 		fmt.Println("Cookie value:", cookie.Value)
+		// 		user = "present"
+		// 		pass = cookie.Value
+		// 	}
+		// }
+		// if user != "present" || pass != os.Getenv("USER_PWD") {
+		// 	_, err := w.Write(loginPage)
+		// 	if err != nil {
+		// 		log.Println(err)
+		// 		return
+		// 	}
+		// 	return
+		// }
+		// cookieSet := http.Cookie{
+		// 	Name:  "present",
+		// 	Value: os.Getenv("USER_PWD"),
+		// }
+		// http.SetCookie(w, &cookieSet)
+		// if cookie == nil {
+		// 	return
+		// }
+
 		presentation := data.Presentation()
 		slides := presentation.Slides
 		for i := range slides {

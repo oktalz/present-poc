@@ -67,6 +67,10 @@ func Convert(source string) (string, error) {
 		return "", err
 	}
 	res := buf.String()
+	res = strings.ReplaceAll(res, "\n", "")
+	res = strings.TrimPrefix(res, "<p>")
+	res = strings.TrimSuffix(res, "</p>")
+
 	for index := len(blocks) - 1; index >= 0; index-- {
 		res = strings.ReplaceAll(res, blocks[index].ID.String(), blocks[index].Data)
 	}
@@ -74,7 +78,39 @@ func Convert(source string) (string, error) {
 }
 
 func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,gocognit,gocyclo,unparam,cyclop,maintidx
+	fileContent = processReplace(fileContent, ".raw", ".raw.end", func(data string) string {
+		return CreateCleanRAW(data).String()
+	})
+	fileContent = processReplace(fileContent, ".raw{", "}", func(data string) string {
+		return CreateCleanRAW(data).String()
+	})
+
 	lines := strings.Split(fileContent, "\n")
+	for i := 0; i < len(lines); i++ {
+		if strings.Contains(lines[i], ".{") && strings.Contains(lines[i], "}(") {
+			// .{background-color: aqua;}(to text)
+			// <span style="background-color: aqua;">to text</span>
+			start := strings.Index(lines[i], ".{") + 2
+			end := strings.Index(lines[i], "}(")
+			style := lines[i][start:end]
+			data := lines[i][end+2:]
+			end2 := strings.Index(data, ")")
+			if end2 == -1 {
+				continue
+			}
+			data = data[:end2]
+			id := CreateCleanMD(prepare(md, data))
+			html := `<span style="` + style + `">` + id.String() + `</span>`
+			result := CreateCleanRAW(html).String()
+			data = strings.ReplaceAll(lines[i], `.{`+style+`}(`+data+`)`, result)
+			lines[i] = data
+			i--
+			if i < 0 {
+				i = 0
+			}
+		}
+	}
+
 	for i := 0; i < len(lines); i++ {
 		if strings.Contains(lines[i], ".image(") {
 			// .image(http://localhost:8080/assets/images/3.png :50vh)
@@ -129,33 +165,6 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			lines[i] = strings.Replace(lines[i], ".bx{"+data+"}", id.String(), 1)
 			_ = result
 		}
-		if strings.Contains(lines[i], ".{") && strings.Contains(lines[i], "}(") {
-			// .{background-color: aqua;}(to text)
-			// <span style="background-color: aqua;">to text</span>
-			start := strings.Index(lines[i], ".{") + 2
-			end := strings.Index(lines[i], "}(")
-			style := lines[i][start:end]
-			data := lines[i][end+2:]
-			end2 := strings.Index(data, ")")
-			if end2 == -1 {
-				continue
-			}
-			data = data[:end2]
-			id := CreateCleanMD(prepare(md, data))
-			html := `<span style="` + style + `">` + id.String() + `</span>`
-			data = strings.ReplaceAll(lines[i], `.{`+style+`}(`+data+`)`, html)
-			lines[i] = data
-			i--
-		}
-		if strings.Contains(lines[i], ".raw{") && strings.Contains(lines[i], "}") {
-			start := strings.Index(lines[i], ".raw{") + 5
-			end := strings.Index(lines[i], "}")
-			raw := lines[i][start:end]
-			id := CreateCleanRAW(raw)
-			data := strings.ReplaceAll(lines[i], `.raw{`+raw+`}`, id.String())
-			lines[i] = data
-			i--
-		}
 		if strings.Contains(lines[i], "{") && strings.Contains(lines[i], "}(") {
 			// {red}(to text)
 			// <span id="md-convert" style="color: red;">to text</span>
@@ -173,6 +182,9 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			data = strings.ReplaceAll(lines[i], `{`+color+`}(`+data+`)`, html)
 			lines[i] = data
 			i--
+			if i < 0 {
+				i = 0
+			}
 		}
 	}
 	for i := 0; i < len(lines); i++ {
@@ -214,25 +226,6 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			lines[i] = lines[i] + "\n" + id.String() + `</div>`
 			lines = append(lines[:i+1], lines[endLine+1:]...)
 		}
-		// if strings.HasPrefix(lines[i], ".style ") {
-		// if strings.Contains(lines[i], ".style ") {
-		// 	//.style "font-size: 3.8em;text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;" Present tool: Go + VUE
-		// 	// <div style="font-size: 3.8em;text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;"><p><strong>Present tool: Go + VUE</strong></p>
-
-		// 	parts := strings.SplitN(lines[i], `"`, 3)
-		// 	log.Println(parts)
-		// 	_ = parts
-		// 	if len(parts) == 1 {
-		// 		continue
-		// 	}
-		// 	if len(parts) == 3 {
-		// 		solution := createCleanMD(md, parts[2])
-		// 		lines[i] = `<div style="` + parts[1] + `">` + solution + `</div>`
-		// 	}
-		// 	if len(parts) == 2 {
-		// 		lines[i] = `<div style="` + parts[1] + `">`
-		// 	}
-		// }
 		if strings.HasPrefix(lines[i], ".table") {
 			var currLine int
 			lines[i] = `<table>`

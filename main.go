@@ -19,10 +19,15 @@ import (
 	"gitlab.com/fer-go/present/handlers"
 )
 
-func RandomString() string {
+//go:embed ui/static
+var dist embed.FS
+
+//go:embed ui/login.html
+var loginPage []byte
+
+func randomString() string {
 	chars := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 	var sb []rune
-	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 12; i++ {
 		sb = append(sb, chars[rand.Intn(len(chars))])
 	}
@@ -101,7 +106,7 @@ func main() { //nolint:funlen
 	http.Handle("/asciinema", handlers.Asciinema())
 	http.Handle("/ws", handlers.WS(wsServer, adminPWD))
 
-	http.Handle("/{$}", handlers.Homepage(portInt))
+	http.Handle("/{$}", handlers.Homepage(portInt, loginPage))
 
 	sub, err := fs.Sub(dist, "ui/static")
 	if err != nil {
@@ -165,6 +170,3 @@ func main() { //nolint:funlen
 
 	wg.Wait()
 }
-
-//go:embed ui/static
-var dist embed.FS

@@ -4,9 +4,9 @@
 Hello,
 this is a new tool called present written in Go
 pages are generated with Go templates and displayed in browser.
-For printing, general idea is to use printing in browser, but unfortunatelly, 
-this will only work in chromium like browsers. 
-Before we start, I need to mention that if you open it in multiple tabs simultaniously 
+For printing, general idea is to use printing in browser, but unfortunatelly,
+this will only work in chromium like browsers.
+Before we start, I need to mention that if you open it in multiple tabs simultaniously
 it will syncronize your presentation.
 
 Lets show some of the features
@@ -33,7 +33,7 @@ Lets show some of the features
 
 
 As is says on the screen, most of examples will show a code block
-that will demonstrate how to write the code, 
+that will demonstrate how to write the code,
 but best way is of course to see the source directly.
 .notes.end
 
@@ -46,7 +46,7 @@ Most examples will have a demo with effects and a code (in code block)
 &nbsp;
 
 .notes
-basically everything supported in common mark 
+basically everything supported in common mark
 (sort of standard for markdown format is supported here)
 plus there are some aditional features needed for presentations
 and some helper functions that will help with writting presentation
@@ -111,13 +111,13 @@ text that is `highlighted`
 
 .notes
 what you will notice is that most of 'special' commands
-start with a dot in front of them 
+start with a dot in front of them
 (so its clear they are not part of the standard markdown)
 
-so first one present, is here to help 
+so first one present, is here to help
 with centering the information.
 
-beside starting of block, to end it 
+beside starting of block, to end it
 you need to write .center.end
 .notes.end
 
@@ -139,9 +139,9 @@ a second line
 
 .notes
 second one is style, style can be used in tow ways:
-first one you see here, where after the keyword 
-quotation marks are surrounding the HTML style and 
-everything after the quotation marks is 
+first one you see here, where after the keyword
+quotation marks are surrounding the HTML style and
+everything after the quotation marks is
 data on which style will be applied
 .notes.end
 
@@ -169,7 +169,7 @@ data on which style will be applied
 
 .notes
 one of the keywords that is not using dot in front is coloring
-is not acctually a keyword but a combination of braces and parenthesis 
+is not acctually a keyword but a combination of braces and parenthesis
 where in braces you specify color in HTML format
 and in parenthesis you specify data that needs to be in that color
 .notes.end
@@ -244,8 +244,8 @@ use `.cut` (needs to be on start of the line)
 # #dot#replace
 
 .notes
-replace is used when same text needs 
-to be used in multiple places, so instead of 
+replace is used when same text needs
+to be used in multiple places, so instead of
 copying text you can write it once.
 
 also as I will show soon, this can be used with transitions
@@ -278,29 +278,29 @@ you can define mini templates #hello1# in sentence
 .replace #empty#
 .replace #check1# :white_check_mark:
 .notes
-so lets see how we can use replace with transaitions
+so lets see how we can use replace with transitions
 we have two options, and we want to show that one is the correct one
 .notes.end
 
 - option one #empty#
-- option two 
+- option two
 .cut #empty#.#check1#
 
 .cut
 `.cut ORIGINAL.END_RESULT` -> replaces one template with another on transition
 .notes
-we can use cut and after that keyword mention what replace command is 
+we can use cut and after that keyword mention what replace command is
 replaced with new content.
-in this case we define two replace blocks, 
+in this case we define two replace blocks,
 one that is empty and second one
 that contains checkmark
 .notes.end
 ```txt
-#dot#short -hashtag-empty-hashtag- 
+#dot#short -hashtag-empty-hashtag-
 #dot#short -hashtag-check-hashtag- :white_check_mark:
 
 - option one -hashtag-empty-hashtag-
-- option two 
+- option two
 #dot#cut -hashtag-empty-hashtag-.-hashtag-check-hashtag-
 
 ```
@@ -323,8 +323,8 @@ let see another more complex example
 
 `.cut ORIGINAL.END_RESULT ORIG2.END2` -> more than one replaces can be used
 .notes
-each cut or transition can have multiple replaces, 
-and effect of the first change must be 
+each cut or transition can have multiple replaces,
+and effect of the first change must be
 accounted for on second one
 
 jsut as a note, multiple replaces can be used on one transition
@@ -342,8 +342,8 @@ jsut as a note, multiple replaces can be used on one transition
 .================================
 ## Tables
 .notes
-even though tables are not offitially part of the 
-markdown specification, they can be used and format 
+even though tables are not offitially part of the
+markdown specification, they can be used and format
 is the same as on most popular implementations
 .notes.end
 
@@ -397,7 +397,7 @@ that is more HTML like, but this one does not allow formating
 # Images
 .notes
 images can be defined with keyword image, there is a specific format
-where after th eimage, width and height are specified, 
+where after th eimage, width and height are specified,
 its important to note that size can be define in any html format
 like pixels, but due to scaling, units relative to screen are best
 .notes.end
@@ -431,7 +431,7 @@ of course, combination of different keywords can be used
 .================================
 # Images - full screen
 .notes
-if we want to keep image size relative to width or height 
+if we want to keep image size relative to width or height
 that is also possible, we can just omit the width or height
 .notes.end
 
@@ -496,7 +496,7 @@ one of the obvious applications is using them with headers of the page
 in a way, this allows you to add custom keywords
 
 as seen here, you first define template specify its name and content
-to use it, you have to use the newly defined template keyword and 
+to use it, you have to use the newly defined template keyword and
 content that will replaced.
 
 standard golang templating can be used here
@@ -515,10 +515,10 @@ ____________
 .================================
 .notes
 since Go templating also allows using multiple params
-we can do that here too, 
-you define what are they, and then on call, 
-you can write text separated by space. 
-this is one limititation of this sytem, but if space is needed, 
+we can do that here too,
+you define what are they, and then on call,
+you can write text separated by space.
+this is one limititation of this sytem, but if space is needed,
 HTML non breaking space can be used
 .notes.end
 .template GOTITLE .Title .Extra .Last
@@ -544,7 +544,7 @@ ____________
 .TITLE Code
 
 .notes
-code blocks are also supported, 
+code blocks are also supported,
 and standard coloring is applied to them
 .notes.end
 
@@ -616,11 +616,11 @@ also since screen height s limited, only part of the code can be displayed
 .================================
 .TITLE Code - Running Example (editable)
 .notes
-when we have those commands a small button 
+when we have those commands a small button
 to run the code will be displayed
 also run can be triggered with simply pressing 'r'
 
-after running the code, result will be displayed 
+after running the code, result will be displayed
 in the window on top of the presentation
 .notes.end
 
@@ -683,7 +683,7 @@ func main() {
 .notes
 code is usually executed nad returned
 sometimes is usefull to show how much time
-execution of specific commands took 
+execution of specific commands took
 .notes.end
 
 .cast.stream
@@ -715,12 +715,12 @@ adding cast.stream will trigger streaming of data
 .================================
 .TITLE Code - Running code from folder
 .notes
-since some examples can be complex, 
+since some examples can be complex,
 commands can be executed from specific folder
 that is prepared in advance
 
 this does not require showing of the code on screen
-of course, in order to execution to workd properly, 
+of course, in order to execution to workd properly,
 all aplications used needs to be installed.
 for example, shown command is not able to be executed
 if *Go* is not installed
@@ -767,7 +767,7 @@ also, you can just write comments that are only seen in file
 .notes.end
 
 ```txt
-#dot#notes 
+#dot#notes
 my comment
 #dot#notes.end
 ```
