@@ -67,7 +67,6 @@ func Convert(source string) (string, error) {
 		return "", err
 	}
 	res := buf.String()
-	res = strings.ReplaceAll(res, "\n", "")
 	res = strings.TrimPrefix(res, "<p>")
 	res = strings.TrimSuffix(res, "</p>")
 
