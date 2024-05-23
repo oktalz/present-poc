@@ -76,116 +76,49 @@ func Convert(source string) (string, error) {
 	return res, nil
 }
 
-func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,gocognit,gocyclo,unparam,cyclop,maintidx
+func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,gocognit,unparam,cyclop,maintidx
 	fileContent = processReplace(fileContent, ".raw", ".raw.end", func(data string) string {
-		return CreateCleanRAW(data).String()
+		return data
 	})
 	fileContent = processReplace(fileContent, ".raw{", "}", func(data string) string {
-		return CreateCleanRAW(data).String()
+		return data
+	})
+	fileContent = processReplace(fileContent, ".center", ".center.end", func(data string) string {
+		return `<div style="text-align:center">` + CreateCleanMD(prepare(md, data)).String() + `</div>`
+	})
+	fileContent = processReplace(fileContent, ".image(", ")", func(data string) string {
+		parts := strings.SplitN(data, ` `, 2) //nolint:mnd
+		html := `<img src="` + parts[0] + `" `
+		width := `auto`
+		height := `auto`
+		if len(parts) > 1 {
+			wh := strings.SplitN(parts[1], `:`, 2)
+			if len(wh) == 2 { //nolint:mnd
+				if wh[0] != "" {
+					width = wh[0]
+				}
+				if wh[1] != "" {
+					height = wh[1]
+				}
+			}
+		}
+		html += `style="object-fit: contain; width: ` + width + `; height: ` + height + `;">`
+		return html
+	})
+	fileContent = processReplaceMiddle(fileContent, ".{", "}(", ")", func(style, content string) string {
+		id := CreateCleanMD(prepare(md, content))
+		html := `<span style="` + style + `">` + id.String() + `</span>`
+		return html
+	})
+
+	fileContent = processReplace(fileContent, ".bx{", "}", func(data string) string {
+		return `<i class='bx ` + data + `'"></i>`
+	})
+	fileContent = processReplaceMiddle(fileContent, ".{", "}(", ")", func(color, content string) string {
+		return `<span style="color: ` + color + `;">` + CreateCleanMD(prepare(md, content)).String() + `</span>`
 	})
 
 	lines := strings.Split(fileContent, "\n")
-	for i := 0; i < len(lines); i++ {
-		if strings.Contains(lines[i], ".{") && strings.Contains(lines[i], "}(") {
-			// .{background-color: aqua;}(to text)
-			// <span style="background-color: aqua;">to text</span>
-			start := strings.Index(lines[i], ".{") + 2
-			end := strings.Index(lines[i], "}(")
-			style := lines[i][start:end]
-			data := lines[i][end+2:]
-			end2 := strings.Index(data, ")")
-			if end2 == -1 {
-				continue
-			}
-			data = data[:end2]
-			id := CreateCleanMD(prepare(md, data))
-			html := `<span style="` + style + `">` + id.String() + `</span>`
-			result := CreateCleanRAW(html).String()
-			data = strings.ReplaceAll(lines[i], `.{`+style+`}(`+data+`)`, result)
-			lines[i] = data
-			i--
-			if i < 0 {
-				i = 0
-			}
-		}
-	}
-
-	for i := 0; i < len(lines); i++ {
-		if strings.Contains(lines[i], ".image(") {
-			// .image(http://localhost:8080/assets/images/3.png :50vh)
-			// <div style="position: absolute; top: 35vh; left: 15vh; transform: rotate(-15deg);"><p><img src="http://localhost:8080/assets/images/3.png" style=" object-fit: contain; width: auto; height: 50vh;" "=""></p></div>
-			imageType := `.image(`
-			dotImageIndex := strings.Index(lines[i], ".image(")
-			if dotImageIndex == -1 {
-				continue
-			}
-			data := lines[i][dotImageIndex:]
-
-			dotImageIndex = strings.Index(data, ")")
-			if dotImageIndex == -1 {
-				continue
-			}
-			data = data[7:dotImageIndex]
-
-			parts := strings.SplitN(data, ` `, 2)
-			// log.Println(parts)
-			_ = parts
-			html := `<img src="` + parts[0] + `" `
-			width := `auto`
-			height := `auto`
-
-			if len(parts) > 1 {
-				wh := strings.SplitN(parts[1], `:`, 2)
-				if len(wh) == 2 {
-					if wh[0] != "" {
-						width = wh[0]
-					}
-					if wh[1] != "" {
-						height = wh[1]
-					}
-				}
-			}
-			html += `style="object-fit: contain; width: ` + width + `; height: ` + height + `;">`
-			data = imageType + data + ")"
-			data = strings.ReplaceAll(lines[i], data, html)
-			lines[i] = data
-		}
-		for strings.Contains(lines[i], ".bx{") {
-			indexStart := strings.Index(lines[i], ".bx{")
-			chunk := lines[i][indexStart:] //nolint:gocritic
-			indexEnd := strings.Index(chunk, "}")
-			if indexEnd == -1 {
-				break
-			}
-			data := chunk[4:indexEnd]
-			result := `<i class='bx ` + data + `'"></i>`
-			id := ulid.Make()
-			blocks = append(blocks, blockData{ID: id, Data: result})
-			lines[i] = strings.Replace(lines[i], ".bx{"+data+"}", id.String(), 1)
-			_ = result
-		}
-		if strings.Contains(lines[i], "{") && strings.Contains(lines[i], "}(") {
-			// {red}(to text)
-			// <span id="md-convert" style="color: red;">to text</span>
-			start := strings.Index(lines[i], "{") + 1
-			end := strings.Index(lines[i], "}(")
-			color := lines[i][start:end]
-			data := lines[i][end+2:]
-			end2 := strings.Index(data, ")")
-			if end2 == -1 {
-				continue
-			}
-			data = data[:end2]
-			id := CreateCleanMD(prepare(md, data))
-			html := `<span style="color: ` + color + `;">` + id.String() + `</span>`
-			data = strings.ReplaceAll(lines[i], `{`+color+`}(`+data+`)`, html)
-			lines[i] = data
-			i--
-			if i < 0 {
-				i = 0
-			}
-		}
-	}
 	for i := 0; i < len(lines); i++ {
 		if i >= len(lines) {
 			break
@@ -286,34 +219,6 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 					currLine--
 				}
 			}
-		}
-		if strings.HasPrefix(lines[i], ".center") {
-			// first find the .center.end line
-			var endLine int
-			for endLine = i + 1; endLine < len(lines); endLine++ {
-				if lines[endLine] == ".center.end" {
-					break
-				}
-			}
-			if endLine > len(lines) {
-				endLine = len(lines) - 1
-			}
-
-			var centerLines []string
-			for j := i + 1; j < endLine; j++ {
-				centerLines = append(centerLines, lines[j])
-			}
-			var buf bytes.Buffer
-			for index, line := range centerLines {
-				if index > 0 {
-					buf.WriteString("\n")
-				}
-				buf.WriteString(line)
-			}
-			id := CreateCleanMD(prepare(md, buf.String()))
-			// solution := prepare(md, buf.String())
-			lines[i] = `<div style="text-align:center">` + id.String() + `</div>`
-			lines = append(lines[:i+1], lines[endLine+1:]...)
 		}
 		if strings.HasPrefix(lines[i], ".slide.enable.overflow") {
 			centerLines := lines[i+1:]
