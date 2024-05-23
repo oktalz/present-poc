@@ -47,7 +47,7 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 			return
 		}
 		if adminPwd != "" && payload.Admin != adminPwd {
-			err = conn.Write(context.Background(), mt, []byte("presenter<br>option only<br>🤷 💥<br>")) //nolint:contextcheck
+			err = conn.Write(context.Background(), mt, []byte("presenter<br>option only<br>🤷 💥 💔<br>")) //nolint:contextcheck
 			if err != nil {
 				log.Println("write:", err)
 			}
