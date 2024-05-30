@@ -79,7 +79,7 @@ code {
   margin-left: 0px;
   bottom: 0vh;
   position:absolute;
-  right : 51vw;  
+  right : 51vw;
   padding-top: 1vh;
   padding-right: 1vh;
   color: rgb(107, 109, 109);
@@ -199,11 +199,11 @@ hr {
   display: inline-block;
   font-size: 7vh;
   font-family: cursive;
-  cursor: pointer;  
+  cursor: pointer;
 }
 
 .closed {
- display: none; 
+ display: none;
 }
 
 .terminal {
@@ -223,13 +223,13 @@ hr {
   border-radius: 20px;
   border-color: black;
   border-width: 2px;
-  font-family: 'Consolas';  
-  font-style: normal; 
-  font-size: 6vh; 
+  font-family: 'Consolas';
+  font-style: normal;
+  font-size: 6vh;
   border:3px solid black;
   overflow: auto;
-  overflow-x: auto; 
-  overflow-y: auto; 
+  overflow-x: auto;
+  overflow-y: auto;
   z-index: 10;
 }
 
@@ -357,3 +357,21 @@ pre > svg {
   .page-not-print-visible{
   }
 }
+
+ /* scrollbar */
+ ::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #93999d;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  width: 15px;
+  height: 15px;
+}
+/* scrollbar end */

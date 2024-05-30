@@ -118,6 +118,60 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 		return `<span style="color: ` + color + `;">` + CreateCleanMD(prepare(md, content)).String() + `</span>`
 	})
 
+	fileContent = processReplace(fileContent, ".table", ".table.end", func(data string) string {
+		html := `<table>`
+		var currLine int
+		trStarted := false
+		tdData := ""
+		lines := strings.Split(data, "\n")
+		i := 0
+		for currLine = i + 1; currLine < len(lines); currLine++ {
+			if lines[currLine] == ".tr" {
+				if trStarted {
+					if tdData != "" {
+						id := CreateCleanMD(tdData)
+						tdData = ""
+						html += id.String() + `</td></tr><tr>`
+					} else {
+						html += `</tr><tr>`
+					}
+				} else {
+					html += `<tr>`
+					trStarted = true
+				}
+				continue
+			}
+			if strings.HasPrefix(lines[currLine], ".td") {
+				line := lines[currLine]
+				if tdData != "" {
+					id := CreateCleanMD(tdData)
+					// solution := prepare(md, tdData)
+					html += id.String() + `</td><td>`
+				} else {
+					html += `<td>`
+				}
+				parts := strings.Split(line, " ")
+				if len(parts) > 1 && strings.Join(parts[1:], " ") != "" {
+					id := CreateCleanMD(strings.Join(parts[1:], " "))
+					// solution := prepare(md, strings.Join(parts[1:], " "))
+					html += id.String() + `</td>`
+				}
+				tdData = ""
+				continue
+			}
+			tdData += lines[currLine] + "\n"
+		}
+		id := CreateCleanMD(tdData)
+		// solution := prepare(md, tdData)
+		if trStarted {
+			html += id.String() + `</td></tr></table>`
+		} else {
+			html += `</table>`
+		}
+
+		return html
+	})
+
 	lines := strings.Split(fileContent, "\n")
 	for i := 0; i < len(lines); i++ {
 		if i >= len(lines) {
@@ -157,68 +211,6 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			id := CreateCleanMD(solution)
 			lines[i] = lines[i] + "\n" + id.String() + `</div>`
 			lines = append(lines[:i+1], lines[endLine+1:]...)
-		}
-		if strings.HasPrefix(lines[i], ".table") {
-			var currLine int
-			lines[i] = `<table>`
-			trStarted := false
-			tdStarted := false
-			tdData := ""
-			for currLine = i + 1; currLine < len(lines); currLine++ {
-				if lines[currLine] == ".table.end" {
-					id := CreateCleanMD(tdData)
-					// solution := prepare(md, tdData)
-					if trStarted {
-						lines[currLine] = id.String() + `</td></tr></table>`
-					} else {
-						lines[currLine] = `</table>`
-					}
-					trStarted = false //nolint:wastedassign
-					break
-				}
-				if lines[currLine] == ".tr" {
-					if trStarted {
-						if tdData != "" {
-							id := CreateCleanMD(tdData)
-							// solution := prepare(md, tdData)
-							tdData = ""
-							tdStarted = false
-							lines[currLine] = id.String() + `</td></tr><tr>`
-						} else {
-							lines[currLine] = `</tr><tr>`
-						}
-					} else {
-						lines[currLine] = `<tr>`
-						trStarted = true
-					}
-				}
-				if strings.HasPrefix(lines[currLine], ".td") {
-					tdStarted = false
-					line := lines[currLine]
-					if tdData != "" {
-						id := CreateCleanMD(tdData)
-						// solution := prepare(md, tdData)
-						lines[currLine] = id.String() + `</td><td>`
-					} else {
-						lines[currLine] = `<td>`
-					}
-					parts := strings.Split(line, " ")
-					if len(parts) > 1 && strings.Join(parts[1:], " ") != "" {
-						id := CreateCleanMD(strings.Join(parts[1:], " "))
-						// solution := prepare(md, strings.Join(parts[1:], " "))
-						lines[currLine] += id.String() + `</td>`
-					} else {
-						tdStarted = true
-					}
-					tdData = ""
-					continue
-				}
-				if tdStarted {
-					tdData += "\n" + lines[currLine]
-					lines = append(lines[:currLine], lines[currLine+1:]...)
-					currLine--
-				}
-			}
 		}
 		if strings.HasPrefix(lines[i], ".slide.enable.overflow") {
 			centerLines := lines[i+1:]
@@ -286,13 +278,6 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			}
 			_ = tabs
 		}
-
-		// 	}
-		// 	//id := createCleanMD(md, prepare(md, buf.String()))
-		// 	//solution := prepare(md, buf.String())
-		// 	//lines[i] = `<div style="text-align:center">` + id.String() + `</div>`
-		// 	//lines = append(lines[:i+1], lines[endLine+1:]...)
-		// }
 	}
 	fileContent = strings.Join(lines, "\n")
 

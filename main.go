@@ -137,7 +137,6 @@ func main() { //nolint:funlen
 
 	var errList []error
 	wg := new(sync.WaitGroup)
-	// Create a TCP listener for IPv4
 	ln4, err := net.Listen("tcp4", ":"+port)
 	if err == nil {
 		wg.Add(1)
@@ -151,7 +150,6 @@ func main() { //nolint:funlen
 		errList = append(errList, err)
 	}
 
-	// Create a TCP listener for IPv6
 	ln6, err := net.Listen("tcp6", "[::]:"+port)
 	if err == nil {
 		wg.Add(1)

@@ -38,7 +38,6 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, he
 	}
 
 	fileContent := headerFile + string(content)
-	lines := strings.Split(fileContent, "\n")
 	slides := []types.Slide{}
 
 	var slide strings.Builder
@@ -52,33 +51,39 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, he
 	slideDashCut := ro.EveryDashIsACut
 	notes := ""
 
-	for index := 0; index < len(lines); index++ {
-		line := lines[index]
-		if strings.HasPrefix(line, ".template") {
-			// we have a template
-			templateData := strings.TrimPrefix(line, ".template ")
-			lines[index] = ""
-			index++
-			var template strings.Builder
-			for {
-				line = lines[index]
-				lines[index] = ""
-				if strings.HasPrefix(line, ".template.end") {
-					break
-				}
-				template.WriteString(line)
-				template.WriteString("\n")
-				index++
-			}
-			templateVars := []string{}
-			data := strings.Split(templateData, " ")
-			for i := 1; i < len(data); i++ {
-				templateVars = append(templateVars, data[i])
-			}
-			lines = applyTemplate(lines, data[0], templateVars, strings.TrimSuffix(template.String(), "\n"))
-			continue
+	startStr := ".template "
+	endStr := ".template.end"
+	templates := []TemplateData{}
+	for {
+		start := strings.Index(fileContent, startStr)
+		if start == -1 {
+			break
 		}
+		start += len(startStr)
+		content := fileContent[start:]
+		end := strings.Index(content, endStr)
+		if end == -1 {
+			break
+		}
+		raw := content[:end]
+		data := strings.Split(raw, "\n")
+		templateVars := []string{}
+		dataVars := strings.Split(data[0], " ")
+		for i := 1; i < len(dataVars); i++ {
+			templateVars = append(templateVars, dataVars[i])
+		}
+		templates = append(templates, TemplateData{
+			Name: data[0],
+			Data: strings.Join(data[1:], "\n"),
+			Vars: templateVars,
+		})
+		fileContent = strings.ReplaceAll(fileContent, startStr+raw+endStr, "")
 	}
+	for i := len(templates) - 1; i >= 0; i-- {
+		fileContent = applyTemplate(fileContent, templates[i])
+	}
+
+	lines := strings.Split(fileContent, "\n")
 
 	for index := 0; index < len(lines); index++ {
 		line := lines[index]
