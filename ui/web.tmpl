@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="icon" type="image/png" href="/icon.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ or .Title "Hello World!" }}</title>
   <style>
     {{template "css" .}}
@@ -14,12 +14,13 @@
   <script src="boxicons.js"></script>
   <link href="boxicons.min.css" rel='stylesheet'>
   <script>
-    hljs.highlightAll(); 
+    hljs.highlightAll();
     maxPage = {{len .Slides }} - 1;
     port = {{.Port}};
+    let pageMapping = new Map();
   </script>
   <script>
-    {{template "js" .}}  
+    {{template "js" .}}
   </script>
   <script>mermaid.initialize({startOnLoad: true});</script>
   <script>
@@ -42,7 +43,7 @@
   </script>
 </head>
 <body>
-<div id="app">  
+<div id="app">
   <div class="" id="spinner"></div>
   {{template "notes" .}}
   {{template "menu" .}}
@@ -50,16 +51,19 @@
     {{template "slide" .}}
   {{- end -}}
 </div>
-    
+
 </body>
 </html>
 
 {{ define "slide" }}
-  <div class="slide hidden {{if eq .PrintPage 0}}page-not-print-visible{{end}}" id="slide-{{.PageIndex}}" style="font-size: {{.FontSize}}; background-image: url('{{.BackgroundImage}}');">
+  <div class="slide hidden{{- if .PrintDisable -}} page-not-print-visible{{- end -}}{{- if eq .PrintPage 0 -}} page-not-print-visible{{- end -}}" {{if not .PrintOnly}}id="slide-{{.PageIndex}}"{{end}} style="font-size: {{.FontSize}}; background-image: url('{{.BackgroundImage}}');">
   <div class="presenter-comment closed" id="notes-{{.PageIndex}}">
     {{.Notes}}
   </div>
-  <div class="page-header">  
+  <script>
+    pageMapping.set({{.PageIndex}},{{.PageID}})
+  </script>
+  <div class="page-header">
     {{- if .HasCast }}
     <div class="run" id="run-{{.PageIndex}}">
       <i class='bx bxs-right-arrow' id="run-icon-{{.PageIndex}}" style="color: #00ADD8;"></i>
@@ -72,15 +76,15 @@
   <div class="slide-data">
     {{.HTML}}
   </div>
-  <div class="page-footer">  
+  <div class="page-footer">
     {{- if .HasCast }}
     <div class="terminal closed" id="terminal-{{.PageIndex}}">{{ .HasCast }}</div>
     {{- end }}
     {{.PageNumber}}
   </div>
   </div>
-  {{- if ne .PrintPage 0}}
-    <div class="page-break"></div>
+  {{- if and (ne .PrintPage 0) (not .PrintDisable)}}
+  <div class="page-break"></div>
   {{- end}}
 {{ end }}
 
@@ -88,7 +92,7 @@
   <div class="menu menu-hidden" id="menu">
     <table>
       {{- range .Menu -}}
-      <tr>        
+      <tr>
           <td onclick="setPage({{.Link}})" style="cursor: pointer;">{{.Page}}</td>
           <td>&nbsp;&nbsp;&nbsp;</td>
           <td onclick="setPage({{.Link}})" style="cursor: pointer;">{{.Title}}</td>
@@ -99,7 +103,7 @@
 {{ end }}
 
 {{ define "notes" }}
-  <div class="presenter-time closed" id="presenter-time-top">    
+  <div class="presenter-time closed" id="presenter-time-top">
     <span style="cursor: pointer;">
       <i class='bx bx-pause' onclick="notesPause=true"></i>
       <i class='bx bx-play' onclick="notesPause=false"></i>
@@ -108,6 +112,6 @@
     <span id="presenter-time"></span>
   </div>
   <div class="presenter-current-time closed" id="presenter-current-time">
-    
+
   </div>
 {{ end }}

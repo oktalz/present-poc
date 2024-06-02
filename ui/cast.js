@@ -19,7 +19,8 @@ function castTerminal(){
 
     // Connection opened
     socket.addEventListener('open', () => {
-        let data = {slide: pageNum, code: codeText}
+        let pageID = pageMapping.get(pageNum)
+        let data = {slide: pageID, code: codeText}
         let adminPWD = localStorage.getItem('admin-token');
         if (adminPWD != "") {
             data.Admin = adminPWD

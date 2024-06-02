@@ -40,17 +40,14 @@ func parseCommandBlock(lines []string, index int, codeBlockShowStart, codeBlockS
 	if codeBlockShowEnd != nil {
 		codeEnd = index + 2 + *codeBlockShowEnd
 	}
-	blockIndex := 0
-	_ = blockIndex
+	blockFound := false
 	for i := index + 2; i < len(lines); i++ {
 		if strings.HasPrefix(lines[i], "```") {
-			for j := range i {
-				if strings.HasPrefix(lines[j], "```") {
-					blockIndex++
-				}
+			if blockFound {
+				break
 			}
-			tc.Index = blockIndex / 2
-			break
+			blockFound = true
+			continue
 		}
 		if i < codeStart {
 			codeHeader += lines[i] + "\n"

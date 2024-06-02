@@ -300,11 +300,36 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 			}
 		}
 
-		hasLink := strings.Contains(slide.Markdown, ".slide.link.next")
+		hasLink := strings.Contains(slide.Markdown, ".slide.print.disable")
 		if hasLink {
 			lines := strings.Split(slide.Markdown, "\n")
 			for index, line := range lines {
-				if strings.HasPrefix(line, ".slide.link.next") {
+				if strings.HasPrefix(line, ".slide.print.disable") {
+					slide.PrintDisable = true
+					lines = append(lines[:index], lines[index+1:]...)
+					slide.Markdown = strings.Join(lines, "\n")
+					break
+				}
+			}
+		}
+		hasLink = strings.Contains(slide.Markdown, ".slide.print.only")
+		if hasLink {
+			lines := strings.Split(slide.Markdown, "\n")
+			for index, line := range lines {
+				if strings.HasPrefix(line, ".slide.print.only") {
+					slide.PrintOnly = true
+					lines = append(lines[:index], lines[index+1:]...)
+					slide.Markdown = strings.Join(lines, "\n")
+					break
+				}
+			}
+		}
+
+		hasLink = strings.Contains(slide.Markdown, ".slide.link.next ")
+		if hasLink {
+			lines := strings.Split(slide.Markdown, "\n")
+			for index, line := range lines {
+				if strings.HasPrefix(line, ".slide.link.next ") {
 					link := strings.TrimPrefix(line, ".slide.link.next ")
 					slide.LinkNext = link
 					lines = append(lines[:index], lines[index+1:]...)
@@ -314,11 +339,11 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 			}
 		}
 
-		hasLink = strings.Contains(slide.Markdown, ".slide.link.previous")
+		hasLink = strings.Contains(slide.Markdown, ".slide.link.previous ")
 		if hasLink {
 			lines := strings.Split(slide.Markdown, "\n")
 			for index, line := range lines {
-				if strings.HasPrefix(line, ".slide.link.previous") {
+				if strings.HasPrefix(line, ".slide.link.previous ") {
 					link := strings.TrimPrefix(line, ".slide.link.previous ")
 					slide.LinkPrev = link
 					lines = append(lines[:index], lines[index+1:]...)
@@ -328,11 +353,11 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 			}
 		}
 
-		hasLink = strings.Contains(slide.Markdown, ".slide.link")
+		hasLink = strings.Contains(slide.Markdown, ".slide.link ")
 		if hasLink {
 			lines := strings.Split(slide.Markdown, "\n")
 			for index, line := range lines {
-				if strings.HasPrefix(line, ".slide.link") {
+				if strings.HasPrefix(line, ".slide.link ") {
 					link := strings.TrimPrefix(line, ".slide.link ")
 					slide.Link = link
 					lines = append(lines[:index], lines[index+1:]...)

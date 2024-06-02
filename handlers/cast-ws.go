@@ -54,7 +54,9 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 			return
 		}
 
-		log.Printf("recv: %s", bodyBytes)
+		log.Println("recv: " + strconv.Itoa(payload.Slide))
+		log.Printf("recv: %s", payload.Code)
+		// log.Printf("recv: %s", bodyBytes) - contains pwd
 		// Simulate sending events (you can replace this with real data)
 		// for i := 0; i < 10; i++ {
 		// 	fmt.Fprintf(w, "data: %s\n\n", fmt.Sprintf("Event %d", i))
@@ -75,6 +77,9 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 		tcAfter := slides[slide].TerminalCommandAfter
 		if slides[slide].CanEdit {
 			for i := range terminalCommand {
+				if terminalCommand[i].Index == -1 {
+					terminalCommand[i].Index = 0
+				}
 				terminalCommand[i].Code.Code = payload.Code[terminalCommand[i].Index]
 			}
 		}

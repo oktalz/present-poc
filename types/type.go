@@ -47,6 +47,7 @@ type Slide struct {
 	BackgroundImage       string
 	BackgroundColor       string
 	PageNumber            int
+	PageID                int
 	PageIndex             int
 	PrintPage             int
 	FontSize              string
@@ -54,6 +55,8 @@ type Slide struct {
 	Link                  string
 	LinkNext              string
 	LinkPrev              string
+	PrintOnly             bool
+	PrintDisable          bool
 }
 
 type Menu struct {
