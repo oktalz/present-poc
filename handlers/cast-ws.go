@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -46,7 +47,14 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 			}
 			return
 		}
-		if adminPwd != "" && payload.Admin != adminPwd {
+		cookie, err := r.Cookie("present")
+		var cookiePassword string
+		if err == nil {
+			// Cookie exists, you can access its value using cookie.Value
+			fmt.Println("Cookie value:", cookie.Value)
+			cookiePassword = cookie.Value
+		}
+		if adminPwd != "" && cookiePassword != adminPwd {
 			err = conn.Write(context.Background(), mt, []byte("presenter<br>option only<br>🤷 💥 💔<br>")) //nolint:contextcheck
 			if err != nil {
 				log.Println("write:", err)

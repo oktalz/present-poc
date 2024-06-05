@@ -93,12 +93,21 @@ func main() { //nolint:funlen
 
 	// http.Handle("/api", handlers.API())
 	// http.Handle("/exec", handlers.Exec())
-	adminPWD := os.Getenv("ADMIN")
+	adminPWD := os.Getenv("ADMIN_PWD")
 	if adminPWD != "" {
-		log.Println("admin token is set")
-		log.Println("☢☢☢")
-		log.Println("set localStorage.setItem('admin-token', '') in browser !!!")
-		log.Println("set correct token !!! 🙈🙉🙊")
+		log.Println("admin token is set ☢☢☢ 🙈🙉🙊")
+		// adminPWD, err = hash.Hash(adminPWD)
+		// if err != nil {
+		// 	panic(err)
+		// }
+	}
+	userPwd := os.Getenv("USER_PWD")
+	if userPwd != "" {
+		log.Println("user password is set")
+		// userPwd, err = hash.Hash(userPwd)
+		// if err != nil {
+		// 	panic(err)
+		// }
 	}
 
 	// http.Handle("/cast", handlers.Cast())
@@ -106,7 +115,7 @@ func main() { //nolint:funlen
 	http.Handle("/asciinema", handlers.Asciinema())
 	http.Handle("/ws", handlers.WS(wsServer, adminPWD))
 
-	http.Handle("/{$}", handlers.Homepage(portInt, loginPage))
+	http.Handle("/{$}", handlers.Homepage(portInt, loginPage, userPwd, adminPWD))
 
 	sub, err := fs.Sub(dist, "ui/static")
 	if err != nil {

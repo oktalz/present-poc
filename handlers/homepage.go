@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
 	"text/template"
 
 	"gitlab.com/fer-go/present/data"
+	"gitlab.com/fer-go/present/hash"
 	"gitlab.com/fer-go/present/types"
 	"gitlab.com/fer-go/present/ui"
 )
@@ -19,36 +21,49 @@ type TemplateData struct {
 	Port   int
 }
 
-func Homepage(port int, loginPage []byte) http.Handler {
+func Homepage(port int, loginPage []byte, userPwd, adminPwd string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// user, pass, _ := r.BasicAuth()
-		// var cookie *http.Cookie
-		// var err error
-		// if user == "" || pass == "" {
-		// 	cookie, err = r.Cookie("present")
-		// 	if err == nil {
-		// 		// Cookie exists, you can access its value using cookie.Value
-		// 		fmt.Println("Cookie value:", cookie.Value)
-		// 		user = "present"
-		// 		pass = cookie.Value
-		// 	}
-		// }
-		// if user != "present" || pass != os.Getenv("USER_PWD") {
-		// 	_, err := w.Write(loginPage)
-		// 	if err != nil {
-		// 		log.Println(err)
-		// 		return
-		// 	}
-		// 	return
-		// }
-		// cookieSet := http.Cookie{
-		// 	Name:  "present",
-		// 	Value: os.Getenv("USER_PWD"),
-		// }
-		// http.SetCookie(w, &cookieSet)
-		// if cookie == nil {
-		// 	return
-		// }
+		user, pass, _ := r.BasicAuth()
+		var cookie *http.Cookie
+		var cookiePassword bool
+		var err error
+		if user == "" || pass == "" {
+			cookie, err = r.Cookie("present")
+			if err == nil {
+				// Cookie exists, you can access its value using cookie.Value
+				fmt.Println("Cookie value:", cookie.Value)
+				user = "present"
+				pass = cookie.Value
+				cookiePassword = true
+			}
+		}
+		pass, _ = hash.Hash(pass)
+		passwordOK := hash.Equal(pass, userPwd) || hash.Equal(pass, adminPwd)
+		log.Println(passwordOK)
+		if passwordOK {
+			_, err := w.Write(loginPage)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
+		if !cookiePassword {
+			pass, err = hash.Hash(pass)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+		}
+
+		cookieSet := http.Cookie{
+			Name:  "present",
+			Value: pass,
+		}
+		http.SetCookie(w, &cookieSet)
+		if cookie == nil {
+			return
+		}
 
 		presentation := data.Presentation()
 		slides := presentation.Slides

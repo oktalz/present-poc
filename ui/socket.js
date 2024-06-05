@@ -58,10 +58,6 @@ function startWebsocket() {
 
   function updateData(data) {
     console.log("updateData send", data)
-    let adminPWD = localStorage.getItem('admin-token');
-    if (adminPWD != "") {
-      data.Admin = adminPWD
-    }
 
     if (socket === null) {
       console.log("socket is null, skipping send")

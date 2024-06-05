@@ -20,11 +20,11 @@ function getSlideElements() {
   return document.querySelectorAll('[id^="slide-"]');
 }
 
-function setPage(newPage) { 
+function setPage(newPage) {
   if (newPage < -2){
     return
   }
-  page = newPage 
+  page = newPage
   if (page < 0) {
     page = 0;
   }
@@ -53,8 +53,8 @@ function updateSlideVisibility(page) {
 document.addEventListener('keydown', function(e) {
   var keyCode = e.key;
   activeElement = document.activeElement;
-  if (activeElement != null) {    
-    if (keyCode == 'Escape' ) { 
+  if (activeElement != null) {
+    if (keyCode == 'Escape' ) {
       activeElement.blur();
     }
     if (activeElement.classList.contains('hljs') && (activeElement instanceof HTMLElement && activeElement.isContentEditable)) {
@@ -72,10 +72,10 @@ document.addEventListener('keydown', function(e) {
     })
   }
   if (keyCode == 'ArrowLeft' || keyCode == 'ArrowDown' || keyCode == 'PageUp') {
-    oldPage = page;    
+    oldPage = page;
     page = page - 1;
     target = getPageDown(oldPage,page);
-    setPage(target);  
+    setPage(target);
     updateData({
       Author: myID,
       Slide: page
@@ -111,7 +111,7 @@ window.addEventListener('wheel', function(event) {
   var rect = target.getBoundingClientRect()
   x = eventObj.clientX - rect.left,
   y = eventObj.clientY - rect.top;
-  var elementUnderMouse = document.elementFromPoint(x, y); 
+  var elementUnderMouse = document.elementFromPoint(x, y);
   if (elementUnderMouse != null) {
     if (elementUnderMouse.classList.contains('hljs') && (elementUnderMouse instanceof HTMLElement && elementUnderMouse.isContentEditable)) {
         return;
@@ -168,7 +168,7 @@ function tabChangeGlobal(tabID){
   for (let i = 0; i < tablinks.length; i++) {
     if (tablinks[i] && tablinks[i].getAttribute('id') === "tab-"+tabID) {
       tablinks[i].classList.add("active");
-    } else {          
+    } else {
       tablinks[i].classList.remove("active");
     }
   }
@@ -176,10 +176,10 @@ function tabChangeGlobal(tabID){
   console.log(tablinks)
   for (let i = 0; i < tablinks.length; i++) {
     if (tablinks[i] && tablinks[i].getAttribute('id') === tabID) {
-      tablinks[i].classList.remove("hidden-tab");          
+      tablinks[i].classList.remove("hidden-tab");
     } else {
       tablinks[i].classList.add("hidden-tab");
-    }       
+    }
   }
 }
 
@@ -190,3 +190,18 @@ function correctD2Graph(svg){
   svg.parentElement.setAttribute('height', "100%");
   svg.parentElement.setAttribute('preserveAspectRatio', "YMin meet");
 }
+
+function getCookie(name) {
+  let cookieArr = document.cookie.split("; ");
+
+  for(let i = 0; i < cookieArr.length; i++) {
+      let cookiePair = cookieArr[i].split("=");
+
+      if(name == cookiePair[0]) {
+          return decodeURIComponent(cookiePair[1]);
+      }
+  }
+  return "";
+}
+
+//getCookie("present")

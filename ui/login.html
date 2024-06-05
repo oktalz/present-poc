@@ -78,11 +78,7 @@ body {
       }
     })
     .then(response => {
-        if (response.ok) {
-          location.reload()
-        } else {
-          // Handle unsuccessful response here
-        }
+        location.reload()
       })
       .catch(error => {
         console.error('Error:', error);

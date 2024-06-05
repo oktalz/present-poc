@@ -71,7 +71,13 @@ func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen
 		isAdmin := false
 		if adminPwd == "" {
 			isAdmin = true
+		} else {
+			cookie, err := r.Cookie("present")
+			if err == nil {
+				isAdmin = cookie.Value == adminPwd
+			}
 		}
+
 		for {
 			select {
 			case msg := <-serverEvent:
