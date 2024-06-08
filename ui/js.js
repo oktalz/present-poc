@@ -61,7 +61,7 @@ document.addEventListener('keydown', function(e) {
         return;
     }
   }
-  if (keyCode == 'ArrowRight' || keyCode == 'ArrowUp' || keyCode == 'PageDown' || keyCode == ' ' ) {
+  if (nextPageKeys.includes(keyCode)) {
     oldPage = page;
     page = page + 1;
     target = getPageUp(oldPage,page);
@@ -71,7 +71,7 @@ document.addEventListener('keydown', function(e) {
       Slide: page
     })
   }
-  if (keyCode == 'ArrowLeft' || keyCode == 'ArrowDown' || keyCode == 'PageUp') {
+  if (previousPageKeys.includes(keyCode)) {
     oldPage = page;
     page = page - 1;
     target = getPageDown(oldPage,page);
@@ -81,15 +81,15 @@ document.addEventListener('keydown', function(e) {
       Slide: page
     })
   }
-  if (keyCode == 'r' || keyCode == 'e' ) {
+  if (terminalCast.includes(keyCode)) {
     castTerminal()
   }
-  if (keyCode == 'c' || keyCode == 'b' ) {
+  if (terminalClose.includes(keyCode)) {
     const terminalElement = document.getElementById('terminal-'+page);
     terminalElement.innerHTML = ''
     terminalElement.classList.add('closed');
   }
-  if (keyCode == 'm' ) {
+  if (menuKey.includes(keyCode)) {
     showMenu = !showMenu
     if (showMenu) {
       document.getElementById('menu').classList.remove('menu-hidden');

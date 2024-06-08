@@ -18,6 +18,11 @@
     maxPage = {{len .Slides }} - 1;
     port = {{.Port}};
     let pageMapping = new Map();
+    let nextPageKeys = [{{range $index, $element := .PageNext}}{{if $index}}, {{end}}"{{$element}}"{{end}}]
+    let previousPageKeys = [{{range $index, $element := .PagePrevious}}{{if $index}}, {{end}}"{{$element}}"{{end}}]
+    let terminalCast = [{{range $index, $element := .TerminalCast}}{{if $index}}, {{end}}"{{$element}}"{{end}}]
+    let terminalClose = [{{range $index, $element := .TerminalClose}}{{if $index}}, {{end}}"{{$element}}"{{end}}]
+    let menuKey = [{{range $index, $element := .MenuKey}}{{if $index}}, {{end}}"{{$element}}"{{end}}]
   </script>
   <script>
     {{template "js" .}}

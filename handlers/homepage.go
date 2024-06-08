@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"bytes"
+	"cmp"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"text/template"
 
@@ -15,10 +17,15 @@ import (
 )
 
 type TemplateData struct {
-	Slides []types.Slide
-	Menu   []types.Menu
-	Title  string
-	Port   int
+	Slides        []types.Slide
+	Menu          []types.Menu
+	Title         string
+	Port          int
+	PageNext      []string
+	PagePrevious  []string
+	TerminalCast  []string
+	TerminalClose []string
+	MenuKey       []string
 }
 
 func Homepage(port int, loginPage []byte, userPwd, adminPwd string) http.Handler {
@@ -96,11 +103,26 @@ func Homepage(port int, loginPage []byte, userPwd, adminPwd string) http.Handler
 			return
 		}
 		var out bytes.Buffer
+		pageNextStr := cmp.Or(os.Getenv("NEXT_PAGE"), "ArrowRight,ArrowDown,PageDown,Space")
+		pageNextStr = strings.ReplaceAll(pageNextStr, "Space", " ")
+		pagePreviousStr := cmp.Or(os.Getenv("PREVIOUS_PAGE"), "ArrowLeft,ArrowUp,PageUp")
+		pagePreviousStr = strings.ReplaceAll(pagePreviousStr, "Space", " ")
+		terminalCastStr := cmp.Or(os.Getenv("TERMINAL_CAST"), "r")
+		terminalCastStr = strings.ReplaceAll(terminalCastStr, "Space", " ")
+		terminalCloseStr := cmp.Or(os.Getenv("TERMINAL_CLOSE"), "c")
+		terminalCloseStr = strings.ReplaceAll(terminalCloseStr, "Space", " ")
+		menuKeyStr := cmp.Or(os.Getenv("MENU_KEY"), "m")
+		menuKeyStr = strings.ReplaceAll(menuKeyStr, "Space", " ")
 		err = tmpl.Execute(&out, TemplateData{
-			Slides: slides,
-			Title:  presentation.Title,
-			Menu:   presentation.Menu,
-			Port:   port,
+			Slides:        slides,
+			Title:         presentation.Title,
+			Menu:          presentation.Menu,
+			Port:          port,
+			PageNext:      strings.Split(pageNextStr, ","),
+			PagePrevious:  strings.Split(pagePreviousStr, ","),
+			TerminalCast:  strings.Split(terminalCastStr, ","),
+			TerminalClose: strings.Split(terminalCloseStr, ","),
+			MenuKey:       strings.Split(menuKeyStr, ","),
 		})
 		if err != nil {
 			log.Println(err)
