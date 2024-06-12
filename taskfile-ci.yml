@@ -2,7 +2,7 @@
 version: '3'
 
 env:
-  GOLANGCI_LINT_VERSION: 1.57.2
+  GOLANGCI_LINT_VERSION: 1.59.1
 
 tasks:
 
@@ -12,7 +12,7 @@ tasks:
       - which gofumpt
     cmds:
       - go install mvdan.cc/gofumpt@latest
-  
+
   lint-check-latest-version:
       desc: 'Check if golangci-lint is up to date'
       silent: true
@@ -22,9 +22,9 @@ tasks:
             echo "golangci-lint can be updated from v{{.CURRENT_VERSION}} to {{.LATEST_VERSION}}"
           fi
       vars:
-        LATEST_VERSION: 
+        LATEST_VERSION:
           sh: curl --silent "https://api.github.com/repos/golangci/golangci-lint/releases/latest" | jq -r .tag_name
-        CURRENT_VERSION: 
+        CURRENT_VERSION:
           sh: bin/golangci-lint --version | awk '{print $4}'
 
   lint-version:
@@ -45,7 +45,7 @@ tasks:
     deps: [lint-version]
     cmds:
       - bin/golangci-lint run --timeout 15m --color always --max-issues-per-linter 0 --max-same-issues 0
-      
+
   format:
     desc: 'formats the code'
     deps: [gofumpt]

@@ -76,7 +76,7 @@ func Convert(source string) (string, error) {
 	return res, nil
 }
 
-func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,gocognit,unparam,cyclop,maintidx
+func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,gocognit,maintidx
 	fileContent = processReplace(fileContent, ".raw", ".raw.end", func(data string) string {
 		return data
 	})

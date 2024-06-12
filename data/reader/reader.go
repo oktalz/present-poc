@@ -44,6 +44,7 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, he
 	lastIndex := 1 + lastPageNumber
 	replacers := map[string]string{}
 	replacersAfter := map[string]string{}
+	currentSlideTitle := ""
 	currentFontSize := ro.DefaultFontSize
 	currentBackgroundColor := ro.DefaultBackgroundColor
 	defaultEveryDashIsACut := ro.EveryDashIsACut
@@ -73,7 +74,7 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, he
 			templateVars = append(templateVars, dataVars[i])
 		}
 		templates = append(templates, TemplateData{
-			Name: data[0],
+			Name: strings.Split(data[0], " ")[0],
 			Data: strings.Join(data[1:], "\n"),
 			Vars: templateVars,
 		})
@@ -143,11 +144,13 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, he
 						PageNumber:      lastIndex,
 						FontSize:        currentFontSize,
 						BackgroundColor: currentBackgroundColor,
+						Title:           currentSlideTitle,
 					})
 					notes = ""
 					lastIndex++
 				}
 				currentFontSize = ro.DefaultFontSize
+				currentSlideTitle = ""
 				currentBackgroundColor = ro.DefaultBackgroundColor
 			}
 			slide.Reset()
@@ -187,6 +190,11 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, he
 			lines[index] = ""
 			continue
 		}
+		if strings.HasPrefix(line, ".slide.title") {
+			currentSlideTitle = strings.TrimPrefix(line, ".slide.title ")
+			lines[index] = ""
+			continue
+		}
 		if strings.HasPrefix(line, ".title") {
 			title = strings.TrimPrefix(line, ".title ")
 			lines[index] = ""
@@ -210,6 +218,7 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, he
 					PageNumber:      lastIndex,
 					FontSize:        currentFontSize,
 					BackgroundColor: currentBackgroundColor,
+					Title:           currentSlideTitle,
 				})
 				notes = ""
 				if !isDashCut {
@@ -242,6 +251,7 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, he
 			PageNumber:      lastIndex,
 			FontSize:        currentFontSize,
 			BackgroundColor: currentBackgroundColor,
+			Title:           currentSlideTitle,
 		})
 		// notes = ""
 		// lastIndex++

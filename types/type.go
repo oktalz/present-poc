@@ -57,6 +57,7 @@ type Slide struct {
 	LinkPrev              string
 	PrintOnly             bool
 	PrintDisable          bool
+	Title                 string
 }
 
 type Menu struct {

@@ -28,48 +28,23 @@ type TemplateData struct {
 	MenuKey       []string
 }
 
-func Homepage(port int, loginPage []byte, userPwd, adminPwd string) http.Handler {
+func Homepage(port int, userPwd, adminPwd string) http.Handler { //nolint:funlen
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		user, pass, _ := r.BasicAuth()
-		var cookie *http.Cookie
-		var cookiePassword bool
-		var err error
-		if user == "" || pass == "" {
-			cookie, err = r.Cookie("present")
+		if userPwd != "" {
+			var pass string
+			cookie, err := r.Cookie("present")
 			if err == nil {
 				// Cookie exists, you can access its value using cookie.Value
 				fmt.Println("Cookie value:", cookie.Value)
-				user = "present"
 				pass = cookie.Value
-				cookiePassword = true
 			}
-		}
-		pass, _ = hash.Hash(pass)
-		passwordOK := hash.Equal(pass, userPwd) || hash.Equal(pass, adminPwd)
-		log.Println(passwordOK)
-		if passwordOK {
-			_, err := w.Write(loginPage)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-			return
-		}
-		if !cookiePassword {
-			pass, err = hash.Hash(pass)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-		}
 
-		cookieSet := http.Cookie{
-			Name:  "present",
-			Value: pass,
-		}
-		http.SetCookie(w, &cookieSet)
-		if cookie == nil {
-			return
+			passwordOK := hash.Equal(pass, userPwd) || hash.Equal(pass, adminPwd)
+			log.Println("passwordOK", passwordOK)
+			if !passwordOK {
+				http.Redirect(w, r, "/login", http.StatusFound)
+				return
+			}
 		}
 
 		presentation := data.Presentation()

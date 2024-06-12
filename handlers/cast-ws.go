@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -13,6 +12,7 @@ import (
 
 	"gitlab.com/fer-go/present/data"
 	"gitlab.com/fer-go/present/exec"
+	"gitlab.com/fer-go/present/hash"
 	"nhooyr.io/websocket"
 )
 
@@ -47,14 +47,15 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 			}
 			return
 		}
+		var pass string
 		cookie, err := r.Cookie("present")
-		var cookiePassword string
+		var isAdmin bool
 		if err == nil {
 			// Cookie exists, you can access its value using cookie.Value
-			fmt.Println("Cookie value:", cookie.Value)
-			cookiePassword = cookie.Value
+			pass = cookie.Value
+			isAdmin = hash.Equal(pass, adminPwd)
 		}
-		if adminPwd != "" && cookiePassword != adminPwd {
+		if adminPwd != "" && !isAdmin {
 			err = conn.Write(context.Background(), mt, []byte("presenter<br>option only<br>🤷 💥 💔<br>")) //nolint:contextcheck
 			if err != nil {
 				log.Println("write:", err)

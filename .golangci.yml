@@ -31,17 +31,10 @@ linters:
     - gochecknoglobals
     - lll
     - nestif
-    # rest are in deprecated state
-    - varcheck
-    - structcheck
-    - scopelint
-    - nosnakecase
-    - maligned
-    - interfacer
-    - ifshort
-    - golint
-    - exhaustivestruct
-    - deadcode
+    - testpackage
+    - paralleltest
+    - mnd
+    - execinquery # deprecated
 
 issues:
   exclude:

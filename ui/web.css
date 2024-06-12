@@ -58,9 +58,13 @@ a, a:visited {
 }
 
 code {
-  max-height: 74vh;
+  max-height: 80vh;
   overflow: auto; /* Optional: Add scrollbars if content exceeds the height */
 }
+pre code.hljs {
+  padding: 0.5em !important;
+}
+
 
 .presenter-time {
   margin-left: 0px;
@@ -358,10 +362,10 @@ pre > svg {
   }
 }
 
- /* scrollbar */
- ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 1vh;
+  height: 1vh;
 }
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
@@ -371,7 +375,7 @@ pre > svg {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
-  width: 15px;
-  height: 15px;
+  width: 3vh;
+  height: 3vh;
 }
 /* scrollbar end */

@@ -9,12 +9,13 @@ import (
 
 	"github.com/oklog/ulid/v2"
 	"gitlab.com/fer-go/present/data"
+	"gitlab.com/fer-go/present/hash"
 	"nhooyr.io/websocket"
 )
 
 var CurrentSlide = int64(-10)
 
-func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen
+func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,gocognit
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
 			InsecureSkipVerify: true,
@@ -72,9 +73,12 @@ func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen
 		if adminPwd == "" {
 			isAdmin = true
 		} else {
+			var pass string
 			cookie, err := r.Cookie("present")
 			if err == nil {
-				isAdmin = cookie.Value == adminPwd
+				// Cookie exists, you can access its value using cookie.Value
+				pass = cookie.Value
+				isAdmin = hash.Equal(pass, adminPwd)
 			}
 		}
 

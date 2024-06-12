@@ -4,7 +4,6 @@ import (
 	"embed"
 	"io/fs"
 	"log"
-	"math/rand"
 	"net"
 	"net/http"
 	"os"
@@ -13,7 +12,6 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-
 	"gitlab.com/fer-go/present/archive"
 	"gitlab.com/fer-go/present/data"
 	"gitlab.com/fer-go/present/handlers"
@@ -24,15 +22,6 @@ var dist embed.FS
 
 //go:embed ui/login.html
 var loginPage []byte
-
-func randomString() string {
-	chars := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-	var sb []rune
-	for i := 0; i < 12; i++ {
-		sb = append(sb, chars[rand.Intn(len(chars))])
-	}
-	return string(sb)
-}
 
 func main() { //nolint:funlen
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
@@ -115,7 +104,9 @@ func main() { //nolint:funlen
 	http.Handle("/asciinema", handlers.Asciinema())
 	http.Handle("/ws", handlers.WS(wsServer, adminPWD))
 
-	http.Handle("/{$}", handlers.Homepage(portInt, loginPage, userPwd, adminPWD))
+	http.Handle("/{$}", handlers.Homepage(portInt, userPwd, adminPWD))
+	http.Handle("/login", handlers.Login(loginPage))
+	http.Handle("/api/login", handlers.APILogin(userPwd, adminPWD))
 
 	sub, err := fs.Sub(dist, "ui/static")
 	if err != nil {

@@ -218,6 +218,7 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 					data = strings.Split(data[1], ":")
 					if len(data) < 2 {
 						fmt.Println("error parsing: ", line)
+						continue
 					}
 					start, _ := strconv.Atoi(data[0])
 					end, _ := strconv.Atoi(data[1])
@@ -432,16 +433,28 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 		title := ""
 		lines := strings.Split(p.Markdown, "\n")
 		for _, line := range lines {
-			index := strings.LastIndex(line, "#")
+			ldata := line
+			ldata = strings.ReplaceAll(ldata, "&#41;", ")")
+			ldata = strings.ReplaceAll(ldata, "&#40;", "(")
+			ldata = strings.ReplaceAll(ldata, "&#123;", "{")
+			ldata = strings.ReplaceAll(ldata, "&#125;", "}")
+			ldata = strings.ReplaceAll(ldata, "&#46;", ".")
+			ldata = strings.ReplaceAll(ldata, "&#95;", "_")
+			ldata = strings.ReplaceAll(ldata, "&#45;", "-")
+			ldata = strings.ReplaceAll(ldata, "&#34;", `"`)
+			index := strings.LastIndex(ldata, "#")
 			if index > -1 {
-				title = line[index+1:]
+				title = ldata[index+1:]
 				index := strings.LastIndex(title, `"`)
 				if index > -1 {
 					title = title[index+1:]
 				}
-				title = strings.Trim(title, ` #*`)
+				title = strings.Trim(title, ` #*()`)
 				break
 			}
+		}
+		if p.Title != "" {
+			title = p.Title
 		}
 		if len(menu) > 0 {
 			if menu[len(menu)-1].Title == title {

@@ -39,15 +39,15 @@ func applyTemplate(fileContent string, templateData TemplateData) string {
 		if len(templateData.Vars) == 0 {
 			data = vars
 		} else {
-			templateVars := []string{}
 			varsData := strings.Split(vars, " ")
 			dataMap := map[string]string{}
-			for index := 1; index < len(varsData); index++ {
-				if len(templateVars) > index {
-					key := strings.TrimPrefix(templateVars[index], ".")
+			for index := range len(varsData) {
+				if len(templateData.Vars) > index {
+					key := strings.TrimPrefix(templateData.Vars[index], ".")
 					dataMap[key] = varsData[index]
 				}
 			}
+			data = dataMap
 		}
 		tmpl, err := template.New("test").Parse(templateData.Data)
 		if err != nil {
@@ -60,6 +60,10 @@ func applyTemplate(fileContent string, templateData TemplateData) string {
 			panic(err)
 		}
 		result := tpl.String()
+		hasNovalue := strings.Contains(result, "<no value>")
+		if hasNovalue {
+			_ = result + " "
+		}
 		fileContent = strings.Replace(fileContent, startStr+toReplace, result, 1)
 	}
 	return fileContent
