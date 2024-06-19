@@ -67,6 +67,7 @@ type Menu struct {
 }
 
 type Presentation struct {
+	CSS       string
 	Slides    []Slide
 	Menu      []Menu
 	Title     string

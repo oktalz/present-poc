@@ -35,6 +35,7 @@ func Presentation() types.Presentation {
 	copy(menu, presentation.Menu)
 	result := types.Presentation{
 		Slides: slides,
+		CSS:    presentation.CSS,
 		Menu:   menu,
 		Title:  presentation.Title,
 	}

@@ -25,7 +25,7 @@ var loginPage []byte
 
 func main() { //nolint:funlen
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	log.SetOutput(os.Stderr)
+	log.SetOutput(os.Stderr) // why do packages feel the need to change this in init()?
 
 	_ = godotenv.Load()
 	// Start the server
@@ -39,7 +39,6 @@ func main() { //nolint:funlen
 		panic(err)
 	}
 
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	zipFlag := false
 	for _, arg := range os.Args[1:] {
 		if arg == "zip" {

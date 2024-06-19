@@ -11,6 +11,7 @@ require (
 	github.com/yuin/goldmark v1.7.0
 	github.com/yuin/goldmark-emoji v1.0.2
 	go.abhg.dev/goldmark/mermaid v0.5.0
+	golang.org/x/crypto v0.16.0
 	nhooyr.io/websocket v1.8.10
 	oss.terrastruct.com/d2 v0.6.3
 )
@@ -34,7 +35,6 @@ require (
 	github.com/mazznoer/csscolorparser v0.1.3 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/crypto v0.16.0 // indirect
 	golang.org/x/exp v0.0.0-20231127185646-65229373498e // indirect
 	golang.org/x/image v0.14.0 // indirect
 	golang.org/x/net v0.19.0 // indirect

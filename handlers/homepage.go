@@ -18,6 +18,7 @@ import (
 
 type TemplateData struct {
 	Slides        []types.Slide
+	CSS           string
 	Menu          []types.Menu
 	Title         string
 	Port          int
@@ -90,6 +91,7 @@ func Homepage(port int, userPwd, adminPwd string) http.Handler { //nolint:funlen
 		menuKeyStr = strings.ReplaceAll(menuKeyStr, "Space", " ")
 		err = tmpl.Execute(&out, TemplateData{
 			Slides:        slides,
+			CSS:           presentation.CSS,
 			Title:         presentation.Title,
 			Menu:          presentation.Menu,
 			Port:          port,

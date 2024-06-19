@@ -32,6 +32,12 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 	}
 
 	var presentationFiles types.Presentation
+
+	cssBytes, err := os.ReadFile("slide.css")
+	if err == nil {
+		presentationFiles.CSS = string(cssBytes)
+	}
+
 	lastPageNumber := 0
 
 	var presentationFile types.Presentation
@@ -497,6 +503,7 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 
 	return types.Presentation{
 		Slides:    presentations,
+		CSS:       presentationFiles.CSS,
 		Menu:      menu,
 		Title:     presentationFiles.Title,
 		Replacers: presentationFiles.Replacers,

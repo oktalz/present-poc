@@ -112,10 +112,7 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 	})
 
 	fileContent = processReplace(fileContent, ".bx{", "}", func(data string) string {
-		return `<i class='bx ` + data + `'"></i>`
-	})
-	fileContent = processReplaceMiddle(fileContent, ".{", "}(", ")", func(color, content string) string {
-		return `<span style="color: ` + color + `;">` + CreateCleanMD(prepare(md, content)).String() + `</span>`
+		return `<i class='bx ` + data + `'></i>`
 	})
 
 	fileContent = processReplace(fileContent, ".table", ".table.end", func(data string) string {

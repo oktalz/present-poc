@@ -7,6 +7,9 @@
   <title>{{ or .Title "Hello World!" }}</title>
   <style>
     {{template "css" .}}
+    {{ if .CSS }}
+        {{ .CSS }}
+    {{ end }}
   </style>
   <link rel="stylesheet" href="highlight.min.css">
   <script src="highlight.min.js"></script>
