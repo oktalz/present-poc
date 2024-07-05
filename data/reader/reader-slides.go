@@ -418,8 +418,6 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 		presentations[index].PageIndex = index
 		if presentations[index].PrintDisable {
 			shiftPage++
-			if presentations[index].LinkNext == "" {
-			}
 		}
 		presentations[index].PagePrint = index + 1 - shiftPage
 		if presentations[index].PrintOnly && index > 0 {
@@ -481,10 +479,7 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 			title = p.Title
 		}
 		if len(menu) > 0 {
-			if menu[len(menu)-1].Title == title {
-				// 	menu[len(menu)-1].Link = i
-				// 	menu[len(menu)-1].PagePrint = p.PageIndex + 1
-			} else {
+			if menu[len(menu)-1].Title != title {
 				menu = append(menu, types.Menu{
 					Link:      i,
 					PageIndex: p.PageIndex,
