@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/oklog/ulid/v2"
 	"gitlab.com/fer-go/present/markdown"
 	"gitlab.com/fer-go/present/types"
 )
@@ -38,14 +39,9 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 		presentationFiles.CSS = string(cssBytes)
 	}
 
-	lastPageNumber := 0
-
 	var presentationFile types.Presentation
 	for _, slide := range slides {
-		if len(presentationFiles.Slides) > 1 {
-			lastPageNumber = presentationFiles.Slides[len(presentationFiles.Slides)-1].PageNumber
-		}
-		presentationFile, ro, err = readSlideFile(slide, ro, lastPageNumber, headerFile+"\n")
+		presentationFile, ro, err = readSlideFile(slide, ro, headerFile+"\n")
 		if err != nil {
 			panic(err)
 		}
@@ -413,24 +409,46 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 		presentations = append(presentations, slide)
 	}
 
-	printPage := 1
-	for i := range len(presentations) - 1 {
-		if presentations[i].PageNumber != presentations[i+1].PageNumber && presentations[i].PrintPage == 0 {
-			presentations[i].PrintPage = printPage
-			printPage++
-		}
-	}
-	var shift int
-	for i := 1; i < len(presentations)-1; i++ {
-		if presentations[i].PageNumber < presentations[i-1].PageNumber {
-			if presentations[i].PageNumber == 1 {
-				shift = presentations[i-1].PageNumber
-				_ = shift
+	// we need to determine what page are for print only
+	// or presentation only and align page numbers
+	// also if we have print only slides, we need to link slide before and after,
+	// the ones that are not print only
+	shiftPage := 0
+	for index := range len(presentations) {
+		presentations[index].PageIndex = index
+		if presentations[index].PrintDisable {
+			shiftPage++
+			if presentations[index].LinkNext == "" {
 			}
 		}
-	}
-	if len(presentations) > 0 {
-		presentations[len(presentations)-1].PrintPage = printPage
+		presentations[index].PagePrint = index + 1 - shiftPage
+		if presentations[index].PrintOnly && index > 0 {
+			// find first before, first after and set links (if not set already)
+			indexBefore := index - 1
+			for indexBefore > 0 {
+				if presentations[indexBefore].PrintOnly {
+					indexBefore--
+				} else {
+					break
+				}
+			}
+			indexAfter := index + 1
+			for indexAfter < len(presentations)-1 {
+				if presentations[indexAfter].PrintOnly {
+					indexAfter++
+				} else {
+					break
+				}
+			}
+			if presentations[indexBefore].Link == "" {
+				presentations[indexBefore].Link = ulid.Make().String()
+			}
+			if presentations[indexAfter].Link == "" {
+				presentations[indexAfter].Link = ulid.Make().String()
+			}
+			presentations[indexBefore].LinkNext = presentations[indexAfter].Link
+			presentations[indexAfter].LinkPrev = presentations[indexBefore].Link
+		}
 	}
 
 	// ok now setup the menu
@@ -464,20 +482,22 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 		}
 		if len(menu) > 0 {
 			if menu[len(menu)-1].Title == title {
-				menu[len(menu)-1].Link = i
-				menu[len(menu)-1].Page = p.PageNumber
+				// 	menu[len(menu)-1].Link = i
+				// 	menu[len(menu)-1].PagePrint = p.PageIndex + 1
 			} else {
 				menu = append(menu, types.Menu{
-					Link:  i,
-					Page:  p.PrintPage,
-					Title: title,
+					Link:      i,
+					PageIndex: p.PageIndex,
+					PagePrint: p.PagePrint,
+					Title:     title,
 				})
 			}
 		} else {
 			menu = append(menu, types.Menu{
-				Link:  i,
-				Page:  p.PrintPage,
-				Title: title,
+				Link:      i,
+				PageIndex: p.PageIndex,
+				PagePrint: p.PagePrint,
+				Title:     title,
 			})
 		}
 	}

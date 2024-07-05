@@ -30,7 +30,7 @@ func listSlideFiles(directory string) ([]string, bool, error) {
 	return slideFiles, hasHeaderFile, nil
 }
 
-func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, headerFile string) (types.Presentation, types.ReadOptions, error) { //nolint:funlen,gocognit,maintidx
+func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (types.Presentation, types.ReadOptions, error) { //nolint:funlen,gocognit,maintidx
 	title := ""
 	content, err := os.ReadFile(filename)
 	if err != nil {
@@ -41,7 +41,6 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, he
 	slides := []types.Slide{}
 
 	var slide strings.Builder
-	lastIndex := 1 + lastPageNumber
 	replacers := map[string]string{}
 	replacersAfter := map[string]string{}
 	currentSlideTitle := ""
@@ -141,13 +140,11 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, he
 					slides = append(slides, types.Slide{
 						Markdown:        slide,
 						Notes:           notes,
-						PageNumber:      lastIndex,
 						FontSize:        currentFontSize,
 						BackgroundColor: currentBackgroundColor,
 						Title:           currentSlideTitle,
 					})
 					notes = ""
-					lastIndex++
 				}
 				currentFontSize = ro.DefaultFontSize
 				currentSlideTitle = ""
@@ -215,7 +212,6 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, he
 				slides = append(slides, types.Slide{
 					Markdown:        tmp,
 					Notes:           notes,
-					PageNumber:      lastIndex,
 					FontSize:        currentFontSize,
 					BackgroundColor: currentBackgroundColor,
 					Title:           currentSlideTitle,
@@ -248,7 +244,6 @@ func readSlideFile(filename string, ro types.ReadOptions, lastPageNumber int, he
 		slides = append(slides, types.Slide{
 			Markdown:        slide.String(),
 			Notes:           notes,
-			PageNumber:      lastIndex,
 			FontSize:        currentFontSize,
 			BackgroundColor: currentBackgroundColor,
 			Title:           currentSlideTitle,

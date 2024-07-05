@@ -50,27 +50,7 @@ func Homepage(port int, userPwd, adminPwd string) http.Handler { //nolint:funlen
 
 		presentation := data.Presentation()
 		slides := presentation.Slides
-		for i := range slides {
-			slides[i].PageIndex = i
-		}
-		shiftPage := 0
-		for i := 1; i < len(presentation.Slides)-1; i++ {
-			if presentation.Slides[i].PrintOnly {
-				shiftPage++
-			}
-			presentation.Slides[i].PageIndex -= shiftPage
-		}
 
-		shiftPage = 0
-		for i := 1; i < len(presentation.Slides)-1; i++ {
-			presentation.Slides[i].PageNumber -= shiftPage
-			if presentation.Slides[i].PrintDisable {
-				shiftPage++
-			}
-		}
-		for i := 1; i < len(presentation.Slides)-1; i++ {
-			presentation.Slides[i].PageID = i
-		}
 		w.Header().Set("Content-Type", "text/html")
 		w.WriteHeader(http.StatusOK)
 		tmpl, err := template.New("web").Parse(string(ui.WebTemplate()))

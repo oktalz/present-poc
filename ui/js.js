@@ -1,5 +1,4 @@
 var page = /^#?\d+$/.test(window.location.hash) ? parseInt(window.location.hash.slice(1), 10) : 0;
-console.log("page is "+page)
 setPage(page);
 var spinner = false
 var myID = ""
@@ -93,6 +92,15 @@ document.addEventListener('keydown', function(e) {
     showMenu = !showMenu
     if (showMenu) {
       document.getElementById('menu').classList.remove('menu-hidden');
+      let targetElement = null
+      let index = page
+      while (targetElement == null && index < maxPage) {
+        targetElement = document.getElementById(`menu-`+index);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        index = index + 1
+      }
     } else {
       document.getElementById('menu').classList.add('menu-hidden');
     }

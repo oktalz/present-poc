@@ -46,10 +46,8 @@ type Slide struct {
 	HasTerminal           bool
 	BackgroundImage       string
 	BackgroundColor       string
-	PageNumber            int
-	PageID                int
 	PageIndex             int
-	PrintPage             int
+	PagePrint             int
 	FontSize              string
 	HTML                  string
 	Link                  string
@@ -61,9 +59,10 @@ type Slide struct {
 }
 
 type Menu struct {
-	Link  int
-	Page  int
-	Title string
+	Link      int
+	PagePrint int
+	PageIndex int
+	Title     string
 }
 
 type Presentation struct {

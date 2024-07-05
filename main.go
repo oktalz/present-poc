@@ -24,6 +24,21 @@ var dist embed.FS
 var loginPage []byte
 
 func main() { //nolint:funlen
+	// f, err := os.Create("cpu.prof")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer f.Close()
+	// _ = pprof.StartCPUProfile(f)
+	// defer pprof.StopCPUProfile()
+
+	// f, err := os.Create("mem.prof")
+	// if err != nil {
+	// 	log.Fatal("could not create memory profile: ", err)
+	// }
+	// defer f.Close()
+	// defer pprof.WriteHeapProfile(f)
+
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.SetOutput(os.Stderr) // why do packages feel the need to change this in init()?
 

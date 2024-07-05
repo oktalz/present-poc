@@ -19,8 +19,7 @@ function castTerminal(){
 
     // Connection opened
     socket.addEventListener('open', () => {
-        let pageID = pageMapping.get(pageNum)
-        let data = {slide: pageID, code: codeText}
+        let data = {slide: pageNum, code: codeText}
         let body = JSON.stringify(data)
         console.log(body)
         socket.send(body);
