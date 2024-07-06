@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"gitlab.com/fer-go/present/data"
+	"github.com/oktalz/present-poc/data"
 )
 
 func asciinema(w http.ResponseWriter, r *http.Request) { //nolint:varnamelen

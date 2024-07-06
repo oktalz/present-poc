@@ -12,9 +12,9 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"gitlab.com/fer-go/present/archive"
-	"gitlab.com/fer-go/present/data"
-	"gitlab.com/fer-go/present/handlers"
+	"github.com/oktalz/present-poc/archive"
+	"github.com/oktalz/present-poc/data"
+	"github.com/oktalz/present-poc/handlers"
 )
 
 //go:embed ui/static

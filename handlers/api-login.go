@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"gitlab.com/fer-go/present/hash"
+	"github.com/oktalz/present-poc/hash"
 )
 
 func APILogin(userPwd, adminPwd string) http.Handler {

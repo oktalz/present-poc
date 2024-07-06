@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.com/fer-go/present/types"
+	"github.com/oktalz/present-poc/types"
 )
 
 func Cmd(tc types.TerminalCommand) []byte {

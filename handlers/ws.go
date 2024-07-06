@@ -8,8 +8,8 @@ import (
 	"sync/atomic"
 
 	"github.com/oklog/ulid/v2"
-	"gitlab.com/fer-go/present/data"
-	"gitlab.com/fer-go/present/hash"
+	"github.com/oktalz/present-poc/data"
+	"github.com/oktalz/present-poc/hash"
 	"nhooyr.io/websocket"
 )
 

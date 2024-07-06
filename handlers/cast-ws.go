@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.com/fer-go/present/data"
-	"gitlab.com/fer-go/present/exec"
-	"gitlab.com/fer-go/present/hash"
+	"github.com/oktalz/present-poc/data"
+	"github.com/oktalz/present-poc/exec"
+	"github.com/oktalz/present-poc/hash"
 	"nhooyr.io/websocket"
 )
 

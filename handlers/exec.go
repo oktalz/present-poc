@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"gitlab.com/fer-go/present/data"
-	"gitlab.com/fer-go/present/exec"
+	"github.com/oktalz/present-poc/data"
+	"github.com/oktalz/present-poc/exec"
 )
 
 func execute(w http.ResponseWriter, r *http.Request) { //nolint:varnamelen

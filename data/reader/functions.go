@@ -3,7 +3,7 @@ package reader
 import (
 	"strings"
 
-	"gitlab.com/fer-go/present/types"
+	"github.com/oktalz/present-poc/types"
 )
 
 func parseCommand(command string) types.TerminalCommand {

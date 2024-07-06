@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gitlab.com/fer-go/present/types"
+	"github.com/oktalz/present-poc/types"
 )
 
 func listSlideFiles(directory string) ([]string, bool, error) {

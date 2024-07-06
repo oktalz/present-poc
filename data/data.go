@@ -6,10 +6,10 @@ import (
 	"sync"
 
 	"github.com/oklog/ulid/v2"
-	"gitlab.com/fer-go/present/data/reader"
-	"gitlab.com/fer-go/present/fsnotify"
-	"gitlab.com/fer-go/present/markdown"
-	"gitlab.com/fer-go/present/types"
+	"github.com/oktalz/present-poc/data/reader"
+	"github.com/oktalz/present-poc/fsnotify"
+	"github.com/oktalz/present-poc/markdown"
+	"github.com/oktalz/present-poc/types"
 )
 
 var (

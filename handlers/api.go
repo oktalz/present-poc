@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"gitlab.com/fer-go/present/data"
+	"github.com/oktalz/present-poc/data"
 )
 
 func api(w http.ResponseWriter, _ *http.Request) {

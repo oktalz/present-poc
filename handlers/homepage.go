@@ -10,10 +10,10 @@ import (
 	"strings"
 	"text/template"
 
-	"gitlab.com/fer-go/present/data"
-	"gitlab.com/fer-go/present/hash"
-	"gitlab.com/fer-go/present/types"
-	"gitlab.com/fer-go/present/ui"
+	"github.com/oktalz/present-poc/data"
+	"github.com/oktalz/present-poc/hash"
+	"github.com/oktalz/present-poc/types"
+	"github.com/oktalz/present-poc/ui"
 )
 
 type TemplateData struct {

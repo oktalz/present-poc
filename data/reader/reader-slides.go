@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/oklog/ulid/v2"
-	"gitlab.com/fer-go/present/markdown"
-	"gitlab.com/fer-go/present/types"
+	"github.com/oktalz/present-poc/markdown"
+	"github.com/oktalz/present-poc/types"
 )
 
 func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,maintidx
