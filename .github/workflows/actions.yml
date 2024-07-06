@@ -1,0 +1,67 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  lint:
+    name: golangci-lint
+    needs: ["generate-specification","generate-models"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Prepare Environment
+        uses: ./.github/reusable/steps.yml
+      - name: Lint
+        run: |
+          task ci:lint
+  license:
+    name: license-check
+    needs: ["lint"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Prepare Environment
+        uses: ./.github/reusable/steps.yml
+      - name: go-licenses install
+        run: go install github.com/google/go-licenses@latest
+      - name: Check Licenses
+        run: |
+          PROJECT="$(go list -m)"
+          ALLOWED_LICENSES="$(<.allowed_license_types)"
+          go-licenses report --ignore "$PROJECT" .
+          go-licenses check --allowed_licenses="$ALLOWED_LICENSES" --ignore "$PROJECT" .
+  tidy:
+    name: go mod tidy
+    needs: ["generate-specification","generate-models"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Prepare Environment
+        uses: ./.github/reusable/steps.yml
+      - name: tidy
+        run: go mod tidy
+      - name: changes
+        run: test -z "$(git diff 2> /dev/null)" || exit "Go modules not tidied, issue \`go mod tidy\` and commit the result"
+  build:
+    name: Build
+    needs: ["generate-specification","generate-models"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Prepare Environment
+        uses: ./.github/reusable/steps.yml
+      - name: Build
+        run: go build -v .
+  go-test:
+    name: Tests
+    needs: ["tidy","build"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Prepare Environment
+        uses: ./.github/reusable/steps.yml
+      - name: Test
+        run: go test -race -v ./...
