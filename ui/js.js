@@ -162,12 +162,12 @@ window.addEventListener('wheel', function(event) {
 touchX = 0;
 touchY = 0;
 
-touchableElement.addEventListener('touchstart', function (event) {
+document.addEventListener('touchstart', function (event) {
   touchX = event.changedTouches[0].screenX;
   touchY = event.changedTouches[0].screenY;
 }, false);
 
-touchableElement.addEventListener('touchend', function (event) {
+document.addEventListener('touchend', function (event) {
   endX = event.changedTouches[0].screenX;
   endY = event.changedTouches[0].screenY;
 
