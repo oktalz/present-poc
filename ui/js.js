@@ -159,6 +159,42 @@ window.addEventListener('wheel', function(event) {
   }
 }, true);
 
+touchX = 0;
+touchY = 0;
+
+touchableElement.addEventListener('touchstart', function (event) {
+  touchX = event.changedTouches[0].screenX;
+  touchY = event.changedTouches[0].screenY;
+}, false);
+
+touchableElement.addEventListener('touchend', function (event) {
+  endX = event.changedTouches[0].screenX;
+  endY = event.changedTouches[0].screenY;
+
+  if (touchendX < touchX) {
+    oldPage = page;
+    page = page - 1;
+    target = getPageDown(oldPage,page);
+    setPage(target);
+    updateData({
+      Author: myID,
+      Slide: page
+    })
+  }
+
+  if (touchendX > touchX) {
+    oldPage = page;
+    page = page + 1;
+    target = getPageUp(oldPage,page);
+    setPage(target);
+    updateData({
+      Author: myID,
+      Slide: page
+    })
+  }
+}, false);
+
+
 document.addEventListener('click', function(event) {
   var targetId = event.target.id;
   if (targetId && targetId.startsWith('run-icon-')) {
