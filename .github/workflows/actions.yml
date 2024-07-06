@@ -37,7 +37,7 @@ jobs:
           version: 3.x
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: tidy
-        run: tsk ci:tidy
+        run: task ci:tidy
       - name: changes
         run: test -z "$(git diff 2> /dev/null)" || exit "Go modules not tidied, issue \`go mod tidy\` and commit the result"
   build:
