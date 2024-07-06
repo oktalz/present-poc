@@ -52,8 +52,16 @@ tasks:
     cmds:
       - gofumpt -l -w .
 
-  licences:
+  licenses-check:
+    internal: true
+    status:
+      - which go-licenses
+    cmds:
+      - go install github.com/google/go-licenses@latest
+
+  licenses:
     desc: 'check licenses'
+    deps: [licenses-check]
     cmds:
       - |
           PROJECT="$(go list -m)"

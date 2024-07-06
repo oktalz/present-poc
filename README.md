@@ -1,6 +1,9 @@
 # present
 
-tool for viewing presentations
+# ![present](assets/go-mic.png "present")
+
+tool for viewing presentations written in markdown like format
+
 
 ## installations
 

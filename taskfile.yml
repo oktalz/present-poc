@@ -20,13 +20,14 @@ tasks:
   test:
     desc: 'run Go tests'
     cmds:
-      - go test -race -v ./...
+      - CGO_ENABLED=1 go test -race -v ./...
 
   ci:
     desc: 'do all the checks'
     cmds:
       - task: ci:tidy
       - task: ci:format
+      - task: ci:licenses
       - task: ci:lint
       - task: test
 

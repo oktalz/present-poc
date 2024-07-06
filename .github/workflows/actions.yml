@@ -97,4 +97,4 @@ jobs:
       - name: go-licenses install
         run: go install github.com/google/go-licenses@latest
       - name: Check Licenses
-        run:  task ci:licences
+        run:  task ci:licenses
