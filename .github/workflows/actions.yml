@@ -7,8 +7,16 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Prepare Environment
-        uses: ./.github/reusable
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+        id: go
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Lint
         run: |
           task ci:lint
@@ -18,10 +26,18 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Prepare Environment
-        uses: ./.github/reusable
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+        id: go
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: tidy
-        run: go mod tidy
+        run: tsk ci:tidy
       - name: changes
         run: test -z "$(git diff 2> /dev/null)" || exit "Go modules not tidied, issue \`go mod tidy\` and commit the result"
   build:
@@ -30,8 +46,16 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Prepare Environment
-        uses: ./.github/reusable
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+        id: go
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build
         run: go build -v .
   go-test:
@@ -41,10 +65,18 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Prepare Environment
-        uses: ./.github/reusable
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+        id: go
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Test
-        run: go test -race -v ./...
+        run: task test
   license:
     name: license-check
     needs: ["lint","tidy","build"]
@@ -52,13 +84,17 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Prepare Environment
-        uses: ./.github/reusable
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+        id: go
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: go-licenses install
         run: go install github.com/google/go-licenses@latest
       - name: Check Licenses
-        run: |
-          PROJECT="$(go list -m)"
-          ALLOWED_LICENSES="$(<.allowed_license_types)"
-          go-licenses report --ignore "$PROJECT" .
-          go-licenses check --allowed_licenses="$ALLOWED_LICENSES" --ignore "$PROJECT" .
+        run:  task ci:licences

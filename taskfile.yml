@@ -20,7 +20,7 @@ tasks:
   test:
     desc: 'run Go tests'
     cmds:
-      - go test ./...
+      - go test -race -v ./...
 
   ci:
     desc: 'do all the checks'

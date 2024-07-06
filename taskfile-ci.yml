@@ -51,3 +51,12 @@ tasks:
     deps: [gofumpt]
     cmds:
       - gofumpt -l -w .
+
+  licences:
+    desc: 'check licenses'
+    cmds:
+      - |
+          PROJECT="$(go list -m)"
+          ALLOWED_LICENSES="$(<.allowed_license_types)"
+          go-licenses report --ignore "$PROJECT" --ignore "github.com/golang/freetype/raster" --ignore "github.com/golang/freetype/truetype" --ignore "oss.terrastruct.com/d2" .
+          go-licenses check --allowed_licenses="$ALLOWED_LICENSES" --ignore "gitlab.com/fer-go/present" --ignore "github.com/golang/freetype/raster" --ignore "github.com/golang/freetype/truetype" --ignore "oss.terrastruct.com/d2" .
