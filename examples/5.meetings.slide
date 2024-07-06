@@ -1,0 +1,42 @@
+.template MAIN_MEET
+.style "font-size: 5vh; margin-bottom: 0px!important; margin-left: 20vw;" ## .link.#MENU#{ {{.}} }
+____________
+.style "position: absolute; top: 1vh; left: 0vh; ;" .image(assets/images/1.png :12vh)
+.slide.enable.overflow
+.//.slide.link.previous #MENU#
+.template.end
+
+.template MEETING
+.MAIN_MEET Go meetup - {{ . }}
+.slide.link {{.}}
+.slide.title {{.}}
+.slide.link.previous #MENU#
+
+.template.end
+
+.TITLE Meetings
+.slide.link #MENU#
+.slide.title Menu
+.slide.link.next #security#
+
+### 2024
+- .link.2024&#45;08&#45;03{`03.08`}
+- .link.2024&#45;07&#45;06{`06.07`}
+.=======
+.MEETING 2024-07-06
+
+- topics
+  - topic 1
+  - topic 2
+- speakers
+  - speaker 1
+  - speaker 2
+.=======
+.MEETING 2024-08-03
+
+- topics
+  - `go run main.go` vs `go run .`
+  - `GOTOOLCHAIN` in docker, errors due to limiting go version
+- speakers
+  - speaker 🧑‍🦱
+  - speaker 🧑‍🦰

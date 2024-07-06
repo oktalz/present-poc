@@ -11,12 +11,12 @@ graph LR;
         K8sInformers
 
         subgraph LoopSG[Event Loop]
-                
+
                 Event{Event}
                 Event --> K8sEV[k8s event]
                 K8sEV --> Storage[Storage + Runtime]
                 Storage --> Loop
-                Event --> Command            
+                Event --> Command
                 Command --> Config[Update configuration]
                 Config --> Loop
                 Loop --> Event
@@ -36,13 +36,13 @@ mermaid code
 .//# Emoji
 .TITLE Emoji
 
-:joy: :star: :exclamation: :fire: :+1: 
+:joy: :star: :exclamation: :fire: :+1:
 :speech_balloon: :thought_balloon: :warning: :construction:
 
 😂 ⭐ ❗ 🔥 👍 💬 💭 ⚠️ 🚧
 
 ```txt
-:joy: :star: :exclamation: :fire: :+1: 
+:joy: :star: :exclamation: :fire: :+1:
 :speech_balloon: :thought_balloon: :warning: :construction:
 
 😂 ⭐ ❗ 🔥 👍 💬 💭 ⚠️ 🚧
@@ -54,23 +54,24 @@ list can be found here [https://unicode.org/emoji/charts/full-emoji-list.html](h
 🙈🙉🙊
 .================================
 .TITLE Icons
+.slide.font-size 4.5vh
 
 - Integrated support for [https://boxicons.com/](https://boxicons.com/)
 
-you can also use icons like 
-.bx{bx-extension} {red}(.bx{bx-info-circle}) 
-{blue}(.bx{bx-plus}) .bx{bxl-graphql}
+you can also use icons like
+.bx{bx-extension} .{color:red}(.bx{bx-info-circle})
+.{color:blue}(.bx{bx-plus}) .bx{bxl-graphql}
 
 ```txt
-you can also use icons like 
-.bx#brace#bx-extension} #brace#red}(.bx#brace#bx-info-circle}) 
-#brace#blue}(.bx#brace#bx-plus}) .bx#brace#bxl-graphql}
-``` 
+you can also use icons like
+.bx#brace#bx-extension} .#brace#color:red}(.bx#brace#bx-info-circle})
+.#brace#color:blue}(.bx#brace#bx-plus}) .bx#brace#bxl-graphql}
+```
 .cut
 
-aditionally `rotating-icon` can be used to rotate icon 
-{green}(.bx{bx-refresh rotating-icon})
+additionally `rotating-icon` can be used to rotate icon
+.{color:green}(.bx{bx-refresh rotating-icon})
 ```txt
-aditionally `rotating-icon` can be used to rotate icon 
-#brace#green}(.bx#brace#bx-refresh rotating-icon})
+additionally `rotating-icon` can be used to rotate icon
+.#brace#color:green}(.bx#brace#bx-refresh rotating-icon})
 ```

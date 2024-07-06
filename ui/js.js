@@ -160,16 +160,21 @@ window.addEventListener('wheel', function(event) {
 }, true);
 
 touchX = 0;
-touchY = 0;
+
+document.addEventListener("pointerdown", (e) => {
+  touchStartX = e.clientX;
+});
+
+document.addEventListener("pointermove", (e) => {
+  touchEndX = e.clientX;
+});
 
 document.addEventListener('touchstart', function (event) {
   touchX = event.changedTouches[0].screenX;
-  touchY = event.changedTouches[0].screenY;
 }, false);
 
 document.addEventListener('touchend', function (event) {
   endX = event.changedTouches[0].screenX;
-  endY = event.changedTouches[0].screenY;
 
   if (touchendX < touchX) {
     oldPage = page;

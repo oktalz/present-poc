@@ -1,4 +1,4 @@
-.global.font-size 4vh
+.global.font-size 5vh
 
 .replace.after #dot# .
 .replace.after -hashtag- #
@@ -8,7 +8,7 @@
 .replace.after #div# &lt;div&gt;
 
 .template TITLE
-.style "font-size: 3.5vh" ## {{ . }}
+.style "font-size: 5vh" ## {{ . }}
 ____________
 .template.end
 

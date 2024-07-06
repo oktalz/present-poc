@@ -1,0 +1,5 @@
+.TITLE GLHF
+
+.center
+.image(assets/images/1.png 45vw:45vh)
+.center.end

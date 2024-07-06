@@ -48,7 +48,7 @@ no pick ?
 .center.end
 
 .slide.link #linkNothing#
-.slide.link.next #linkEndloop#
+.slide.link.next #linkEndLoop#
 .slide.link.previous #link0#
 .================================
 .TITLE Links :cat: & :dog:
@@ -63,11 +63,11 @@ happy path
 
 .slide.link #link3#
 .slide.link.previous #link0#
-.slide.link.next #linkEndloop#
+.slide.link.next #linkEndLoop#
 .================================
-.TITLE Links 
+.TITLE Links
 
 next slide from all paths
 
-.slide.link #linkEndloop#
+.slide.link #linkEndLoop#
 .slide.link.previous #link0#

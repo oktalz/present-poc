@@ -4,24 +4,24 @@
 Hello,
 this is a new tool called present written in Go
 pages are generated with Go templates and displayed in browser.
-For printing, general idea is to use printing in browser, but unfortunatelly,
+For printing, general idea is to use printing in browser, but unfortunately,
 this will only work in chromium like browsers.
-Before we start, I need to mention that if you open it in multiple tabs simultaniously
-it will syncronize your presentation.
+Before we start, I need to mention that if you open it in multiple tabs simultaneously
+it will synchronize your presentation.
 
 Lets show some of the features
 .notes.end
 &nbsp;
 
-.style "font-size: 3.8em;text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;" **Present tool with Go**
+.{font-size: 3.8em;text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;}(**Present**)
 
 .image(https://go.dev/images/gophers/biplane.svg 25vw:25vh)
 
 .center.end
 
-.style "position: absolute; top: 35vh; right: 15vh; transform: rotate(15deg);" .image(assets/images/3.png :50vh)
-.style "position: absolute; bottom: 0vh; left: 45vw;" .image(assets/images/4.png 10vw:)
-.style "position: absolute; top: 35vh; left: 15vh; transform: rotate(-15deg);" .image(assets/images/3.png :50vh)
+.{position: absolute; top: 35vh; right: 15vh; transform: rotate(15deg);}(.image(assets/images/3.png :50vh))
+.{position: absolute; bottom: 0vh; left: 45vw;}(.image(assets/images/4.png 10vw:))
+.{position: absolute; top: 35vh; left: 15vh; transform: rotate(-15deg);}(.image(assets/images/3.png :50vh))
 
 .================================
 &nbsp;
@@ -48,8 +48,8 @@ Most examples will have a demo with effects and a code (in code block)
 .notes
 basically everything supported in common mark
 (sort of standard for markdown format is supported here)
-plus there are some aditional features needed for presentations
-and some helper functions that will help with writting presentation
+plus there are some additional features needed for presentations
+and some helper functions that will help with writing presentation
 .notes.end
 
 text that is **Bold**
@@ -144,60 +144,48 @@ quotation marks are surrounding the HTML style and
 everything after the quotation marks is
 data on which style will be applied
 .notes.end
+.global.font-size 4.5vh
 
 ```txt
+#dot#{css}(text to format)
 #dot#style "html style" text to format
 ```
 
 &nbsp;
 
-.style "text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;" **Go + VUE**
+.{text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;}(**Go + VUE**)
 
 ```md
-#dot#style "text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;" **Go + VUE**
+#dot#{text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;}(**Go + VUE**)
 ```
 
 &nbsp;
 
-.style "color: red" **Go + VUE**
+.{color: red}(**Go + VUE**)
 
 ```md
-#dot#style "color: red" **Go + VUE**
+#dot#{color: red}(**Go + VUE**)
 ```
-.================================
-&nbsp;
 
-.notes
-one of the keywords that is not using dot in front is coloring
-is not acctually a keyword but a combination of braces and parenthesis
-where in braces you specify color in HTML format
-and in parenthesis you specify data that needs to be in that color
-.notes.end
+.{color: white;background-color: green}(**Go + VUE**)
 
-you can also set colors {red}(to text), {green}(green)
 ```md
-you can also set colors #brace#red}(to text), #brace#green}(green)
+#dot#{color: white; background-color: green}(**Go + VUE**)
 ```
-
-&nbsp;
-
-in fact any hex color like {#4ebaea}(#4ebaea) works
-```md
-in fact any hex color like #brace##4ebaea}(#4ebaea) works
-```
-
 .================================
 .notes
 compared to standard markdown, new line is a new line,
 similar what is github doing
 .notes.end
+.global.font-size 4vh
+
 For space between paragraph use empty line.
-line two is its own line
+line two is its own line (github like parsing)
 
 second line
-
 if you need more space use `&nbsp;`
 
+&nbsp;
 &nbsp;
 
 like this
@@ -207,9 +195,9 @@ For space between paragraph use empty line.
 line two is its own line
 
 second line
-
 if you need more space use `&nbsp;`
 
+&nbsp;
 &nbsp;
 
 like this
@@ -296,8 +284,8 @@ one that is empty and second one
 that contains checkmark
 .notes.end
 ```txt
-#dot#short -hashtag-empty-hashtag-
-#dot#short -hashtag-check-hashtag- :white_check_mark:
+#dot#replace -hashtag-empty-hashtag-
+#dot#replace -hashtag-check-hashtag- :white_check_mark:
 
 - option one -hashtag-empty-hashtag-
 - option two
@@ -310,13 +298,13 @@ that contains checkmark
 let see another more complex example
 .notes.end
 
-.replace #check# :large_blue_circle:
-.replace #spinner# :white_circle:
+.replace #check# .{color:green}(.bx{bx-check})
+.replace #spinner# .{color:green}(.bx{bx-loader-circle bx-spin})
 
 #spinner# line one
 .cut #spinner#.#check#
 
-{green}(#spinner#) line two
+#spinner# line two
 .cut #spinner#.#check#
 
 `.cut ORIGINAL.END_RESULT` -> replaces one template with another on transition
@@ -327,7 +315,7 @@ each cut or transition can have multiple replaces,
 and effect of the first change must be
 accounted for on second one
 
-jsut as a note, multiple replaces can be used on one transition
+just as a note, multiple replaces can be used on one transition
 .notes.end
 ```txt
 #dot#short -hashtag-check-hashtag- :large_blue_circle:
@@ -342,7 +330,7 @@ jsut as a note, multiple replaces can be used on one transition
 .================================
 ## Tables
 .notes
-even though tables are not offitially part of the
+even though tables are not officially part of the
 markdown specification, they can be used and format
 is the same as on most popular implementations
 .notes.end
@@ -361,8 +349,8 @@ is the same as on most popular implementations
 .================================
 ## Tables
 .notes
-however, aditional format was added
-that is more HTML like, but this one does not allow formating
+however, additional format was added
+that is more HTML like, but this one does not allow formatting
 .notes.end
 
 .table
@@ -397,7 +385,7 @@ that is more HTML like, but this one does not allow formating
 # Images
 .notes
 images can be defined with keyword image, there is a specific format
-where after th eimage, width and height are specified,
+where after the image, width and height are specified,
 its important to note that size can be define in any html format
 like pixels, but due to scaling, units relative to screen are best
 .notes.end
@@ -450,8 +438,8 @@ that is also possible, we can just omit the width or height
 &nbsp;
 
 #dot#center
-#dot#image(assets/images/2.png :50vh)
-#dot#image(assets/images/3.png :50vh)
+#dot#image(assets/images/2.png :40vh)
+#dot#image(assets/images/3.png :40vh)
 #dot#center.end
 ```
 .================================
@@ -460,29 +448,29 @@ that is also possible, we can just omit the width or height
 &nbsp;
 
 .center
-.image(assets/images/2.png :50vh)
-.image(assets/images/3.png :50vh)
+.image(assets/images/2.png :40vh)
+.image(assets/images/3.png :40vh)
 .center.end
 .================================
 # Images - absolute position & transition
 
 .notes
-in some occations, more complex style can be used
-to exactly specify whre image is shown.
-as seen here, even apsolute position is used
+in some occasions, more complex style can be used
+to exactly specify where image is shown.
+as seen here, even absolute position is used
 .notes.end
 
 ```txt
-#dot#style "position: absolute; top: 15vh; right: 15vh; transform: rotate(35deg);" #dot#image(assets/images/3.png :50vh)
-#dot#style "position: absolute; top: 15vh; left: 37vw; transform: rotate(180deg);" #dot#image(assets/images/4.png 26vw:50vh)
-#dot#style "position: absolute; top: 15vh; left: 15vh; transform: rotate(-15deg);" #dot#image(assets/images/3.png :50vh)
+#dot#{position: absolute; top: 15vh; right: 15vh; transform: rotate(35deg);}(#dot#image(assets/images/3.png :50vh))
+#dot#{position: absolute; top: 15vh; left: 37vw; transform: rotate(180deg);}(#dot#image(assets/images/4.png 26vw:50vh))
+#dot#{position: absolute; top: 15vh; left: 15vh; transform: rotate(-15deg);}(#dot#image(assets/images/3.png :50vh))
 ```
 .================================
 # Images - absolute position & transition
 
-.style "position: absolute; top: 15vh; right: 15vh; transform: rotate(35deg);" .image(assets/images/3.png :50vh)
-.style "position: absolute; top: 15vh; left: 37vw; transform: rotate(180deg);" .image(assets/images/4.png 26vw:50vh)
-.style "position: absolute; top: 15vh; left: 15vh; transform: rotate(-15deg);" .image(assets/images/3.png :50vh)
+.{position: absolute; top: 15vh; right: 15vh; transform: rotate(35deg);}(.image(assets/images/3.png :50vh))
+.{position: absolute; top: 15vh; left: 37vw; transform: rotate(180deg);}(.image(assets/images/4.png 26vw:50vh))
+.{position: absolute; top: 15vh; left: 15vh; transform: rotate(-15deg);}(.image(assets/images/3.png :50vh))
 .================================
 .TITLE Templates - part one
 
@@ -491,7 +479,7 @@ we have shown replace directive, that is used to replace part of text
 but only as a single line.
 in ordered to have more complex system, Templates keyword is added.
 
-this allows you to create more complex solutios
+this allows you to create more complex solution.
 one of the obvious applications is using them with headers of the page
 in a way, this allows you to add custom keywords
 
@@ -499,12 +487,12 @@ as seen here, you first define template specify its name and content
 to use it, you have to use the newly defined template keyword and
 content that will replaced.
 
-standard golang templating can be used here
+standard golang templates can be used here
 .notes.end
 
 ```txt
 #dot#template TITLE
-#dot#style "font-size: 3.5vh" ## {{ . }}
+#dot#style "font-size: 5vh" ## {{ . }}
 ____________
 #dot#template.end
 
@@ -514,32 +502,32 @@ ____________
 - templates can be defined on start page and used in all others
 .================================
 .notes
-since Go templating also allows using multiple params
+since Go templates also allows using multiple params
 we can do that here too,
 you define what are they, and then on call,
 you can write text separated by space.
-this is one limititation of this sytem, but if space is needed,
+this is one limitation of this system, but if space is needed,
 HTML non breaking space can be used
 .notes.end
 .template GOTITLE .Title .Extra .Last
-.style "font-size: 3.5vh" ## {{ .Title }} - {{ .Extra }} {{ .Last }}
+.style "font-size: 5vh" ## {{ .Title }} - "{{ .Extra }}" {{ .Last }}
 ____________
 .template.end
 
-.GOTITLE Templates Go&nbsp;Templating \o/
+.GOTITLE Templates Go&nbsp;News \o/
 
 ```txt
 #dot#template GOTITLE .Title .Extra .Last
-#dot#style "font-size: 3.5vh" ## {{ .Title }} - {{ .Extra }} {{ .Last }}
+#dot#style "font-size: 5vh" ## {{ .Title }} - "{{ .Extra }}" {{ .Last }}
 ____________
 #dot#template.end
 
-#dot#GOTITLE Templates Go&nbsp;Templating \o/
+#dot#GOTITLE Templates Go&nbsp;News \o/
 ```
 
 - Go Templating can be used in templates
-- multiple atributes are separated by space
-  - params do not exists, whole line is used for `{{.}}`
+- multiple attributes are separated by space
+  - when params do not exist, whole line is used for `{{.}}`
 .================================
 .TITLE Code
 
@@ -585,10 +573,10 @@ if x == 1:
 
 .================================
 .notes
-what is new here though is you can specify aditional commands
+what is new here though is you can specify additional commands
 before the block
 before and after are ones that are executed but result is not displayed.
-they are usefull to for exampel setup the environment or to clear aftewards.
+they are useful to for example setup the environment or to clear afterwards.
 
 the most important one is the one where you specify two things.
 name of the file where that block is saved and the command to run
@@ -598,7 +586,7 @@ also since screen height s limited, only part of the code can be displayed
 .notes.end
 .TITLE Code - Running
 
-### before any code block aditional commands can be added
+### before any code block additional commands can be added
 
 - command to prepare/finish ENV
 
@@ -644,14 +632,14 @@ func main() {
 
 📜 use `r` key to run the code and `c` to close the terminal
 .================================
-.TITLE Code - Omiting the code
+.TITLE Code - Omitting the code
 .notes
-as saidr before, we can show only specific part of the code
+as said before, we can show only specific part of the code
 .notes.end
 
 `.cast.block.show start:stop` will display code only within [start,stop] indexes within the block
 
-.cast.block.show 7:7
+.cast.block.show 8:8
 .CAST
 ```
 package main
@@ -665,7 +653,7 @@ func main() {
 }
 ```
 
-`.cast.block.show 7:7` would show only `fmt.Println("hello world")`
+`.cast.block.show 8:8` would show only `fmt.Println("hello world")`
 ```txt
 package main
 
@@ -682,12 +670,11 @@ func main() {
 .TITLE Code - Result
 .notes
 code is usually executed nad returned
-sometimes is usefull to show how much time
+sometimes is useful to show how much time
 execution of specific commands took
 .notes.end
 
-.cast.stream
-.cast.block.show 8:10
+.cast.block.show 9:11
 .CAST
 ```go
 package main
@@ -703,12 +690,12 @@ func main() {
   fmt.Println("world")
 }
 ```
-
 .cut
+.cast.stream
 .notes
 adding cast.stream will trigger streaming of data
 .notes.end
-- code is usually executed nad returned
+- code is usually executed and returned
 - for streamed output add `.cast.stream` line in front of code
   - executed in background
 
@@ -720,8 +707,8 @@ commands can be executed from specific folder
 that is prepared in advance
 
 this does not require showing of the code on screen
-of course, in order to execution to workd properly,
-all aplications used needs to be installed.
+of course, in order to execution to work properly,
+all applications used needs to be installed.
 for example, shown command is not able to be executed
 if *Go* is not installed
 
@@ -743,8 +730,8 @@ any kind of terminal command can be executed
 .===
 .TITLE Slides
 .notes
-since we want to have multiple slides, we needs to have them separated somwhow
-as seens here, multiple ways are allowed
+since we want to have multiple slides, we needs to have them separated somehow
+as seen here, multiple ways are allowed
 .notes.end
 
 slide separator is `.===` or `.---` (needs to be on start of the line)
@@ -757,7 +744,7 @@ slide separator is `.===` or `.---` (needs to be on start of the line)
 .TITLE Notes
 
 .notes
-for presentations, sometimes is usefull to have notes.
+for presentations, sometimes is useful to have notes.
 In order to define them use notes keyword
 
 to see them, append ?notes to URL.
@@ -776,7 +763,7 @@ my comment
 ```txt
 #dot#// in file comment, no seen anywhere
 ```
-by default [http://localhost:8080/?notes#40](http://localhost:8080/?notes#40) -> open in different tab
+by default [http://localhost:8080/?notes#39](http://localhost:8080/?notes#39m) -> open in different tab
 
 tabs will sync with each other
 .================================
