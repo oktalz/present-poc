@@ -8,7 +8,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Prepare Environment
-        uses: ./.github/reusable/steps.yml
+        uses: ./.github/reusable/action.yml
       - name: Lint
         run: |
           task ci:lint
@@ -19,7 +19,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Prepare Environment
-        uses: ./.github/reusable/steps.yml
+        uses: ./.github/reusable/action.yml
       - name: tidy
         run: go mod tidy
       - name: changes
@@ -31,7 +31,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Prepare Environment
-        uses: ./.github/reusable/steps.yml
+        uses: ./.github/reusable/action.yml
       - name: Build
         run: go build -v .
   go-test:
@@ -42,7 +42,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Prepare Environment
-        uses: ./.github/reusable/steps.yml
+        uses: ./.github/reusable/action.yml
       - name: Test
         run: go test -race -v ./...
   license:
@@ -53,7 +53,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Prepare Environment
-        uses: ./.github/reusable/steps.yml
+        uses: ./.github/reusable/action.yml
       - name: go-licenses install
         run: go install github.com/google/go-licenses@latest
       - name: Check Licenses
