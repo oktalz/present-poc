@@ -1,5 +1,5 @@
 //module github.com/oktalz/present
-module gitlab.com/fer-go/present
+module github.com/oktalz/present-poc
 
 go 1.22
 
