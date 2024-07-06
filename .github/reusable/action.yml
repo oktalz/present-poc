@@ -1,4 +1,5 @@
 name: 'reusable steps'
+description: 'run reusable steps'
 runs:
   using: 'composite'
   steps:
