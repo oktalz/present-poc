@@ -45,9 +45,9 @@ go install github.com/oktalz/present@latest
 - if `ADMIN_PWD` is set, only users authorised with that password can execute the code
   - if `ADMIN_PWD` is not provided, it will be generated and written on console
 - if `USER_PWD` is set, all 'watchers' will need to enter password to see the presentation
-- rest are pretty self explanatory (also those are default )
+- rest are pretty self explanatory (also in examples are defaults for all options)
 
 ## options
 
 - please download present tool enter examples folder and run present tool,
-  presentation itself explains (with most parts visible) all options
+  presentation itself explains all options (with most parts visible)
