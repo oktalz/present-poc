@@ -7,6 +7,7 @@ tool for viewing presentations written in markdown like format
 slides are written in text friendly format and follow all standard
 markdown rules with some additions
 
+main purpose of application is to view presentation in browsers
 
 ## installation
 Use the following command to download and install this tool:
