@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/oklog/ulid/v2"
 	"github.com/oktalz/present-poc/archive"
 	"github.com/oktalz/present-poc/data"
 	"github.com/oktalz/present-poc/handlers"
@@ -40,7 +41,7 @@ func main() { //nolint:funlen
 	// defer pprof.WriteHeapProfile(f)
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	log.SetOutput(os.Stderr) // why do packages feel the need to change this in init()?
+	log.SetOutput(os.Stdout) // why do packages feel the need to change this in init()?
 
 	_ = godotenv.Load()
 	// Start the server
@@ -103,6 +104,9 @@ func main() { //nolint:funlen
 		// if err != nil {
 		// 	panic(err)
 		// }
+	} else {
+		adminPWD = ulid.Make().String()
+		log.Println("admin token is not set, created one is:", adminPWD)
 	}
 	userPwd := os.Getenv("USER_PWD")
 	if userPwd != "" {
