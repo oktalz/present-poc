@@ -13,15 +13,15 @@ Lets show some of the features
 .notes.end
 &nbsp;
 
-.{font-size: 3.8em;text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;}(**Present**)
+.{font-size: 20svh;text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;}(**Present**)
 
-.image(https://go.dev/images/gophers/biplane.svg 25vw:25vh)
+.image(https://go.dev/images/gophers/biplane.svg 25svw:25svh)
 
 .center.end
 
-.{position: absolute; top: 35vh; right: 15vh; transform: rotate(15deg);}(.image(assets/images/3.png :50vh))
-.{position: absolute; bottom: 0vh; left: 45vw;}(.image(assets/images/4.png 10vw:))
-.{position: absolute; top: 35vh; left: 15vh; transform: rotate(-15deg);}(.image(assets/images/3.png :50vh))
+.{position: absolute; top: 35svh; right: 15svh; transform: rotate(15deg);}(.image(assets/images/3.png :50svh))
+.{position: absolute; bottom: 0svh; left: 45svw;}(.image(assets/images/4.png 10svw:10svw))
+.{position: absolute; top: 35svh; left: 15svh; transform: rotate(-15deg);}(.image(assets/images/3.png :50svh))
 
 .================================
 &nbsp;
@@ -144,7 +144,7 @@ quotation marks are surrounding the HTML style and
 everything after the quotation marks is
 data on which style will be applied
 .notes.end
-.global.font-size 4.5vh
+.global.font-size 4.5svh
 
 ```txt
 #dot#{css}(text to format)
@@ -177,7 +177,7 @@ data on which style will be applied
 compared to standard markdown, new line is a new line,
 similar what is github doing
 .notes.end
-.global.font-size 4vh
+.global.font-size 4svh
 
 For space between paragraph use empty line.
 line two is its own line (github like parsing)
@@ -390,13 +390,13 @@ its important to note that size can be define in any html format
 like pixels, but due to scaling, units relative to screen are best
 .notes.end
 
-.image(https://go.dev/images/gophers/biplane.svg 25vw:25vh)
+.image(https://go.dev/images/gophers/biplane.svg 25svw:25svh)
 
 
-  image(url width:height) -> use `vw` & `vh` (relative to screen)
+  image(url width:height) -> use `svw` & `svh` (relative to screen)
 
 ```txt
-#dot#image(https://go.dev/images/gophers/biplane.svg 25vw:25vh)
+#dot#image(https://go.dev/images/gophers/biplane.svg 25svw:25svh)
 ```
 
 .================================
@@ -407,12 +407,12 @@ of course, combination of different keywords can be used
 .notes.end
 
 .center
-.image(assets/images/1.png 25vw:25vh)
+.image(assets/images/1.png 25svw:25svh)
 .center.end
 
 ```txt
 #dot#center.end
-#dot#image(assets/images/1.png 25vw:25vh)
+#dot#image(assets/images/1.png 25svw:25svh)
 #dot#center.end
 ```
 
@@ -425,12 +425,12 @@ that is also possible, we can just omit the width or height
 
 ```txt
 #dot#center
-#dot#image(assets/images/2.png :100vh)
+#dot#image(assets/images/2.png :100svh)
 #dot#center.end
 ```
 .================================
 .center
-.image(assets/images/2.png :100vh)
+.image(assets/images/2.png :100svh)
 .center.end
 .================================
 # Images - centered
@@ -438,8 +438,8 @@ that is also possible, we can just omit the width or height
 &nbsp;
 
 #dot#center
-#dot#image(assets/images/2.png :40vh)
-#dot#image(assets/images/3.png :40vh)
+#dot#image(assets/images/2.png :40svh)
+#dot#image(assets/images/3.png :40svh)
 #dot#center.end
 ```
 .================================
@@ -448,8 +448,8 @@ that is also possible, we can just omit the width or height
 &nbsp;
 
 .center
-.image(assets/images/2.png :40vh)
-.image(assets/images/3.png :40vh)
+.image(assets/images/2.png :40svh)
+.image(assets/images/3.png :40svh)
 .center.end
 .================================
 # Images - absolute position & transition
@@ -461,16 +461,16 @@ as seen here, even absolute position is used
 .notes.end
 
 ```txt
-#dot#{position: absolute; top: 15vh; right: 15vh; transform: rotate(35deg);}(#dot#image(assets/images/3.png :50vh))
-#dot#{position: absolute; top: 15vh; left: 37vw; transform: rotate(180deg);}(#dot#image(assets/images/4.png 26vw:50vh))
-#dot#{position: absolute; top: 15vh; left: 15vh; transform: rotate(-15deg);}(#dot#image(assets/images/3.png :50vh))
+#dot#{position: absolute; top: 15svh; right: 15svh; transform: rotate(35deg);}(#dot#image(assets/images/3.png :50svh))
+#dot#{position: absolute; top: 15svh; left: 37svw; transform: rotate(180deg);}(#dot#image(assets/images/4.png 26svw:50svh))
+#dot#{position: absolute; top: 15svh; left: 15svh; transform: rotate(-15deg);}(#dot#image(assets/images/3.png :50svh))
 ```
 .================================
 # Images - absolute position & transition
 
-.{position: absolute; top: 15vh; right: 15vh; transform: rotate(35deg);}(.image(assets/images/3.png :50vh))
-.{position: absolute; top: 15vh; left: 37vw; transform: rotate(180deg);}(.image(assets/images/4.png 26vw:50vh))
-.{position: absolute; top: 15vh; left: 15vh; transform: rotate(-15deg);}(.image(assets/images/3.png :50vh))
+.{position: absolute; top: 15svh; right: 15svh; transform: rotate(35deg);}(.image(assets/images/3.png :50svh))
+.{position: absolute; top: 15svh; left: 37svw; transform: rotate(180deg);}(.image(assets/images/4.png 26svw:50svh))
+.{position: absolute; top: 15svh; left: 15svh; transform: rotate(-15deg);}(.image(assets/images/3.png :50svh))
 .================================
 .TITLE Templates - part one
 
@@ -492,7 +492,7 @@ standard golang templates can be used here
 
 ```txt
 #dot#template TITLE
-#dot#style "font-size: 5vh" ## {{ . }}
+#dot#style "font-size: 5svh" ## {{ . }}
 ____________
 #dot#template.end
 
@@ -510,7 +510,7 @@ this is one limitation of this system, but if space is needed,
 HTML non breaking space can be used
 .notes.end
 .template GOTITLE .Title .Extra .Last
-.style "font-size: 5vh" ## {{ .Title }} - "{{ .Extra }}" {{ .Last }}
+.style "font-size: 5svh" ## {{ .Title }} - "{{ .Extra }}" {{ .Last }}
 ____________
 .template.end
 
@@ -518,7 +518,7 @@ ____________
 
 ```txt
 #dot#template GOTITLE .Title .Extra .Last
-#dot#style "font-size: 5vh" ## {{ .Title }} - "{{ .Extra }}" {{ .Last }}
+#dot#style "font-size: 5svh" ## {{ .Title }} - "{{ .Extra }}" {{ .Last }}
 ____________
 #dot#template.end
 
@@ -775,8 +775,8 @@ tabs will sync with each other
 ```txt
 #dot#title seen as tab name
 
-#dot#global.font-size 3.5vh
-#dot#slide.font-size 3.5vh
+#dot#global.font-size 3.5svh
+#dot#slide.font-size 3.5svh
 
 #dot#global.background-color #FFFFFF
 #dot#slide.background-color #FFFFFF

@@ -2,9 +2,10 @@
 .TITLE Customizations
 few settings available to tune it, create a `.env` file
 ```txt
-ADMIN_PWD=AdminPassword123
-USER_PWD=present
-ASK_USERNAME=true
+ADMIN_PWD=AdminPassword123 - able to run examples
+ADMIN_PWD_DISABLE=true - disable automatic creating of admin password if ADMIN_PWD is not set
+USER_PWD=present - not needed, but available to limit access
+ASK_USERNAME=true - ask for username on login (for example to view attendance)
 PORT=8080
 NEXT_PAGE=ArrowRight,ArrowDown,PageDown,Space,e
 PREVIOUS_PAGE=ArrowLeft,ArrowUp,PageUp

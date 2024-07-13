@@ -15,6 +15,9 @@ Use the following command to download and install this tool:
 go install github.com/oktalz/present@latest
 ```
 
+### binaries
+  prebuilt binaries can be found on [releases](https://github.com/oktalz/present/releases) page
+
 ## example
 
 - enter examples folder, type `present`
@@ -44,6 +47,7 @@ go install github.com/oktalz/present@latest
   ```
 - if `ADMIN_PWD` is set, only users authorised with that password can execute the code
   - if `ADMIN_PWD` is not provided, it will be generated and written on console
+    - with `ADMIN_PWD_DISABLE=true` you can remove need for admin password
 - if `USER_PWD` is set, all 'watchers' will need to enter password to see the presentation
 - rest are pretty self explanatory (also in examples are defaults for all options)
 

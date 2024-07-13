@@ -6,7 +6,7 @@
 
 pick :cat: or :dog: (click with mouse)
 .center
-.style font-size: 35vh;
+.style font-size: 35svh;
 .link.#link1#{:cat:} .link.#link2#{:dog:}
 .style.end
 .center.end
@@ -20,7 +20,7 @@ pick :cat: or :dog: (click with mouse)
 .slide.link.next #link3#
 
 .center
-.style font-size: 55vh;
+.style font-size: 55svh;
 :cat:
 .style.end
 .center.end
@@ -32,7 +32,7 @@ pick :cat: or :dog: (click with mouse)
 .slide.link.next #link3#
 
 .center
-.style font-size: 55vh;
+.style font-size: 55svh;
 :dog:
 .style.end
 .center.end
@@ -42,7 +42,7 @@ pick :cat: or :dog: (click with mouse)
 no pick ?
 
 .center
-.style font-size: 55vh;
+.style font-size: 55svh;
 :confused:
 .style.end
 .center.end
@@ -56,7 +56,7 @@ no pick ?
 happy path
 
 .center
-.style font-size: 55vh;
+.style font-size: 55svh;
 :+1:
 .style.end
 .center.end

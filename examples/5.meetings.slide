@@ -1,7 +1,7 @@
 .template MAIN_MEET
-.style "font-size: 5vh; margin-bottom: 0px!important; margin-left: 20vw;" ## .link.#MENU#{ {{.}} }
+.style "font-size: 5svh; margin-bottom: 0px!important; margin-left: 20svw;" ## .link.#MENU#{ {{.}} }
 ____________
-.style "position: absolute; top: 1vh; left: 0vh; ;" .image(assets/images/1.png :12vh)
+.style "position: absolute; top: 1svh; left: 0svh; ;" .image(assets/images/1.png :12svh)
 .slide.enable.overflow
 .//.slide.link.previous #MENU#
 .template.end

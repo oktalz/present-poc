@@ -41,7 +41,7 @@ func main() { //nolint:funlen
 	// defer pprof.WriteHeapProfile(f)
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	log.SetOutput(os.Stdout) // why do packages feel the need to change this in init()?
+	log.SetOutput(os.Stderr) // why do packages feel the need to change this in init()?
 
 	_ = godotenv.Load()
 	// Start the server
@@ -105,8 +105,12 @@ func main() { //nolint:funlen
 		// 	panic(err)
 		// }
 	} else {
-		adminPWD = ulid.Make().String()
-		log.Println("admin token is not set, created one is:", adminPWD)
+		if os.Getenv("ADMIN_PWD_DISABLE") == "true" {
+			log.Println("admin token is disabled")
+		} else {
+			adminPWD = ulid.Make().String()
+			log.Println("admin token is not set, created one is:", adminPWD)
+		}
 	}
 	userPwd := os.Getenv("USER_PWD")
 	if userPwd != "" {
@@ -147,7 +151,7 @@ func main() { //nolint:funlen
 		IdleTimeout:  15 * time.Second,
 	}
 
-	// log.Println("Listening on", server.Addr)
+	log.Println("Listening on", port)
 	// err = server.ListenAndServe()
 	// if err != nil {
 	// 	panic(err)

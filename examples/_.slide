@@ -1,4 +1,5 @@
 .global.font-size 5vh
+.title Present - example slides
 
 .replace.after #dot# .
 .replace.after -hashtag- #
@@ -21,4 +22,40 @@ ____________
 .cast.block.edit main.go go run .
 .template.end
 
-.title Present
+
+
+
+
+
+
+
+
+.template TITLE_WITH_OVERFLOW
+<p></p>
+.{font-size: 3.5svh; margin-bottom: 0px!important;}(## {{ . }})
+____________
+.slide.enable.overflow
+
+.template.end
+
+.template CAST_NO_HEADER
+.cast.before go mod init x
+.cast.block.show {{.}}:1000
+.cast.block.edit main.go go run .
+.template.end
+
+.template CAST_SHOW .From .To
+.cast.before go mod init x
+.cast.block.show {{.From}}:{{.To}}
+.cast.block.edit main.go go run .
+.template.end
+
+.template CAST_STREAM
+.cast.stream
+.cast.before go mod init x
+.cast.block.edit main.go go run .
+.template.end
+
+.template PLAYLINK
+.style "position: absolute; top: 2svh; right: 10svh; ;" [{{.}}]({{.}})
+.template.end
