@@ -176,7 +176,7 @@ document.addEventListener('touchstart', function (event) {
 document.addEventListener('touchend', function (event) {
   endX = event.changedTouches[0].screenX;
 
-  if (touchendX < touchX) {
+  if (endX > touchX) {
     oldPage = page;
     page = page - 1;
     target = getPageDown(oldPage,page);
@@ -187,7 +187,7 @@ document.addEventListener('touchend', function (event) {
     })
   }
 
-  if (touchendX > touchX) {
+  if (endX < touchX) {
     oldPage = page;
     page = page + 1;
     target = getPageUp(oldPage,page);

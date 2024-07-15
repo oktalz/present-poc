@@ -8,8 +8,8 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/oktalz/goldmark-d2 v0.0.0-20240417192507-b2206c61b021
-	github.com/yuin/goldmark v1.7.0
-	github.com/yuin/goldmark-emoji v1.0.2
+	github.com/yuin/goldmark v1.7.4
+	github.com/yuin/goldmark-emoji v1.0.3
 	go.abhg.dev/goldmark/mermaid v0.5.0
 	golang.org/x/crypto v0.16.0
 	nhooyr.io/websocket v1.8.10

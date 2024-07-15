@@ -151,15 +151,11 @@ data on which style will be applied
 #dot#style "html style" text to format
 ```
 
-&nbsp;
-
 .{text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;}(**Go + VUE**)
 
 ```md
 #dot#{text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;}(**Go + VUE**)
 ```
-
-&nbsp;
 
 .{color: red}(**Go + VUE**)
 
@@ -183,9 +179,8 @@ For space between paragraph use empty line.
 line two is its own line (github like parsing)
 
 second line
-if you need more space use `&nbsp;`
+if you need more space use #amp#nbsp;
 
-&nbsp;
 &nbsp;
 
 like this
@@ -195,9 +190,8 @@ For space between paragraph use empty line.
 line two is its own line
 
 second line
-if you need more space use `&nbsp;`
+if you need more space use non #amp#nbsp;
 
-&nbsp;
 &nbsp;
 
 like this
@@ -346,6 +340,20 @@ is the same as on most popular implementations
 | Content Cell 1 | Content Cell 2 |
 | Content Cell 3 | Content Cell 4 |
 ```
+
+&nbsp;
+
+| |
+|:-:| -:|
+| 5 | 6 |
+| 7| 8|
+
+```text
+| |
+|:-:| -:|
+| 5 | 6 |
+| 7 | 8 |
+```
 .================================
 ## Tables
 .notes
@@ -435,8 +443,6 @@ that is also possible, we can just omit the width or height
 .================================
 # Images - centered
 ```txt
-&nbsp;
-
 #dot#center
 #dot#image(assets/images/2.png :40svh)
 #dot#image(assets/images/3.png :40svh)
@@ -444,8 +450,6 @@ that is also possible, we can just omit the width or height
 ```
 .================================
 # Images - centered
-
-&nbsp;
 
 .center
 .image(assets/images/2.png :40svh)
@@ -522,7 +526,7 @@ ____________
 ____________
 #dot#template.end
 
-#dot#GOTITLE Templates Go&nbsp;News \o/
+#dot#GOTITLE Templates Go#amp#nbsp;News \o/
 ```
 
 - Go Templating can be used in templates

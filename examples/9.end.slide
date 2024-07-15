@@ -1,5 +1,24 @@
 .TITLE GLHF
 
-.center
-.image(assets/images/1.png 75svw:75svh)
-.center.end
+.table
+.tr
+.td
+.td
+.raw
+<video id="webcam" autoplay></video>
+<script>
+    const video = document.getElementById('webcam');
+
+    // Request access to the webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            video.srcObject = stream;
+            video.setAttribute('autoplay', true);
+        })
+        .catch(error => {
+            console.error('Error accessing webcam:', error);
+        });
+</script>
+.raw.end
+.table.end
+.{position: absolute; top: 18svh; left: -24svw; }(.image(assets/images/1.png 85svw:85svh))

@@ -244,6 +244,7 @@ hr {
 ul {
   margin-block-start: 1svh;
   margin-block-end: 1svh;
+  margin-left: 0.2em;
 }
 
 @keyframes rotate2 {

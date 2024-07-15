@@ -2,6 +2,7 @@
 .title Present - example slides
 
 .replace.after #dot# .
+.replace.after #amp# &amp;
 .replace.after -hashtag- #
 .replace.after #backtick# `
 .replace.after #equal# =
@@ -9,7 +10,7 @@
 .replace.after #div# &lt;div&gt;
 
 .template TITLE
-.style "font-size: 5vh" ## {{ . }}
+.style "font-size: 5svh" ## {{ . }}
 ____________
 .template.end
 
