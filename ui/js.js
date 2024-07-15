@@ -19,6 +19,14 @@ function getSlideElements() {
   return document.querySelectorAll('[id^="slide-"]');
 }
 
+function setPageWithUpdate(newPage) {
+  oldPage = page;
+  setPage(newPage);
+  updateData({
+    Author: myID,
+    Slide: newPage
+  })
+}
 function setPage(newPage) {
   if (newPage < -2){
     return

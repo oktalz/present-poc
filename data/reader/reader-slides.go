@@ -395,7 +395,7 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 					// log.Println(data)
 
 					id := markdown.CreateCleanMD(data)
-					html := `<span onclick="setPage(` + page + `)" style="cursor: pointer;">` + id.String() + `</span>`
+					html := `<span onclick="setPageWithUpdate(` + page + `)" style="cursor: pointer;">` + id.String() + `</span>`
 					lines[index] = strings.Replace(lines[index], toReplace, html, 1)
 					_ = link
 					_ = index

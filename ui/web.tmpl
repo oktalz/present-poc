@@ -100,9 +100,9 @@
     <table>
       {{- range .Menu -}}
       <tr id="menu-{{.PageIndex}}">
-          <td onclick="setPage({{.PageIndex}})" style="cursor: pointer;">{{.PagePrint}}</td>
+          <td onclick="setPageWithUpdate({{.PageIndex}})" style="cursor: pointer;">{{.PagePrint}}</td>
           <td>&nbsp;&nbsp;&nbsp;</td>
-          <td onclick="setPage({{.PageIndex}})" style="cursor: pointer;">{{.Title}}</td>
+          <td onclick="setPageWithUpdate({{.PageIndex}})" style="cursor: pointer;">{{.Title}}</td>
       </tr>
       {{- end}}
     </table>
