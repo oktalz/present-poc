@@ -47,6 +47,16 @@ func processReplaceMiddle(fileContent, startStr, middleStr, endStr string, proce
 	}
 }
 
+func processReplaceData(fileContent, str, result string) string {
+	start := strings.Index(fileContent, str)
+	if start == -1 {
+		return fileContent
+	}
+	result = CreateCleanRAW(result).String()
+	fileContent = strings.ReplaceAll(fileContent, str, result)
+	return fileContent
+}
+
 func processHideData(fileContent, str string) string {
 	start := strings.Index(fileContent, str)
 	if start == -1 {

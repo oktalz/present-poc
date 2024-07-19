@@ -129,6 +129,7 @@ func main() { //nolint:funlen
 	http.Handle("/{$}", handlers.Homepage(portInt, userPwd, adminPWD))
 	http.Handle("/login", handlers.Login(loginPage))
 	http.Handle("/api/login", handlers.APILogin(userPwd, adminPWD))
+	http.Handle("/api/users", handlers.APIUsers(adminPWD))
 
 	sub, err := fs.Sub(dist, "ui/static")
 	if err != nil {

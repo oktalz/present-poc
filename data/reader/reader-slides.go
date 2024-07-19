@@ -13,7 +13,7 @@ import (
 
 func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,maintidx
 	ro := types.ReadOptions{
-		DefaultFontSize: "3.5vh",
+		DefaultFontSize: "5vh",
 		EveryDashIsACut: false,
 	}
 
@@ -51,6 +51,7 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 		}
 		if presentationFiles.Replacers == nil {
 			presentationFiles.Replacers = make(map[string]string)
+			presentationFiles.Replacers[".space"] = "&nbsp;"
 		}
 		for k, v := range presentationFile.Replacers {
 			presentationFiles.Replacers[k] = v

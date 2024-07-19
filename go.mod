@@ -6,6 +6,7 @@ go 1.22
 require (
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/joho/godotenv v1.5.1
+	github.com/mileusna/useragent v1.3.4
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/oktalz/goldmark-d2 v0.0.0-20240417192507-b2206c61b021
 	github.com/yuin/goldmark v1.7.4

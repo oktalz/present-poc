@@ -83,8 +83,6 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 	fileContent = processReplace(fileContent, ".raw{", "}", func(data string) string {
 		return data
 	})
-	// goldmark removes &nbsp; if it  I prefer it to stay, especially if its a new line
-	fileContent = processHideData(fileContent, "&nbsp;")
 	fileContent = processReplace(fileContent, ".center", ".center.end", func(data string) string {
 		return `<div style="text-align:center">` + CreateCleanMD(prepare(md, data)).String() + `</div>`
 	})

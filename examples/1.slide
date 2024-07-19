@@ -11,7 +11,7 @@ it will synchronize your presentation.
 
 Lets show some of the features
 .notes.end
-&nbsp;
+.space
 
 .{font-size: 20svh;text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;}(**Present**)
 
@@ -24,7 +24,7 @@ Lets show some of the features
 .{position: absolute; top: 35svh; left: 15svh; transform: rotate(-15deg);}(.image(assets/images/3.png :50svh))
 
 .================================
-&nbsp;
+.space
 
 .notes
 
@@ -43,7 +43,7 @@ Most examples will have a demo with effects and a code (in code block)
 Most examples will have a demo with effects and a code (in code block)
 ```
 .================================
-&nbsp;
+.space
 
 .notes
 basically everything supported in common mark
@@ -58,7 +58,7 @@ text that is **Bold**
 text that is **Bold**
 ```
 
-&nbsp;
+.space
 
 text that is *Italics*
 
@@ -66,7 +66,7 @@ text that is *Italics*
 text that is *Italics*
 ```
 
-&nbsp;
+.space
 
 text that is `highlighted`
 
@@ -80,7 +80,7 @@ text that is `highlighted`
 ### Size 3
 #### Size 4
 
-&nbsp;
+.space
 
 ```md
 # Size 1
@@ -97,7 +97,7 @@ text that is `highlighted`
   - Four
     - Five
 
-&nbsp;
+.space
 
 ```md
 - One
@@ -107,7 +107,7 @@ text that is `highlighted`
     - Five
 ```
 .================================
-&nbsp;
+.space
 
 .notes
 what you will notice is that most of 'special' commands
@@ -181,7 +181,7 @@ line two is its own line (github like parsing)
 second line
 if you need more space use #amp#nbsp;
 
-&nbsp;
+.space
 
 like this
 
@@ -192,7 +192,7 @@ line two is its own line
 second line
 if you need more space use non #amp#nbsp;
 
-&nbsp;
+.space
 
 like this
 ```
@@ -341,7 +341,7 @@ is the same as on most popular implementations
 | Content Cell 3 | Content Cell 4 |
 ```
 
-&nbsp;
+.space
 
 | |
 |:-:| -:|
@@ -518,7 +518,7 @@ HTML non breaking space can be used
 ____________
 .template.end
 
-.GOTITLE Templates Go&nbsp;News \o/
+.GOTITLE Templates Go.spaceNews \o/
 
 ```txt
 #dot#template GOTITLE .Title .Extra .Last
@@ -526,12 +526,13 @@ ____________
 ____________
 #dot#template.end
 
-#dot#GOTITLE Templates Go#amp#nbsp;News \o/
+#dot#GOTITLE Templates Go(dot)spaceNews \o/
 ```
 
 - Go Templating can be used in templates
 - multiple attributes are separated by space
   - when params do not exist, whole line is used for `{{.}}`
+  - .space can be used to add 'space'
 .================================
 .TITLE Code
 

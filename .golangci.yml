@@ -30,6 +30,7 @@ linters:
     - testpackage
     - paralleltest
     - mnd
+    - tagliatelle
     - execinquery # deprecated
 
 issues:
