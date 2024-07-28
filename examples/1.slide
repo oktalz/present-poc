@@ -11,7 +11,8 @@ it will synchronize your presentation.
 
 Lets show some of the features
 .notes.end
-.space
+.slide.title Present
+#space#
 
 .{font-size: 20svh;text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000;}(**Present**)
 
@@ -24,7 +25,8 @@ Lets show some of the features
 .{position: absolute; top: 35svh; left: 15svh; transform: rotate(-15deg);}(.image(assets/images/3.png :50svh))
 
 .================================
-.space
+.slide.title Info
+#space#
 
 .notes
 
@@ -43,7 +45,8 @@ Most examples will have a demo with effects and a code (in code block)
 Most examples will have a demo with effects and a code (in code block)
 ```
 .================================
-.space
+.slide.title Markdown Support
+#space#
 
 .notes
 basically everything supported in common mark
@@ -58,29 +61,33 @@ text that is **Bold**
 text that is **Bold**
 ```
 
-.space
-
 text that is *Italics*
 
 ```txt
 text that is *Italics*
 ```
 
-.space
-
 text that is `highlighted`
 
 ```txt
 text that is `highlighted`
 ```
+
+text that is ~strikethrough~
+```txt
+text that is ~strikethrough~
+```
+
 .================================
 .// # Headers
+.slide.title Headers
+
 # Size 1
 ## Size 2
 ### Size 3
 #### Size 4
 
-.space
+#space#
 
 ```md
 # Size 1
@@ -97,7 +104,7 @@ text that is `highlighted`
   - Four
     - Five
 
-.space
+#space#
 
 ```md
 - One
@@ -107,7 +114,7 @@ text that is `highlighted`
     - Five
 ```
 .================================
-.space
+#space#
 
 .notes
 what you will notice is that most of 'special' commands
@@ -176,23 +183,24 @@ similar what is github doing
 .global.font-size 4svh
 
 For space between paragraph use empty line.
-line two is its own line (github like parsing)
+line two is its own line#space##space##space#(github like parsing)
 
 second line
-if you need more space use #amp#nbsp;
+if you need more space use -hashtag-space-hashtag-
 
-.space
+#space#
 
 like this
 
 ```txt
+#dot#replace#dot#after #space-hashtag- &nbsp;
 For space between paragraph use empty line.
-line two is its own line
+line two is its own line-hashtag-space-hashtag--hashtag-space-hashtag--hashtag-space-hashtag-(github like parsing)
 
 second line
-if you need more space use non #amp#nbsp;
+if you need more space use -hashtag-space-hashtag-
 
-.space
+#space-hashtag-
 
 like this
 ```
@@ -220,6 +228,38 @@ use `.cut` (needs to be on start of the line)
  - line two
  .cut
  - line three
+```
+.================================
+# transitions
+.notes
+this is an example of transitions
+.notes.end
+
+- line one
+.cut.clean
+# transitions
+- line two
+.cut.clean
+# transitions
+- line A
+- line B
+.notes
+where with `cut` you can add content to the screen,
+but page does not change
+.notes.end
+
+use `.cut.clean` (needs to be on start of the line)
+
+```txt
+ # transitions
+ - line one
+ .cut.clean
+ # transitions
+ - line two
+ .cut.clean
+ # transitions
+ - line A
+ - line B
 ```
 
 .================================
@@ -341,7 +381,7 @@ is the same as on most popular implementations
 | Content Cell 3 | Content Cell 4 |
 ```
 
-.space
+#space#
 
 | |
 |:-:| -:|
@@ -514,7 +554,7 @@ this is one limitation of this system, but if space is needed,
 HTML non breaking space can be used
 .notes.end
 .template GOTITLE .Title .Extra .Last
-.style "font-size: 5svh" ## {{ .Title }} - "{{ .Extra }}" {{ .Last }}
+.style "font-size: 5svh" ## {{ .Title }} - `"{{ .Extra }}"` {{ .Last }}
 ____________
 .template.end
 
@@ -522,17 +562,17 @@ ____________
 
 ```txt
 #dot#template GOTITLE .Title .Extra .Last
-#dot#style "font-size: 5svh" ## {{ .Title }} - "{{ .Extra }}" {{ .Last }}
+#dot#style "font-size: 5svh" ## {{ .Title }} - `"{{ .Extra }}"` {{ .Last }}
 ____________
 #dot#template.end
 
-#dot#GOTITLE Templates Go(dot)spaceNews \o/
+#dot#GOTITLE Templates Go#dot#spaceNews \o/
 ```
 
 - Go Templating can be used in templates
 - multiple attributes are separated by space
   - when params do not exist, whole line is used for `{{.}}`
-  - .space can be used to add 'space'
+  - `#dot#space` can be used to add 'space'
 .================================
 .TITLE Code
 
@@ -780,8 +820,8 @@ tabs will sync with each other
 ```txt
 #dot#title seen as tab name
 
-#dot#global.font-size 3.5svh
-#dot#slide.font-size 3.5svh
+#dot#global.font-size 5svh
+#dot#slide.font-size 5svh
 
 #dot#global.background-color #FFFFFF
 #dot#slide.background-color #FFFFFF

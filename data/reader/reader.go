@@ -50,6 +50,7 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 	_ = defaultEveryDashIsACut
 	slideDashCut := ro.EveryDashIsACut
 	notes := ""
+	adminPage := ""
 
 	startStr := ".template "
 	endStr := ".template.end"
@@ -132,6 +133,23 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 
 			continue
 		}
+		if strings.HasPrefix(line, ".admin") {
+			// we have admin page
+			index++
+			var admin strings.Builder
+			for {
+				line = lines[index]
+				lines[index] = ""
+				if strings.HasPrefix(line, ".admin.end") {
+					adminPage = admin.String()
+					break
+				}
+				admin.WriteString(line)
+				admin.WriteString("\n")
+				index++
+			}
+			continue
+		}
 		if strings.HasPrefix(line, ".---") || strings.HasPrefix(line, ".===") {
 			// we have reached delimiter, see if we have anything in buffer
 			if slide.Len() > 0 {
@@ -140,11 +158,13 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 					slides = append(slides, types.Slide{
 						Markdown:        slide,
 						Notes:           notes,
+						AdminMarkdown:   adminPage,
 						FontSize:        currentFontSize,
 						BackgroundColor: currentBackgroundColor,
 						Title:           currentSlideTitle,
 					})
 					notes = ""
+					adminPage = ""
 				}
 				currentFontSize = ro.DefaultFontSize
 				currentSlideTitle = ""
@@ -202,6 +222,28 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 			lines[index] = ""
 			continue
 		}
+		if strings.HasPrefix(line, ".cut.clean") {
+			// we have reached cut.clean delimiter, see if we have anything in buffer and clean it
+			var tmp string
+			if slide.Len() > 0 {
+				tmp = slide.String()
+				slides = append(slides, types.Slide{
+					Markdown:        tmp,
+					Notes:           notes,
+					AdminMarkdown:   adminPage,
+					FontSize:        currentFontSize,
+					BackgroundColor: currentBackgroundColor,
+					Title:           currentSlideTitle,
+					PrintDisable:    true,
+				})
+				notes = ""
+				adminPage = ""
+				// lastIndex++ index will remain the same
+			}
+			slide.Reset()
+			// slide.WriteString(tmp)
+			continue
+		}
 		isDashCut := slideDashCut && strings.HasPrefix(line, "-")
 		if strings.HasPrefix(line, ".cut") || isDashCut {
 			// we have reached cut delimiter, see if we have anything in buffer
@@ -212,11 +254,14 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 				slides = append(slides, types.Slide{
 					Markdown:        tmp,
 					Notes:           notes,
+					AdminMarkdown:   adminPage,
 					FontSize:        currentFontSize,
 					BackgroundColor: currentBackgroundColor,
 					Title:           currentSlideTitle,
+					PrintDisable:    true,
 				})
 				notes = ""
+				adminPage = ""
 				if !isDashCut {
 					for i := 1; i < len(converters); i++ {
 						data := strings.SplitN(converters[i], ".", 2)
@@ -244,11 +289,13 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 		slides = append(slides, types.Slide{
 			Markdown:        slide.String(),
 			Notes:           notes,
+			AdminMarkdown:   adminPage,
 			FontSize:        currentFontSize,
 			BackgroundColor: currentBackgroundColor,
 			Title:           currentSlideTitle,
 		})
 		// notes = ""
+		// adminPage = ""
 		// lastIndex++
 	}
 	for pattern, data := range replacers {

@@ -3,7 +3,6 @@ package handlers
 import (
 	"bytes"
 	"cmp"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -11,7 +10,6 @@ import (
 	"text/template"
 
 	"github.com/oktalz/present-poc/data"
-	"github.com/oktalz/present-poc/hash"
 	"github.com/oktalz/present-poc/types"
 	"github.com/oktalz/present-poc/ui"
 )
@@ -27,22 +25,15 @@ type TemplateData struct {
 	TerminalCast  []string
 	TerminalClose []string
 	MenuKey       []string
+	Admin         bool
 }
 
 func Homepage(port int, userPwd, adminPwd string) http.Handler { //nolint:funlen
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_ = cookieIDValue(w, r)
+		userOK, adminPrivileges := cookieAuth(userPwd, adminPwd, r)
 		if userPwd != "" {
-			var pass string
-			cookie, err := r.Cookie("present")
-			if err == nil {
-				// Cookie exists, you can access its value using cookie.Value
-				fmt.Println("Cookie value:", cookie.Value)
-				pass = cookie.Value
-			}
-
-			passwordOK := hash.Equal(pass, userPwd) || hash.Equal(pass, adminPwd)
-			log.Println("passwordOK", passwordOK)
-			if !passwordOK {
+			if !(userOK) {
 				http.Redirect(w, r, "/login", http.StatusFound)
 				return
 			}
@@ -50,6 +41,9 @@ func Homepage(port int, userPwd, adminPwd string) http.Handler { //nolint:funlen
 
 		presentation := data.Presentation()
 		slides := presentation.Slides
+		for i := range presentation.Slides {
+			slides[i].IsAdmin = adminPrivileges
+		}
 
 		w.Header().Set("Content-Type", "text/html")
 		w.WriteHeader(http.StatusOK)
@@ -70,6 +64,7 @@ func Homepage(port int, userPwd, adminPwd string) http.Handler { //nolint:funlen
 		menuKeyStr := cmp.Or(os.Getenv("MENU_KEY"), "m")
 		menuKeyStr = strings.ReplaceAll(menuKeyStr, "Space", " ")
 		err = tmpl.Execute(&out, TemplateData{
+			Admin:         adminPrivileges,
 			Slides:        slides,
 			CSS:           presentation.CSS,
 			Title:         presentation.Title,

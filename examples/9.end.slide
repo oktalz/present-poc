@@ -3,6 +3,37 @@
 .table
 .tr
 .td
+.image(assets/images/1.png 15svw:15svh)
+
+.td
+.api.pool1.🐱{🐱}
+.td
+.api.pool1.🐶{🐶}
+.table.end
+
+.table
+.tr
+.td
+.style "max-height: 30svh!important; display: inline-table; width: 30svw; font-size: 3svh;"
+.graph.pool1.pie
+.style.end
+.td
+.style "max-height: 50svh!important; display: inline-table; width: 35svw; font-size: 6svh;"
+.graph.pool1.bar
+.style.end
+.table.end
+.{position: absolute; top: 18000svh; left: -24svw; }(.image(assets/images/1.png 85svw:85svh))
+.// ============================
+.admin
+.TITLE GLHF
+
+.style "max-height: 50svh!important; display: inline-table; width: 65svw; "
+.graph.pool1.bar
+.style.end
+
+.table
+.tr
+.td
 .td
 .raw
 <video id="webcam" autoplay></video>
@@ -21,4 +52,21 @@
 </script>
 .raw.end
 .table.end
-.{position: absolute; top: 18svh; left: -24svw; }(.image(assets/images/1.png 85svw:85svh))
+.admin.end
+.================================
+```mermaid
+%%{init: {'theme': 'default', 'themeVariables': { 'fontSize': '7svh' }}}%%
+xychart-beta
+    title "🐱 vs 🐶"
+    x-axis ["🐱", "🐶", na]
+    y-axis "" 0 --> 2
+    bar [1, 2, 1]
+
+```
+
+```mermaid
+pie title cats vs dogs
+    "cat" : 1
+    "dog" : 2
+    "n/a" : 1
+```

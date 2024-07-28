@@ -77,7 +77,15 @@
     {{- end }}
   </div>
   <div class="slide-data">
-    {{.HTML}}
+    {{if .IsAdmin}}
+      {{if .AdminHTML}}
+        {{.AdminHTML}}
+      {{else}}
+        {{.HTML}}
+      {{end}}
+    {{- else }}
+      {{.HTML}}
+    {{end}}
   </div>
   <div class="page-footer">
     {{- if .HasCast }}

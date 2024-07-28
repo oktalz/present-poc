@@ -27,6 +27,16 @@ function setPageWithUpdate(newPage) {
     Slide: newPage
   })
 }
+
+function triggerPool(key, value) {
+  console.log(key, value)
+  updateData({
+    Author: myID,
+    Pool: key,
+    Value: value
+  })
+}
+
 function setPage(newPage) {
   if (newPage < -2){
     return
@@ -261,4 +271,63 @@ function getCookie(name) {
   return "";
 }
 
-//getCookie("present")
+function updateGraph(pool, data){
+  pie = `pie title `+pool
+
+  keys = Object.keys(data);
+  values = Object.values(data);
+  let max = 0
+
+  for (let i = 0; i < keys.length; i++) {
+    if (keys[i].includes(" ")) {
+      keys[i] = keys[i].replace(" ", "_");
+    }
+    keys[i] = `"` + keys[i] + `"`;
+  }
+  for (let i = 0; i < values.length; i++) {
+    if (values[i] > max) {
+      max = values[i]
+    }
+  }
+  bar = `%%{init: {'theme': 'default', 'themeVariables': { 'fontSize': '5svh' }}}%%
+  xychart-beta
+    title "`+pool+`"
+    x-axis [`+keys+`]
+    y-axis "" 0 --> `+max+`
+    bar [`+values+`]`
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+        const value = data[key];
+        console.log(`Key: "${key}", Value: ${value}`);
+        pie = pie + `
+          "${key}" : ${value}`
+    }
+  }
+  dynamicGraphElements = document.querySelectorAll('.mermaid.graph-'+pool+'.graph-pie');
+  console.log("size pie", dynamicGraphElements.length)
+  for (let i = 0; i < dynamicGraphElements.length; i++) {
+    setTimeout(() => {
+      console.log("pie id", dynamicGraphElements[i].id)
+      changeGraph(dynamicGraphElements[i].id, pie);
+    }, i * 20);
+  }
+  pieCount = dynamicGraphElements.length
+  dynamicGraphElementsBar = document.querySelectorAll('.mermaid.graph-'+pool+'.graph-bar');
+  console.log("size bar", dynamicGraphElementsBar.length)
+  for (let i = 0; i < dynamicGraphElementsBar.length; i++) {
+    setTimeout(() => {
+      console.log("bar id", dynamicGraphElementsBar[i].id, i)
+      changeGraph(dynamicGraphElementsBar[i].id, bar);
+    }, (i + pieCount)* 20);
+  }
+}
+
+function changeGraph(id, data){
+  console.log(id, data)
+  dynamicGraphElement = document.getElementById(id);
+  const timestamp = Date.now().toString().slice(0, -3);
+  mermaid.render(`id`, data).then(({ svg, bindFunctions }) => {
+        dynamicGraphElement.innerHTML = svg;
+        bindFunctions?.(dynamicGraphElement);
+  });
+}

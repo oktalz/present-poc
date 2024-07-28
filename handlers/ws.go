@@ -7,9 +7,7 @@ import (
 	"net/http"
 	"sync/atomic"
 
-	"github.com/oklog/ulid/v2"
 	"github.com/oktalz/present-poc/data"
-	"github.com/oktalz/present-poc/hash"
 	"nhooyr.io/websocket"
 )
 
@@ -26,13 +24,20 @@ func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,goco
 		}
 		defer conn.Close(websocket.StatusAbnormalClosure, "error? ")
 
+		userID := cookieIDValue(w, r)
+		isAdmin := (adminPwd == "") || cookieAdminAuth(adminPwd, r)
 		// register with server
-		id, serverEvent := server.Register() //nolint:varnamelen
+		id, serverEvent, err := server.Register(userID, isAdmin) //nolint:varnamelen
+		if err != nil {
+			log.Println("register:", err)
+			return
+		}
 		defer server.Unregister(id)
+		strID := id.String()
 		browserEvent := make(chan data.Message)
 		msg := data.Message{
-			ID:     id,
-			Author: ulid.ULID{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			ID:     strID,
+			Author: "SERVER",
 			// Slides: data.Presentation(),
 			Slide: int(atomic.LoadInt64(&CurrentSlide)),
 		}
@@ -60,32 +65,22 @@ func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,goco
 					continue
 				}
 				browserEvent <- data.Message{
-					Author: id,
-					Admin:  msg.Admin,
+					Author: strID,
 					Msg:    message,
 					Slide:  msg.Slide,
+					Pool:   msg.Pool,
+					Value:  msg.Value,
 				}
-				atomic.StoreInt64(&CurrentSlide, int64(msg.Slide))
+				if msg.Pool == "" && msg.Data == nil {
+					atomic.StoreInt64(&CurrentSlide, int64(msg.Slide))
+				}
 			}
 		}(ctx)
-
-		isAdmin := false
-		if adminPwd == "" {
-			isAdmin = true
-		} else {
-			var pass string
-			cookie, err := r.Cookie("present")
-			if err == nil {
-				// Cookie exists, you can access its value using cookie.Value
-				pass = cookie.Value
-				isAdmin = hash.Equal(pass, adminPwd)
-			}
-		}
 
 		for {
 			select {
 			case msg := <-serverEvent:
-				if id == msg.Author {
+				if strID == msg.Author {
 					continue
 				}
 				buf, _ := json.Marshal(msg)
@@ -99,16 +94,21 @@ func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,goco
 					return
 				}
 			case msg := <-browserEvent:
+				if msg.Pool != "" {
+					// log.Println("user", userID, msg.Pool, msg.Value)
+					msg.Author = userID
+					server.Pool(msg)
+					continue
+				}
+
 				body := data.Message{
 					Author: msg.Author,
 					Slide:  msg.Slide,
 					Reload: false,
 				}
 
-				if msg.Admin == adminPwd {
-					isAdmin = true
-				}
 				if isAdmin {
+					// body.Author = "SERVER"
 					server.Broadcast(body)
 				}
 			case <-ctx.Done():

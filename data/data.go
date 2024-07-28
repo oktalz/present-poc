@@ -5,7 +5,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/oklog/ulid/v2"
 	"github.com/oktalz/present-poc/data/reader"
 	"github.com/oktalz/present-poc/fsnotify"
 	"github.com/oktalz/present-poc/markdown"
@@ -18,12 +17,15 @@ var (
 )
 
 type Message struct {
-	ID     ulid.ULID
-	Author ulid.ULID
-	Admin  string
+	ID     string
+	Author string
+	Admin  bool
 	Msg    []byte
 	Slide  int
 	Reload bool
+	Pool   string
+	Value  string
+	Data   any
 }
 
 func Presentation() types.Presentation {
@@ -60,15 +62,30 @@ func Init(server Server) {
 		for range filesModified {
 			muPresentation.Lock()
 			presentation = reader.ReadFiles()
+			var err error
 			for i := range presentation.Slides {
+				var adminHTML string
+				if presentation.Slides[i].AdminMarkdown != "" {
+					log.Println("AdminMarkdown", presentation.Slides[i].AdminMarkdown)
+					adminHTML, err = markdown.Convert(presentation.Slides[i].AdminMarkdown)
+					if err != nil {
+						log.Println(err)
+					}
+					log.Println("adminHTML", adminHTML)
+					log.Println("AdminMarkdown", presentation.Slides[i].AdminMarkdown)
+				}
 				res, err := markdown.Convert(presentation.Slides[i].Markdown)
 				if err != nil {
 					log.Println(err)
 				}
 				for old, new := range presentation.Replacers {
 					res = strings.ReplaceAll(res, old, new)
+					if adminHTML != "" {
+						adminHTML = strings.ReplaceAll(adminHTML, old, new)
+					}
 				}
 				presentation.Slides[i].HTML = res
+				presentation.Slides[i].AdminHTML = adminHTML
 			}
 
 			markdown.ResetBlocks()

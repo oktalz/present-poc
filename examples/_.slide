@@ -1,6 +1,7 @@
-.global.font-size 5vh
+.global.font-size 5svh
 .title Present - example slides
 
+.replace.after #space# &nbsp;
 .replace.after #dot# .
 .replace.after #amp# &amp;
 .replace.after -hashtag- #
@@ -22,14 +23,6 @@ ____________
 .cast.before go mod init x
 .cast.block.edit main.go go run .
 .template.end
-
-
-
-
-
-
-
-
 
 .template TITLE_WITH_OVERFLOW
 <p></p>

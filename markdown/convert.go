@@ -83,6 +83,16 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 	fileContent = processReplace(fileContent, ".raw{", "}", func(data string) string {
 		return data
 	})
+	fileContent = processReplaceMiddle(fileContent, ".api.", "{", "}", func(data, display string) string {
+		// .api.pool1{option 2}
+		parts := strings.SplitN(data, `.`, 2) //nolint:mnd
+		if len(parts) != 2 {
+			log.Println("ERROR PARSING", parts)
+			return ``
+		}
+		// log.Println(".api.", parts)
+		return `<span onclick="triggerPool('` + parts[0] + `', '` + parts[1] + `')" style="cursor: pointer;">` + CreateCleanMD(prepare(md, display)).String() + `</span>`
+	})
 	fileContent = processReplace(fileContent, ".center", ".center.end", func(data string) string {
 		return `<div style="text-align:center">` + CreateCleanMD(prepare(md, data)).String() + `</div>`
 	})
@@ -126,7 +136,7 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			if lines[currLine] == ".tr" {
 				if trStarted {
 					if tdData != "" {
-						id := CreateCleanMD(tdData)
+						id := CreateCleanMD(prepare(md, tdData))
 						tdData = ""
 						html += id.String() + `</td></tr><tr>`
 					} else {
@@ -141,7 +151,7 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			if strings.HasPrefix(lines[currLine], ".td") {
 				line := lines[currLine]
 				if tdData != "" {
-					id := CreateCleanMD(tdData)
+					id := CreateCleanMD(prepare(md, tdData))
 					// solution := prepare(md, tdData)
 					html += id.String() + `</td><td>`
 				} else {
@@ -158,7 +168,7 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			}
 			tdData += lines[currLine] + "\n"
 		}
-		id := CreateCleanMD(tdData)
+		id := CreateCleanMD(prepare(md, tdData))
 		// solution := prepare(md, tdData)
 		if trStarted {
 			html += id.String() + `</td></tr></table>`
@@ -222,6 +232,20 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			// solution := prepare(md, buf.String())
 			lines[i] = `<div class="box-overflow">` + id.String() + `</div>`
 			lines = lines[:i+1]
+		}
+		if strings.HasPrefix(lines[i], ".graph.") {
+			id := ulid.Make().String()
+			content := strings.TrimPrefix(lines[i], ".graph.")
+			data := strings.Split(content, ".")
+			graphType := " graph-pie"
+			if len(data) > 1 && data[1] == "bar" {
+				graphType = " graph-bar"
+			}
+			if len(data) > 0 {
+				lines[i] = `<pre class="mermaid graph-` + data[0] + graphType + `" id="dynamicGraph-` + id + `">flowchart LR;    &nbsp;</pre>`
+			} else {
+				// log error ?
+			}
 		}
 		if strings.HasPrefix(lines[i], ".tab") { //nolint:nestif
 			var currLine int

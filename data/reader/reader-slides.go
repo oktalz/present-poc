@@ -51,7 +51,6 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 		}
 		if presentationFiles.Replacers == nil {
 			presentationFiles.Replacers = make(map[string]string)
-			presentationFiles.Replacers[".space"] = "&nbsp;"
 		}
 		for k, v := range presentationFile.Replacers {
 			presentationFiles.Replacers[k] = v
@@ -94,12 +93,12 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 			}
 		}
 
-		hasCastBlockBefore := strings.Contains(slide.Markdown, ".cast.parralel")
+		hasCastBlockBefore := strings.Contains(slide.Markdown, ".cast.parallel")
 		if hasCastBlockBefore {
 			lines := strings.Split(slide.Markdown, "\n")
 			for index := 0; index < len(lines); index++ {
 				line := lines[index]
-				if strings.HasPrefix(line, ".cast.parralel") {
+				if strings.HasPrefix(line, ".cast.parallel") {
 					// newLine := strings.Replace(line, ".cast.before.dir", ".cast.before.dir .", 1)
 					// lines[index] = newLine
 					var tc types.TerminalCommand
@@ -127,7 +126,7 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 			lines := strings.Split(slide.Markdown, "\n")
 			for index := 0; index < len(lines); index++ {
 				line := lines[index]
-				if strings.HasPrefix(line, ".cast.parralel") {
+				if strings.HasPrefix(line, ".cast.parallel") {
 					// newLine := strings.Replace(line, ".cast.before.dir", ".cast.before.dir .", 1)
 					// lines[index] = newLine
 					var tc types.TerminalCommand

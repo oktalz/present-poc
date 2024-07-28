@@ -27,14 +27,14 @@ func applyTemplate(fileContent string, templateData TemplateData) string {
 		}
 		toReplace := content[:end]
 		vars := strings.TrimPrefix(toReplace, " ")
-		vars = strings.ReplaceAll(vars, ")", "&#41;")
-		vars = strings.ReplaceAll(vars, "(", "&#40;")
-		vars = strings.ReplaceAll(vars, "{", "&#123;")
-		vars = strings.ReplaceAll(vars, "}", "&#125;")
-		vars = strings.ReplaceAll(vars, ".", "&#46;")
-		vars = strings.ReplaceAll(vars, "_", "&#95;")
-		vars = strings.ReplaceAll(vars, "-", "&#45;")
-		vars = strings.ReplaceAll(vars, `"`, "&#34;")
+		// vars = strings.ReplaceAll(vars, ")", "&#41;")
+		// vars = strings.ReplaceAll(vars, "(", "&#40;")
+		// vars = strings.ReplaceAll(vars, "{", "&#123;")
+		// vars = strings.ReplaceAll(vars, "}", "&#125;")
+		// vars = strings.ReplaceAll(vars, ".", "&#46;")
+		// vars = strings.ReplaceAll(vars, "_", "&#95;")
+		// vars = strings.ReplaceAll(vars, "-", "&#45;")
+		// vars = strings.ReplaceAll(vars, `"`, "&#34;")
 		var data any
 		if len(templateData.Vars) == 0 {
 			data = vars

@@ -12,7 +12,6 @@ import (
 
 	"github.com/oktalz/present-poc/data"
 	"github.com/oktalz/present-poc/exec"
-	"github.com/oktalz/present-poc/hash"
 	"nhooyr.io/websocket"
 )
 
@@ -47,15 +46,9 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 			}
 			return
 		}
-		var pass string
-		cookie, err := r.Cookie("present")
-		var isAdmin bool
-		if err == nil {
-			// Cookie exists, you can access its value using cookie.Value
-			pass = cookie.Value
-			isAdmin = hash.Equal(pass, adminPwd)
-		}
-		if adminPwd != "" && !isAdmin {
+		// userID := cookieIDValue(w, r)
+		adminPrivileges := cookieAdminAuth(adminPwd, r)
+		if adminPwd != "" && !adminPrivileges {
 			err = conn.Write(context.Background(), mt, []byte("presenter<br>option only<br>🤷 💥 💔<br>")) //nolint:contextcheck
 			if err != nil {
 				log.Println("write:", err)
@@ -65,13 +58,6 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 
 		log.Println("recv: " + strconv.Itoa(payload.Slide))
 		log.Printf("recv: %s", payload.Code)
-		// log.Printf("recv: %s", bodyBytes) - contains pwd
-		// Simulate sending events (you can replace this with real data)
-		// for i := 0; i < 10; i++ {
-		// 	fmt.Fprintf(w, "data: %s\n\n", fmt.Sprintf("Event %d", i))
-		// 	time.Sleep(1 * time.Second)
-		// 	w.(http.Flusher).Flush()
-		// }
 
 		slide := int64(payload.Slide)
 		if err != nil {
@@ -89,7 +75,7 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 				if terminalCommand[i].Index == -1 {
 					terminalCommand[i].Index = 0
 				}
-				terminalCommand[i].Code.Code = payload.Code[terminalCommand[i].Index]
+				terminalCommand[i].Code.Code = payload.Code[i]
 			}
 		}
 		workingDir := os.TempDir() + "/present-" + strconv.FormatInt(time.Now().UnixNano(), 10)

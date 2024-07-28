@@ -32,6 +32,8 @@ type TerminalCommand struct {
 type Slide struct {
 	Markdown              string
 	Notes                 string
+	IsAdmin               bool
+	AdminMarkdown         string
 	Terminal              TerminalCommand
 	Asciinema             *Asciinema
 	Cast                  *Cast
@@ -50,6 +52,7 @@ type Slide struct {
 	PagePrint             int
 	FontSize              string
 	HTML                  string
+	AdminHTML             string
 	Link                  string
 	LinkNext              string
 	LinkPrev              string

@@ -28,6 +28,12 @@ function startWebsocket() {
     socket.addEventListener('message', (event) => {
         console.log('Message from server: ', event.data);
         const data = JSON.parse(event.data)
+        if (data.Data != "" && data.Data != null) {
+          if (data.Pool != '') {
+            updateGraph(data.Pool, data.Data)
+          }
+          return
+        }
         if (data.Reload) {
           location.reload()
         } else {
