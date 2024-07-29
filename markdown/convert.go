@@ -2,6 +2,7 @@ package markdown
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"strings"
 	"sync"
@@ -237,12 +238,77 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			id := ulid.Make().String()
 			content := strings.TrimPrefix(lines[i], ".graph.")
 			data := strings.Split(content, ".")
-			graphType := " graph-pie"
+			graphType := "pie"
+			scales := ``
+			displayLegend := `true`
+			dataLabels := `,
+      datalabels: {
+        color: 'white',
+        font: {
+          size: 64
+        }
+      }`
 			if len(data) > 1 && data[1] == "bar" {
-				graphType = " graph-bar"
+				graphType = "bar"
+				displayLegend = `false`
+				dataLabels = ``
+				scales = `,
+      scales: {
+        x: {
+            ticks: {
+                font: {
+                    size: 15
+                }
+            }
+        },
+        y: {
+          ticks: {
+            stepSize: 1,
+            min: 0
+          },
+          beginAtZero: true
+        }
+      }`
 			}
 			if len(data) > 0 {
-				lines[i] = `<pre class="mermaid graph-` + data[0] + graphType + `" id="dynamicGraph-` + id + `">flowchart LR;    &nbsp;</pre>`
+				// lines[i] = `<pre class="mermaid graph-` + data[0] + graphType + `" id="dynamicGraph-` + id + `">flowchart LR;    &nbsp;</pre>`
+				_ = graphType
+				_ = id
+				fmt.Println("graph ctx", "ctx"+id)
+				lines[i] = `
+<div style="height: 60svh;">
+  <canvas class="chart-` + data[0] + `" id="dynamic-chart-id` + id + `"></canvas>
+</div>
+<script>
+  const ctx` + id + ` = document.getElementById('dynamic-chart-id` + id + `');
+  const chartjs` + id + ` = new Chart(ctx` + id + `, {
+    type: '` + graphType + `',
+    data: {
+      labels: [],
+      datasets: [{
+        label: '',
+        data: [],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          display: ` + displayLegend + `,
+          labels: {
+            font: {
+              size: 14
+            }
+          }
+        }` + dataLabels + `
+      }` + scales + `
+    }
+  });
+  if (!charts.hasOwnProperty('ch` + data[0] + `')) {
+    charts.ch` + data[0] + ` = {};
+  }
+  charts.ch` + data[0] + `.id` + id + ` = chartjs` + id + `;
+</script>`
 			} else {
 				// log error ?
 			}

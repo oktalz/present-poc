@@ -271,63 +271,47 @@ function getCookie(name) {
   return "";
 }
 
-function updateGraph(pool, data){
-  pie = `pie title `+pool
+let charts = {};
 
+function updateGraph(pool, data){
   keys = Object.keys(data);
   values = Object.values(data);
-  let max = 0
 
-  for (let i = 0; i < keys.length; i++) {
-    if (keys[i].includes(" ")) {
-      keys[i] = keys[i].replace(" ", "_");
-    }
-    keys[i] = `"` + keys[i] + `"`;
+  data = {
+    labels: keys,
+    datasets: [{
+      data: values
+    }]
   }
-  for (let i = 0; i < values.length; i++) {
-    if (values[i] > max) {
-      max = values[i]
-    }
-  }
-  bar = `%%{init: {'theme': 'default', 'themeVariables': { 'fontSize': '5svh' }}}%%
-  xychart-beta
-    title "`+pool+`"
-    x-axis [`+keys+`]
-    y-axis "" 0 --> `+max+`
-    bar [`+values+`]`
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-        const value = data[key];
-        console.log(`Key: "${key}", Value: ${value}`);
-        pie = pie + `
-          "${key}" : ${value}`
-    }
-  }
-  dynamicGraphElements = document.querySelectorAll('.mermaid.graph-'+pool+'.graph-pie');
-  console.log("size pie", dynamicGraphElements.length)
-  for (let i = 0; i < dynamicGraphElements.length; i++) {
-    setTimeout(() => {
-      console.log("pie id", dynamicGraphElements[i].id)
-      changeGraph(dynamicGraphElements[i].id, pie);
-    }, i * 20);
-  }
-  pieCount = dynamicGraphElements.length
-  dynamicGraphElementsBar = document.querySelectorAll('.mermaid.graph-'+pool+'.graph-bar');
-  console.log("size bar", dynamicGraphElementsBar.length)
-  for (let i = 0; i < dynamicGraphElementsBar.length; i++) {
-    setTimeout(() => {
-      console.log("bar id", dynamicGraphElementsBar[i].id, i)
-      changeGraph(dynamicGraphElementsBar[i].id, bar);
-    }, (i + pieCount)* 20);
-  }
-}
+  for (const key in charts["ch"+pool]) {
+    if (charts["ch"+pool].hasOwnProperty(key)) {
+        const ch = charts["ch"+pool][key]
+        const element = document.getElementById(`dynamic-chart-${key}`)
+        const fontSizeValue = getComputedStyle(element.parentNode).getPropertyValue('font-size')
+        const fontSizeInPixels = parseFloat(fontSizeValue)
 
-function changeGraph(id, data){
-  console.log(id, data)
-  dynamicGraphElement = document.getElementById(id);
-  const timestamp = Date.now().toString().slice(0, -3);
-  mermaid.render(`id`, data).then(({ svg, bindFunctions }) => {
-        dynamicGraphElement.innerHTML = svg;
-        bindFunctions?.(dynamicGraphElement);
-  });
+        if (ch.options.scales) {
+          if (ch.options.scales.x && ch.options.scales.x.ticks && ch.options.scales.x.ticks.font) {
+            ch.options.scales.x.ticks.font.size = fontSizeInPixels;
+          }
+          if (ch.options.scales.x && ch.options.scales.x.ticks) {
+            ch.options.scales.x.ticks.fontSize = fontSizeInPixels;
+          }
+          if (ch.options.scales.y && ch.options.scales.y.ticks) {
+            ch.options.scales.y.ticks.fontSize = fontSizeInPixels;
+          }
+          if (ch.options.plugins && ch.options.plugins.legend && ch.options.plugins.legend.labels && ch.options.plugins.legend.labels.font) {
+            ch.options.plugins.legend.labels.font.size = fontSizeInPixels;
+          }
+          if (ch.options.plugins && ch.options.plugins.legend && ch.options.plugins.legend.labels) {
+            ch.options.plugins.legend.labels.fontSize = fontSizeInPixels;
+          }
+        }
+
+        ch.options.fontSize = fontSizeInPixels
+        ch.options.font.size = fontSizeInPixels
+        ch.data = data
+        ch.update()
+    }
+  }
 }

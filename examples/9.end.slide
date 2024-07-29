@@ -1,10 +1,10 @@
 .TITLE GLHF
+.slide.font-size 10svh
 
 .table
 .tr
 .td
 .image(assets/images/1.png 15svw:15svh)
-
 .td
 .api.pool1.🐱{🐱}
 .td
@@ -14,13 +14,10 @@
 .table
 .tr
 .td
-.style "max-height: 30svh!important; display: inline-table; width: 30svw; font-size: 3svh;"
 .graph.pool1.pie
-.style.end
+
 .td
-.style "max-height: 50svh!important; display: inline-table; width: 35svw; font-size: 6svh;"
 .graph.pool1.bar
-.style.end
 .table.end
 .{position: absolute; top: 18000svh; left: -24svw; }(.image(assets/images/1.png 85svw:85svh))
 .// ============================
@@ -53,6 +50,72 @@
 .raw.end
 .table.end
 .admin.end
+
+.================================
+.TITLE Graphs - chart.js - bar
+.raw
+<div style="height: 80svh;">
+  <canvas id="myChart1"></canvas>
+</div>
+<script>
+  const ctx1 = document.getElementById('myChart1');
+
+  new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'opt 1'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 4],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+.raw.end
+.================================
+.TITLE Graphs - chart.js - pie
+.raw
+<div style="height: 80svh;">
+  <canvas id="myChart2"></canvas>
+</div>
+<script>
+  const ctx2 = document.getElementById('myChart2');
+
+  config = {
+    type: 'pie',
+    data: {
+        labels: ['Red', 'Green', 'Blue'],
+        datasets: [{
+        label: 'My Dataset',
+        data: [300, 50, 100],
+        backgroundColor: ['red', 'green', 'blue']
+        }]
+    },
+    options: {
+        plugins: {
+
+      legend: {
+        labels: {
+          font: {
+            size: 64
+          }
+        }
+      }
+        }
+    }
+  };
+
+  new Chart(ctx2, config);
+</script>
+.raw.end
 .================================
 ```mermaid
 %%{init: {'theme': 'default', 'themeVariables': { 'fontSize': '7svh' }}}%%

@@ -24,38 +24,25 @@ func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,goco
 		}
 		defer conn.Close(websocket.StatusAbnormalClosure, "error? ")
 
+		// TODO if we have set user pwd, we should probably check it here
+
 		userID := cookieIDValue(w, r)
 		isAdmin := (adminPwd == "") || cookieAdminAuth(adminPwd, r)
 		// register with server
-		id, serverEvent, err := server.Register(userID, isAdmin) //nolint:varnamelen
+		serverEvent, err := server.Register(userID, isAdmin, atomic.LoadInt64(&CurrentSlide)) //nolint:varnamelen
 		if err != nil {
 			log.Println("register:", err)
 			return
 		}
-		defer server.Unregister(id)
-		strID := id.String()
+		defer server.Unregister(userID)
 		browserEvent := make(chan data.Message)
-		msg := data.Message{
-			ID:     strID,
-			Author: "SERVER",
-			// Slides: data.Presentation(),
-			Slide: int(atomic.LoadInt64(&CurrentSlide)),
-		}
-
-		buf, _ := json.Marshal(msg)
-		err = conn.Write(context.Background(), websocket.MessageText, buf) //nolint:contextcheck
-		if err != nil {
-			log.Println("write:", err)
-			return
-		}
-
 		ctx := context.Background()
 		go func(ctx context.Context) { //nolint:contextcheck
 			defer ctx.Done()
 			for {
 				_, message, err := conn.Read(context.Background()) //nolint:contextcheck
 				if err != nil {
-					log.Println("read:", id, err)
+					log.Println("read:", userID, err)
 					return
 				}
 				var msg data.Message
@@ -65,7 +52,7 @@ func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,goco
 					continue
 				}
 				browserEvent <- data.Message{
-					Author: strID,
+					Author: userID,
 					Msg:    message,
 					Slide:  msg.Slide,
 					Pool:   msg.Pool,
@@ -80,7 +67,7 @@ func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,goco
 		for {
 			select {
 			case msg := <-serverEvent:
-				if strID == msg.Author {
+				if userID == msg.Author {
 					continue
 				}
 				buf, _ := json.Marshal(msg)
@@ -108,7 +95,6 @@ func WS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,goco
 				}
 
 				if isAdmin {
-					// body.Author = "SERVER"
 					server.Broadcast(body)
 				}
 			case <-ctx.Done():

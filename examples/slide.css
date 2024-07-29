@@ -19,6 +19,3 @@
 pre.mermaid .plot rect {
   fill: steelblue;
 }
-svg text {
-  font-size: 5svh; /* Adjust the font size as needed */
-}

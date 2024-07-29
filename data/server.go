@@ -3,8 +3,6 @@ package data
 import (
 	"log"
 	"sync"
-
-	"github.com/oklog/ulid/v2"
 )
 
 var (
@@ -13,48 +11,52 @@ var (
 )
 
 type Server interface {
-	Register(userID string, isAdmin bool) (id ulid.ULID, ch chan Message, err error)
-	Unregister(id ulid.ULID)
+	Register(userID string, isAdmin bool, currentSlide int64) (ch chan Message, err error)
+	Unregister(id string)
 	Broadcast(msg Message)
-	Send(id ulid.ULID, msg Message)
+	Send(id string, msg Message)
 	Pool(msg Message)
 }
 
 func NewServer() *server { //nolint:revive
 	return &server{
-		clients: make(map[ulid.ULID]chan Message),
-		admins:  make(map[ulid.ULID]chan Message),
+		clients: make(map[string]chan Message),
+		admins:  make(map[string]chan Message),
 		pools:   make(map[string]map[string]string),
 	}
 }
 
 type server struct {
-	clients map[ulid.ULID]chan Message
-	admins  map[ulid.ULID]chan Message
+	clients map[string]chan Message
+	admins  map[string]chan Message
 	pools   map[string]map[string]string
 }
 
-func (s *server) Register(userID string, isAdmin bool) (id ulid.ULID, ch chan Message, err error) { //nolint:nonamedreturns
+func (s *server) Register(userID string, isAdmin bool, currentSlide int64) (ch chan Message, err error) { //nolint:nonamedreturns
 	muWS.Lock()
 	defer muWS.Unlock()
-	id, err = ulid.Parse(userID)
-	if err != nil {
-		log.Println(err)
-		return ulid.ULID{}, nil, err
-	}
 	ch = make(chan Message)
 	if isAdmin {
-		s.admins[id] = ch
-		log.Println("registered admin", id)
+		s.admins[userID] = ch
+		log.Println("registered admin", userID)
 	} else {
-		s.clients[id] = ch
-		log.Println("registered", id)
+		s.clients[userID] = ch
+		log.Println("registered", userID)
 	}
-	s.clients[id] = ch
-	return id, ch, nil
+	s.clients[userID] = ch
+	go func() {
+		ch <- Message{
+			ID:     userID,
+			Author: "SERVER",
+			// Slides: data.Presentation(),
+			Slide: int(currentSlide),
+		}
+		s.BroadcastPoolsToID(userID)
+	}()
+	return ch, nil
 }
 
-func (s *server) Unregister(id ulid.ULID) {
+func (s *server) Unregister(id string) {
 	muWS.Lock()
 	defer muWS.Unlock()
 	log.Println("unregistered", id)
@@ -78,6 +80,26 @@ func (s *server) Broadcast(msg Message) {
 	}
 }
 
+func (s *server) BroadcastSingle(msg Message, id string) {
+	muWS.RLock()
+	defer muWS.RUnlock()
+	// log.Println("broadcast", msg.Author)
+	ch, ok := s.admins[id]
+	if ok {
+		go func(ch chan Message, msg Message) {
+			ch <- msg
+		}(ch, msg)
+		return
+	}
+
+	ch, ok = s.clients[id]
+	if ok {
+		go func(ch chan Message, msg Message) {
+			ch <- msg
+		}(ch, msg)
+	}
+}
+
 func (s *server) BroadcastAdmins(msg Message) {
 	muWS.RLock()
 	defer muWS.RUnlock()
@@ -88,7 +110,7 @@ func (s *server) BroadcastAdmins(msg Message) {
 	}
 }
 
-func (s *server) Send(id ulid.ULID, msg Message) {
+func (s *server) Send(id string, msg Message) {
 	muWS.RLock()
 	defer muWS.RUnlock()
 	ch, ok := s.clients[id]
@@ -110,14 +132,36 @@ func (s *server) Pool(msg Message) {
 		s.pools[msg.Pool] = make(map[string]string)
 		s.pools[msg.Pool][msg.Author] = msg.Value
 	}
+	go s.BroadcastPool(msg.Pool)
+}
+
+func (s *server) BroadcastPool(pool string, ids ...string) {
+	// this needs to be rate limited, use channels to send request for change
+
+	muWS.RLock()
+	defer muWS.RUnlock()
 	d := map[string]int{}
-	for _, v := range s.pools[msg.Pool] {
+	for _, v := range s.pools[pool] {
 		d[v]++
 	}
 
 	bMsg := Message{
-		Pool: msg.Pool,
+		Pool: pool,
 		Data: d,
 	}
-	go s.Broadcast(bMsg)
+	if len(ids) == 0 {
+		go s.Broadcast(bMsg)
+	} else {
+		for _, id := range ids {
+			go s.BroadcastSingle(bMsg, id)
+		}
+	}
+}
+
+func (s *server) BroadcastPoolsToID(id string) {
+	muWS.RLock()
+	defer muWS.RUnlock()
+	for k := range s.pools {
+		go s.BroadcastPool(k, id)
+	}
 }
