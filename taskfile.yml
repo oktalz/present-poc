@@ -8,6 +8,7 @@ vars:
   BOXICONS_VERSION: 2.1.4
   HIGHLIGHT_JS_VERSION: 11.9.0
   MERMAID_JS_VERSION: 10.9.1
+  CHART_JS_VERSION: 4.4.3
 
 tasks:
 
@@ -73,10 +74,8 @@ tasks:
       - task: mermaidjs-check-latest-version
     cmds:
       - mkdir -p ui/static
-      - wget -q -O ui/static/chart.js https://cdn.jsdelivr.net/npm/chart.js
-      #- wget -q -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
+      - wget -q -O ui/static/chart.js https://cdn.jsdelivr.net/npm/chart.js@{{.CHART_JS_VERSION}}/dist/chart.umd.min.js
       - wget -q -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid@{{.MERMAID_JS_VERSION}}/dist/mermaid.min.js
-      #- wget -q -O ui/static/mermaid.min.js https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs
       - wget -q -O ui/static/highlight.min.js https://cdnjs.cloudflare.com/ajax/libs/highlight.js/{{.HIGHLIGHT_JS_VERSION}}/highlight.min.js
       - wget -q -O ui/static/highlight.min.css https://cdnjs.cloudflare.com/ajax/libs/highlight.js/{{.HIGHLIGHT_JS_VERSION}}/styles/default.min.css
       - wget -q -O ui/static/boxicons.js https://unpkg.com/boxicons@{{.BOXICONS_VERSION}}/dist/boxicons.js

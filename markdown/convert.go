@@ -295,6 +295,7 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
       plugins: {
         legend: {
           display: ` + displayLegend + `,
+		  position: 'bottom',
           labels: {
             font: {
               size: 14
