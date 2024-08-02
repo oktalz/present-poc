@@ -1,4 +1,4 @@
-function castTerminal(){
+function castTerminal(block){
     pageNum = page
 
     const slideElement = document.getElementById('slide-'+pageNum);
@@ -20,6 +20,9 @@ function castTerminal(){
     // Connection opened
     socket.addEventListener('open', () => {
         let data = {slide: pageNum, code: codeText}
+        if (block != -1) {
+          data.block= block
+        }
         let body = JSON.stringify(data)
         console.log(body)
         socket.send(body);

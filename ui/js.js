@@ -99,7 +99,7 @@ document.addEventListener('keydown', function(e) {
     })
   }
   if (terminalCast.includes(keyCode)) {
-    castTerminal()
+    castTerminal(-1)
   }
   if (terminalClose.includes(keyCode)) {
     const terminalElement = document.getElementById('terminal-'+page);
@@ -223,7 +223,7 @@ document.addEventListener('click', function(event) {
   if (targetId && targetId.startsWith('run-icon-')) {
     var pageNumber = targetId.substring(9); // strip 'run-' prefix
     console.log(`Clicked run button for page ${pageNumber}`);
-    castTerminal()
+    castTerminal(-1)
   }
 });
 
@@ -314,4 +314,9 @@ function updateGraph(pool, data){
         ch.update()
     }
   }
+}
+
+function triggerBlockRun(id) {
+  //document.getElementById(id).click();
+  castTerminal(id-1)
 }

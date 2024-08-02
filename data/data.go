@@ -66,13 +66,10 @@ func Init(server Server) {
 			for i := range presentation.Slides {
 				var adminHTML string
 				if presentation.Slides[i].AdminMarkdown != "" {
-					log.Println("AdminMarkdown", presentation.Slides[i].AdminMarkdown)
 					adminHTML, err = markdown.Convert(presentation.Slides[i].AdminMarkdown)
 					if err != nil {
 						log.Println(err)
 					}
-					log.Println("adminHTML", adminHTML)
-					log.Println("AdminMarkdown", presentation.Slides[i].AdminMarkdown)
 				}
 				res, err := markdown.Convert(presentation.Slides[i].Markdown)
 				if err != nil {

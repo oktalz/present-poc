@@ -21,7 +21,7 @@ func parseCommand(command string) types.TerminalCommand {
 	if len(parts) > 3 {
 		tc.Cmd = parts[3:]
 	}
-	if tc.Dir == "" {
+	if tc.Dir == "" && len(parts) > 1 {
 		tc.FileName = parts[1]
 	}
 	return tc

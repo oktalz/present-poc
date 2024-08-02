@@ -45,6 +45,9 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 	replacersAfter := map[string]string{}
 	currentSlideTitle := ""
 	currentFontSize := ro.DefaultFontSize
+	currentTerminalFontSize := ro.DefaultTerminalFontSize
+	currentTerminalFontColor := ro.DefaultTerminalFontColor
+	currentTerminalBackgroundColor := ro.DefaultTerminalBackgroundColor
 	currentBackgroundColor := ro.DefaultBackgroundColor
 	defaultEveryDashIsACut := ro.EveryDashIsACut
 	_ = defaultEveryDashIsACut
@@ -156,17 +159,24 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 				slide := slide.String()
 				if len(strings.Trim(slide, " \n")) > 0 {
 					slides = append(slides, types.Slide{
-						Markdown:        slide,
-						Notes:           notes,
-						AdminMarkdown:   adminPage,
-						FontSize:        currentFontSize,
-						BackgroundColor: currentBackgroundColor,
-						Title:           currentSlideTitle,
+						Markdown:                slide,
+						Notes:                   notes,
+						AdminMarkdown:           adminPage,
+						FontSize:                currentFontSize,
+						TerminalFontSize:        currentTerminalFontSize,
+						TerminalFontColor:       currentTerminalFontColor,
+						TerminalBackgroundColor: currentTerminalBackgroundColor,
+						BackgroundColor:         currentBackgroundColor,
+						Title:                   currentSlideTitle,
 					})
 					notes = ""
 					adminPage = ""
 				}
 				currentFontSize = ro.DefaultFontSize
+				currentTerminalFontSize = ro.DefaultTerminalFontSize
+				currentTerminalFontColor = ro.DefaultTerminalFontColor
+				currentTerminalBackgroundColor = ro.DefaultTerminalBackgroundColor
+				currentBackgroundColor = ro.DefaultBackgroundColor
 				currentSlideTitle = ""
 				currentBackgroundColor = ro.DefaultBackgroundColor
 			}
@@ -207,6 +217,39 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 			lines[index] = ""
 			continue
 		}
+		if strings.HasPrefix(line, ".side.terminal.font-size") {
+			currentTerminalFontSize = strings.TrimPrefix(line, ".side.terminal.font-size ")
+			lines[index] = ""
+			continue
+		}
+		if strings.HasPrefix(line, ".global.terminal.font-size") {
+			ro.DefaultTerminalFontSize = strings.TrimPrefix(line, ".global.terminal.font-size ")
+			currentTerminalFontSize = ro.DefaultTerminalFontSize
+			lines[index] = ""
+			continue
+		}
+		if strings.HasPrefix(line, ".global.terminal.font-color") {
+			ro.DefaultTerminalFontColor = strings.TrimPrefix(line, ".global.terminal.font-color ")
+			currentTerminalFontColor = ro.DefaultTerminalFontColor
+			lines[index] = ""
+			continue
+		}
+		if strings.HasPrefix(line, ".side.terminal.font-color") {
+			currentTerminalFontColor = strings.TrimPrefix(line, ".side.terminal.font-color ")
+			lines[index] = ""
+			continue
+		}
+		if strings.HasPrefix(line, ".global.terminal.background-color") {
+			ro.DefaultTerminalBackgroundColor = strings.TrimPrefix(line, ".global.terminal.background-color ")
+			currentTerminalBackgroundColor = ro.DefaultTerminalBackgroundColor
+			lines[index] = ""
+			continue
+		}
+		if strings.HasPrefix(line, ".side.terminal.background-color") {
+			currentTerminalBackgroundColor = strings.TrimPrefix(line, ".side.terminal.background-color ")
+			lines[index] = ""
+			continue
+		}
 		if strings.HasPrefix(line, ".slide.title") {
 			currentSlideTitle = strings.TrimPrefix(line, ".slide.title ")
 			lines[index] = ""
@@ -228,13 +271,16 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 			if slide.Len() > 0 {
 				tmp = slide.String()
 				slides = append(slides, types.Slide{
-					Markdown:        tmp,
-					Notes:           notes,
-					AdminMarkdown:   adminPage,
-					FontSize:        currentFontSize,
-					BackgroundColor: currentBackgroundColor,
-					Title:           currentSlideTitle,
-					PrintDisable:    true,
+					Markdown:                tmp,
+					Notes:                   notes,
+					AdminMarkdown:           adminPage,
+					FontSize:                currentFontSize,
+					TerminalFontSize:        currentTerminalFontSize,
+					TerminalFontColor:       currentTerminalFontColor,
+					TerminalBackgroundColor: currentTerminalBackgroundColor,
+					BackgroundColor:         currentBackgroundColor,
+					Title:                   currentSlideTitle,
+					PrintDisable:            true,
 				})
 				notes = ""
 				adminPage = ""
@@ -252,13 +298,16 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 			if slide.Len() > 0 {
 				tmp = slide.String()
 				slides = append(slides, types.Slide{
-					Markdown:        tmp,
-					Notes:           notes,
-					AdminMarkdown:   adminPage,
-					FontSize:        currentFontSize,
-					BackgroundColor: currentBackgroundColor,
-					Title:           currentSlideTitle,
-					PrintDisable:    true,
+					Markdown:                tmp,
+					Notes:                   notes,
+					AdminMarkdown:           adminPage,
+					FontSize:                currentFontSize,
+					TerminalFontSize:        currentTerminalFontSize,
+					TerminalFontColor:       currentTerminalFontColor,
+					TerminalBackgroundColor: currentTerminalBackgroundColor,
+					BackgroundColor:         currentBackgroundColor,
+					Title:                   currentSlideTitle,
+					PrintDisable:            true,
 				})
 				notes = ""
 				adminPage = ""
@@ -287,12 +336,15 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 	}
 	if slide.Len() > 0 {
 		slides = append(slides, types.Slide{
-			Markdown:        slide.String(),
-			Notes:           notes,
-			AdminMarkdown:   adminPage,
-			FontSize:        currentFontSize,
-			BackgroundColor: currentBackgroundColor,
-			Title:           currentSlideTitle,
+			Markdown:                slide.String(),
+			Notes:                   notes,
+			AdminMarkdown:           adminPage,
+			FontSize:                currentFontSize,
+			TerminalFontSize:        currentTerminalFontSize,
+			TerminalFontColor:       currentTerminalFontColor,
+			TerminalBackgroundColor: currentTerminalBackgroundColor,
+			BackgroundColor:         currentBackgroundColor,
+			Title:                   currentSlideTitle,
 		})
 		// notes = ""
 		// adminPage = ""

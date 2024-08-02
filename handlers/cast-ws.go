@@ -12,6 +12,7 @@ import (
 
 	"github.com/oktalz/present-poc/data"
 	"github.com/oktalz/present-poc/exec"
+	"github.com/oktalz/present-poc/types"
 	"nhooyr.io/websocket"
 )
 
@@ -60,9 +61,6 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 		log.Printf("recv: %s", payload.Code)
 
 		slide := int64(payload.Slide)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-		}
 		slides := data.Presentation().Slides
 		if slide < 0 || slide >= int64(len(slides)) {
 			http.Error(w, "Invalid slide number", http.StatusBadRequest)
@@ -77,6 +75,9 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 				}
 				terminalCommand[i].Code.Code = payload.Code[i]
 			}
+		}
+		if payload.Block != nil && *payload.Block > -1 && *payload.Block < len(terminalCommand) {
+			terminalCommand = []types.TerminalCommand{terminalCommand[*payload.Block]}
 		}
 		workingDir := os.TempDir() + "/present-" + strconv.FormatInt(time.Now().UnixNano(), 10)
 		tmpDirNeeded := false

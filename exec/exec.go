@@ -124,7 +124,7 @@ func CmdStreamWS(tc types.TerminalCommand, ch chan string) { //nolint:funlen
 	go func() {
 		scannerOut := bufio.NewScanner(stdout)
 		for scannerOut.Scan() {
-			ch <- scannerOut.Text()
+			ch <- strings.ReplaceAll(scannerOut.Text(), " ", "&nbsp;")
 			// fmt.Println(scannerOut.Text())
 			log.Println(scannerOut.Text())
 		}

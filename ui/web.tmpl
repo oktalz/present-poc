@@ -90,7 +90,7 @@
   </div>
   <div class="page-footer">
     {{- if .HasCast }}
-      <div class="terminal closed" id="terminal-{{.PageIndex}}">{{ .HasCast }}</div>
+      <div class="terminal closed" id="terminal-{{.PageIndex}}" style="background-color: {{.TerminalBackgroundColor}}; color: {{.TerminalFontColor}};  font-size: {{.TerminalFontSize}};">{{ .HasCast }}</div>
     {{- end }}
     {{- if not .PrintDisable }}
       {{.PagePrint}}

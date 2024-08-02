@@ -30,35 +30,38 @@ type TerminalCommand struct {
 }
 
 type Slide struct {
-	Markdown              string
-	Notes                 string
-	IsAdmin               bool
-	AdminMarkdown         string
-	Terminal              TerminalCommand
-	Asciinema             *Asciinema
-	Cast                  *Cast
-	TerminalCommandBefore []TerminalCommand
-	TerminalCommand       []TerminalCommand
-	TerminalCommandAfter  []TerminalCommand
-	UseTmpFolder          bool
-	CanEdit               bool
-	HasCast               bool
-	HasCastStreamed       bool
-	HasRun                bool
-	HasTerminal           bool
-	BackgroundImage       string
-	BackgroundColor       string
-	PageIndex             int
-	PagePrint             int
-	FontSize              string
-	HTML                  string
-	AdminHTML             string
-	Link                  string
-	LinkNext              string
-	LinkPrev              string
-	PrintOnly             bool
-	PrintDisable          bool
-	Title                 string
+	Markdown                string
+	Notes                   string
+	IsAdmin                 bool
+	AdminMarkdown           string
+	Terminal                TerminalCommand
+	Asciinema               *Asciinema
+	Cast                    *Cast
+	TerminalCommandBefore   []TerminalCommand
+	TerminalCommand         []TerminalCommand
+	TerminalCommandAfter    []TerminalCommand
+	UseTmpFolder            bool
+	CanEdit                 bool
+	HasCast                 bool
+	HasCastStreamed         bool
+	HasRun                  bool
+	HasTerminal             bool
+	BackgroundImage         string
+	BackgroundColor         string
+	PageIndex               int
+	PagePrint               int
+	FontSize                string
+	TerminalFontSize        string
+	TerminalFontColor       string
+	TerminalBackgroundColor string
+	HTML                    string
+	AdminHTML               string
+	Link                    string
+	LinkNext                string
+	LinkPrev                string
+	PrintOnly               bool
+	PrintDisable            bool
+	Title                   string
 }
 
 type Menu struct {
@@ -82,7 +85,10 @@ type TerminalOutputLine struct {
 }
 
 type ReadOptions struct {
-	DefaultFontSize        string
-	DefaultBackgroundColor string
-	EveryDashIsACut        bool
+	DefaultFontSize                string
+	DefaultBackgroundColor         string
+	EveryDashIsACut                bool
+	DefaultTerminalFontSize        string
+	DefaultTerminalFontColor       string
+	DefaultTerminalBackgroundColor string
 }

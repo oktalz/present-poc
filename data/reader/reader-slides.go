@@ -13,8 +13,12 @@ import (
 
 func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,maintidx
 	ro := types.ReadOptions{
-		DefaultFontSize: "5vh",
-		EveryDashIsACut: false,
+		DefaultFontSize:                "5vh",
+		EveryDashIsACut:                false,
+		DefaultTerminalFontSize:        "6vh",
+		DefaultBackgroundColor:         "black",
+		DefaultTerminalFontColor:       "black",
+		DefaultTerminalBackgroundColor: "rgb(253, 246, 227)",
 	}
 
 	slides, hasHeaderFile, err := listSlideFiles(".")

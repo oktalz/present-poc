@@ -2,7 +2,6 @@ package markdown
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"strings"
 	"sync"
@@ -93,6 +92,10 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 		}
 		// log.Println(".api.", parts)
 		return `<span onclick="triggerPool('` + parts[0] + `', '` + parts[1] + `')" style="cursor: pointer;">` + CreateCleanMD(prepare(md, display)).String() + `</span>`
+	})
+	fileContent = processReplaceMiddle(fileContent, ".run.block.", "{", "}", func(block, display string) string {
+		// .run.block.1{display}
+		return `<span onclick="triggerBlockRun('` + block + `')" style="cursor: pointer;">` + CreateCleanMD(prepare(md, display)).String() + `</span>`
 	})
 	fileContent = processReplace(fileContent, ".center", ".center.end", func(data string) string {
 		return `<div style="text-align:center">` + CreateCleanMD(prepare(md, data)).String() + `</div>`
@@ -271,10 +274,7 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
       }`
 			}
 			if len(data) > 0 {
-				// lines[i] = `<pre class="mermaid graph-` + data[0] + graphType + `" id="dynamicGraph-` + id + `">flowchart LR;    &nbsp;</pre>`
-				_ = graphType
-				_ = id
-				fmt.Println("graph ctx", "ctx"+id)
+				// fmt.Println("graph ctx", "ctx"+id)
 				lines[i] = `
 <div style="height: 60svh;">
   <canvas class="chart-` + data[0] + `" id="dynamic-chart-id` + id + `"></canvas>

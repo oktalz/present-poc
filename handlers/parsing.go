@@ -5,6 +5,7 @@ import "encoding/json"
 type RequestPayload struct {
 	Slide int      `json:"slide"`
 	Code  []string `json:"code"`
+	Block *int     `json:"block"`
 }
 
 func parseJSONData(jsonString string) (RequestPayload, error) {

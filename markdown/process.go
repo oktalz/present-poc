@@ -1,20 +1,18 @@
 package markdown
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/oktalz/present-poc/parsing"
+)
 
 func processReplace(fileContent, startStr, endStr string, process func(data string) string) string {
 	for {
-		start := strings.Index(fileContent, startStr)
+		start, _, raw := parsing.FindData(fileContent, startStr, endStr)
 		if start == -1 {
 			return fileContent
 		}
-		start += len(startStr)
-		content := fileContent[start:]
-		end := strings.Index(content, endStr)
-		if end == -1 {
-			return fileContent
-		}
-		raw := content[:end]
+
 		result := process(raw)
 		result = CreateCleanRAW(result).String()
 		fileContent = strings.ReplaceAll(fileContent, startStr+raw+endStr, result)
@@ -23,23 +21,14 @@ func processReplace(fileContent, startStr, endStr string, process func(data stri
 
 func processReplaceMiddle(fileContent, startStr, middleStr, endStr string, process func(part1, part2 string) string) string {
 	for {
-		start := strings.Index(fileContent, startStr)
+		start, end, part1 := parsing.FindData(fileContent, startStr, middleStr)
 		if start == -1 {
 			return fileContent
 		}
-		start += len(startStr)
-		content := fileContent[start:]
-		middle := strings.Index(content, middleStr)
+		middle, end, part2 := parsing.FindData(fileContent[end:], middleStr, endStr)
 		if middle == -1 {
 			return fileContent
 		}
-		part1 := content[:middle]
-		content = content[middle+len(middleStr):]
-		end := strings.Index(content, endStr)
-		if end == -1 {
-			return fileContent
-		}
-		part2 := content[:end]
 		result := process(part1, part2)
 		result = CreateCleanRAW(result).String()
 		what := startStr + part1 + middleStr + part2 + endStr
