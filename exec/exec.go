@@ -83,9 +83,9 @@ func CmdStream(tc types.TerminalCommand) {
 	fmt.Println("======== finished ", tc.Dir, tc.App, strings.Join(tc.Cmd, " "))
 }
 
-func CmdStreamWS(tc types.TerminalCommand, ch chan string) { //nolint:funlen
+func CmdStreamWS(tc types.TerminalCommand, ch chan string, timeout time.Duration) { //nolint:funlen
 	fmt.Println("======== executing", tc.Dir, tc.App, strings.Join(tc.Cmd, " "))
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	defer close(ch)
 	cmd := exec.CommandContext(ctx, tc.App, tc.Cmd...) //nolint:gosec

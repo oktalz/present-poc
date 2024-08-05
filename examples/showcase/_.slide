@@ -20,8 +20,7 @@ ____________
 .template.end
 
 .template CAST
-.cast.before go mod init x
-.cast.block.edit main.go go run .
+.cast.block.stream.edit.file(main.go).run(go run .).before(go mod init x)
 .template.end
 
 .template TITLE_WITH_OVERFLOW

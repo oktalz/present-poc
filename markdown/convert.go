@@ -83,6 +83,40 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 	fileContent = processReplace(fileContent, ".raw{", "}", func(data string) string {
 		return data
 	})
+
+	fileContent = processReplace(fileContent, ".tabs", ".tabs.end", func(data string) string {
+		data = strings.TrimPrefix(data, "\n")
+		tabs := strings.Split(data, ".tab")
+		header := `<div class="tab">`
+		var buff strings.Builder
+		for _, tab := range tabs {
+			if tab == "" {
+				continue
+			}
+			tabID := ulid.Make().String()
+			tabActive := ""        // todo
+			tabName := ""          // todo
+			class := " hidden-tab" // todo
+			if strings.HasPrefix(tab, ".active") {
+				tabActive = " active"
+				class = ""
+				tab = strings.TrimPrefix(tab, ".active")
+			}
+			firstNewLine := strings.Index(tab, "\n")
+			if firstNewLine == -1 {
+				firstNewLine = len(tab)
+			}
+			tabName = strings.Trim(tab[:firstNewLine], " ")
+			tab = tab[firstNewLine+1:]
+			contentID := CreateCleanMD(prepare(md, tab))
+			header += `<button class="tablinks` + tabActive + `" onclick="tabChangeGlobal('` + tabID + `')" id='tab-` + tabID + `'>` + tabName + `</button>`
+			tabContent := `<div class="tabcontent` + class + `" id="` + tabID + `">` + contentID.String() + `</div>`
+			buff.WriteString(tabContent)
+		}
+		header += `</div>`
+		_ = tabs
+		return header + buff.String()
+	})
 	fileContent = processReplaceMiddle(fileContent, ".api.", "{", "}", func(data, display string) string {
 		// .api.pool1{option 2}
 		parts := strings.SplitN(data, `.`, 2) //nolint:mnd
@@ -313,58 +347,6 @@ func prepare(md goldmark.Markdown, fileContent string) string { //nolint:funlen,
 			} else {
 				// log error ?
 			}
-		}
-		if strings.HasPrefix(lines[i], ".tab") { //nolint:nestif
-			var currLine int
-			lines[i] = `<div class="tab">`
-			tabContent := ""
-			activeID := ""
-			currentTabID := ""
-			tabs := []string{}
-			tabsID := []string{}
-			for currLine = i + 1; currLine < len(lines); currLine++ {
-				if lines[currLine] == ".tabs.end" {
-					if tabContent != "" {
-						tabs = append(tabs, tabContent)
-						tabsID = append(tabsID, currentTabID)
-						tabContent = "" //nolint:wastedassign
-					}
-					lines[currLine] = `</div><div class="tabs">`
-					// time to create footers
-					for index, data := range tabs {
-						contentID := CreateCleanMD(prepare(md, data))
-						class := " hidden-tab"
-						id := tabsID[index]
-						if id == activeID {
-							class = ""
-						}
-						lines[currLine] += `<div class="tabcontent` + class + `" id="` + id + `">` + contentID.String() + `</div>`
-					}
-					lines[currLine] += `</div>`
-					break
-				}
-				if strings.HasPrefix(lines[currLine], ".tab") {
-					if tabContent != "" {
-						tabs = append(tabs, tabContent)
-						tabsID = append(tabsID, currentTabID)
-						tabContent = ""
-					}
-					parts := strings.Split(lines[currLine], " ")
-					tabName := parts[1]
-					tabActive := ""
-					currentTabID = ulid.Make().String()
-					if strings.HasSuffix(parts[0], ".active") {
-						tabActive = " active"
-						activeID = currentTabID
-					}
-					lines[currLine] = `<button class="tablinks` + tabActive + `" onclick="tabChangeGlobal('` + currentTabID + `')" id='tab-` + currentTabID + `'>` + tabName + `</button>`
-					continue
-				}
-				tabContent += "\n" + lines[currLine]
-				lines = append(lines[:currLine], lines[currLine+1:]...)
-				currLine--
-			}
-			_ = tabs
 		}
 	}
 	fileContent = strings.Join(lines, "\n")

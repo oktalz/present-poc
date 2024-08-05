@@ -69,11 +69,18 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 		tcBefore := slides[slide].TerminalCommandBefore
 		tcAfter := slides[slide].TerminalCommandAfter
 		if slides[slide].CanEdit {
+			index := 0
 			for i := range terminalCommand {
+				if terminalCommand[i].Code.IsEmpty {
+					continue
+				}
 				if terminalCommand[i].Index == -1 {
 					terminalCommand[i].Index = 0
 				}
-				terminalCommand[i].Code.Code = payload.Code[i]
+				if len(payload.Code) > index && payload.Code[index] != "" {
+					terminalCommand[i].Code.Code = payload.Code[index]
+				}
+				index++
 			}
 		}
 		if payload.Block != nil && *payload.Block > -1 && *payload.Block < len(terminalCommand) {
@@ -83,16 +90,16 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 		tmpDirNeeded := false
 
 		for _, cmd := range terminalCommand {
-			if cmd.TmpDir { //nolint:nestif
+			if cmd.TmpDir || cmd.Dir == "" { //nolint:nestif
 				if !tmpDirNeeded {
 					tmpDirNeeded = true
 					err = os.MkdirAll(workingDir, 0o755)
+					// defer os.RemoveAll(workingDir)
 					if err != nil {
 						http.Error(w, err.Error(), http.StatusInternalServerError)
 					}
 				}
 				cmd.Dir = workingDir
-				defer os.RemoveAll(workingDir)
 				err = os.WriteFile(filepath.Join(workingDir, cmd.FileName), []byte(cmd.Code.Header+cmd.Code.Code+cmd.Code.Footer), 0o600)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -113,12 +120,14 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 				}
 			}
 		}
-		for _, cmd := range terminalCommand {
+		// for _, cmd := range terminalCommand {
+		for i := len(terminalCommand) - 1; i >= 0; i-- {
+			cmd := terminalCommand[i]
 			cmd.Dir = workingDir
 			if cmd.App == "" {
 				continue
 			}
-			go exec.CmdStreamWS(cmd, ch) //nolint:contextcheck
+			go exec.CmdStreamWS(cmd, ch, 100*time.Second) //nolint:contextcheck
 			if slides[slide].HasCastStreamed {
 				// this is for streaming
 				for line := range ch {
@@ -141,11 +150,9 @@ func CastWS(server data.Server, adminPwd string) http.Handler { //nolint:funlen,
 			}
 			break
 		}
-		if tcAfter != nil {
-			for i := range tcBefore {
-				tcAfter[i].Dir = workingDir
-				exec.CmdStream(tcAfter[i]) //nolint:contextcheck
-			}
+		for i := range tcAfter {
+			tcAfter[i].Dir = workingDir
+			exec.CmdStream(tcAfter[i]) //nolint:contextcheck
 		}
 	})
 }

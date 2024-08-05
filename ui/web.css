@@ -210,6 +210,10 @@ hr {
  display: none;
 }
 
+.closed-permanently {
+ display: none;
+}
+
 .terminal {
   margin-right: 1svw;
   bottom: 1svh;

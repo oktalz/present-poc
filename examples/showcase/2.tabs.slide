@@ -9,14 +9,14 @@
 
 .tabs
 .tab#tab1# go.mod
-.cast.block go.mod
+.cast.file(go.mod)
 ```go
 module hello
 
 go 1.22
 ```
 .tab#tab2# go.sum
-.cast.block go.sum
+.cast.file(go.sum)
 ```go
 github.com/fsnotify/fsnotify v1.7.0 h1:8JEhPFa5W2WU7YfeZzPNqzMP6Lwt7L2715Ggo0nosvA=
 github.com/fsnotify/fsnotify v1.7.0/go.mod h1:40Bi/Hjc2AVfZrqy+aj+yEI+/bRxZnMJyTJwOpGvigM=
@@ -24,9 +24,7 @@ golang.org/x/sys v0.18.0 h1:DBdB3niSjOA/O0blCZBqDefyWNYveAYMNF1Wum0DYQ4=
 golang.org/x/sys v0.18.0/go.mod h1:/VUhepiaJMQUp4+oa/7Zr1D23ma6VTLIYjOOTFZPUcA=
 ```
 .tab#tab3# main.go
-.cast.before go mod init x
-.cast.block.show 0:8
-.cast.block main.go go run .
+.cast.stream.edit.file(main.go).run(go run .).before(go mod init x).show(0:9)
 ```go
 package main
 
@@ -41,25 +39,3 @@ func main() {
 .tabs.end
 .cut #tab1#.#empty# #tab2#.#active#
 .cut #active#.#empty# #tab3#.#active#
-
-.================================
-.TITLE Tabs - live stream
-.cast.before go mod init x
-.cast.stream
-.cast.block.show 0:11
-.cast.block main.go go run .
-
-```go
-package main
-
-import (
-	"fmt"
-  "time"
-)
-
-func main() {
-  fmt.Println("hello world")
-  time.Sleep(3*time.Second)
-  fmt.Println("hello world 2")
-}
-```

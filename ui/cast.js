@@ -33,6 +33,7 @@ function castTerminal(block){
     socket.addEventListener('message', (event) => {
         console.log('Message from server: ', event.data);
         terminalElement.innerHTML += event.data + '<br>'
+        terminalElement.scrollTop = terminalElement.scrollHeight;
         // if (this.state.terminal[this.state.page] != "") {
         // this.state.terminal[this.state.page] += '<br>'
         // }

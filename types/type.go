@@ -1,9 +1,10 @@
 package types
 
 type Code struct {
-	Header string
-	Code   string
-	Footer string
+	Header  string
+	Code    string
+	Footer  string
+	IsEmpty bool
 }
 
 type Asciinema struct {
@@ -54,6 +55,7 @@ type Slide struct {
 	TerminalFontSize        string
 	TerminalFontColor       string
 	TerminalBackgroundColor string
+	HideRunButton           bool
 	HTML                    string
 	AdminHTML               string
 	Link                    string
@@ -91,4 +93,5 @@ type ReadOptions struct {
 	DefaultTerminalFontSize        string
 	DefaultTerminalFontColor       string
 	DefaultTerminalBackgroundColor string
+	HideRunButton                  bool
 }

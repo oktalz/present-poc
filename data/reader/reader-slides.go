@@ -8,6 +8,7 @@ import (
 
 	"github.com/oklog/ulid/v2"
 	"github.com/oktalz/present-poc/markdown"
+	"github.com/oktalz/present-poc/parsing"
 	"github.com/oktalz/present-poc/types"
 )
 
@@ -63,14 +64,11 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 
 	presentations := make([]types.Slide, 0)
 	defaultBackend := ""
-	var codeBlockShowStart *int
-	var codeBlockShowEnd *int
-	_ = codeBlockShowStart
-	_ = codeBlockShowEnd
 	for _, slide := range presentationFiles.Slides {
 		if defaultBackend != "" {
 			slide.BackgroundImage = defaultBackend
 		}
+		fmt.Println(slide.Markdown)
 		hasDefaultBackground := strings.Contains(slide.Markdown, ".default.background")
 		if hasDefaultBackground {
 			lines := strings.Split(slide.Markdown, "\n")
@@ -96,194 +94,62 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 				}
 			}
 		}
-
-		hasCastBlockBefore := strings.Contains(slide.Markdown, ".cast.parallel")
-		if hasCastBlockBefore {
-			lines := strings.Split(slide.Markdown, "\n")
-			for index := 0; index < len(lines); index++ {
-				line := lines[index]
-				if strings.HasPrefix(line, ".cast.parallel") {
-					// newLine := strings.Replace(line, ".cast.before.dir", ".cast.before.dir .", 1)
-					// lines[index] = newLine
-					var tc types.TerminalCommand
-					tc, lines = parseCommandBlock(lines, index, nil, nil)
-					tc.DirFixed = true
-					var c types.Cast
-					if slide.Cast != nil {
-						c = *slide.Cast
-					}
-					slide.TerminalCommandBefore = append(slide.TerminalCommandBefore, tc)
-					slide.Cast = &c
-					slide.HasRun = true
-					slide.HasCast = true
-					slide.UseTmpFolder = true
-					slide.CanEdit = true
-					lines = append(lines[:index], lines[index+1:]...)
-					slide.Markdown = strings.Join(lines, "\n")
-					index--
-				}
+		markdownData := slide.Markdown
+		start, end, data, code := parsing.FindDataWithCode(markdownData, ".cast", "\n")
+		for start != -1 {
+			//.cast.block.stream.edit.before{go mod init}.show{0:8}.file{main.go}.run{go run .}.after{echo "done"}.folder{.}
+			pc := parsing.ParseCast(data, code)
+			fmt.Println(pc)
+			slide.TerminalCommandBefore = append(slide.TerminalCommandBefore, pc.Before...)
+			slide.TerminalCommand = append(slide.TerminalCommand, pc.Cmd...)
+			slide.TerminalCommandAfter = append(slide.TerminalCommandAfter, pc.After...)
+			// tc.DirFixed = true
+			var c types.Cast
+			if slide.Cast != nil {
+				c = *slide.Cast
 			}
+			slide.Cast = &c
+			slide.HasRun = true
+			slide.HasCast = true
+			slide.UseTmpFolder = true
+			slide.CanEdit = slide.CanEdit || pc.IsEdit
+			slide.HasCastStreamed = pc.IsStream
+			markdownData = markdownData[end+1+len(code):] // slightly incorrect due to ```format but acceptable
+			markdownData = strings.Replace(markdownData, ".cast"+data, "", 1)
+			slide.Markdown = strings.Replace(slide.Markdown, ".cast"+data, "", 1)
+			if pc.NewCode != "" {
+				slide.Markdown = strings.Replace(slide.Markdown, code, pc.NewCode, 1)
+				markdownData = strings.Replace(markdownData, code, pc.NewCode, 1)
+			}
+
+			start, end, data, code = parsing.FindDataWithCode(markdownData, ".cast", "\n")
 		}
 
-		hasCastBlockBefore = strings.Contains(slide.Markdown, ".cast.before")
-		if hasCastBlockBefore {
-			lines := strings.Split(slide.Markdown, "\n")
-			for index := 0; index < len(lines); index++ {
-				line := lines[index]
-				if strings.HasPrefix(line, ".cast.parallel") {
-					// newLine := strings.Replace(line, ".cast.before.dir", ".cast.before.dir .", 1)
-					// lines[index] = newLine
-					var tc types.TerminalCommand
-					tc, lines = parseCommandBlock(lines, index, nil, nil)
-					tc.DirFixed = true
-					var c types.Cast
-					if slide.Cast != nil {
-						c = *slide.Cast
-					}
-					slide.TerminalCommandBefore = append(slide.TerminalCommandBefore, tc)
-					slide.Cast = &c
-					slide.HasRun = true
-					slide.HasCast = true
-					slide.UseTmpFolder = true
-					slide.CanEdit = true
-					lines = append(lines[:index], lines[index+1:]...)
-					slide.Markdown = strings.Join(lines, "\n")
-					index--
-				}
-				if strings.HasPrefix(line, ".cast.before") {
-					newLine := strings.Replace(line, ".cast.before", ".cast.before .", 1)
-					lines[index] = newLine
-					var tc types.TerminalCommand
-					tc, lines = parseCommandBlock(lines, index, nil, nil)
-					var c types.Cast
-					if slide.Cast != nil {
-						c = *slide.Cast
-					}
-					slide.TerminalCommandBefore = append(slide.TerminalCommandBefore, tc)
-					slide.Cast = &c
-					slide.HasRun = true
-					slide.HasCast = true
-					slide.UseTmpFolder = true
-					slide.CanEdit = true
-					lines = append(lines[:index], lines[index+1:]...)
-					slide.Markdown = strings.Join(lines, "\n")
-					index--
-				}
-			}
-		}
+		// hasCastBlockShow := strings.Contains(slide.Markdown, ".cast.block.show")
+		// if hasCastBlockShow { //nolint:nestif
+		// 	lines := strings.Split(slide.Markdown, "\n")
+		// 	for index, line := range lines {
+		// 		if strings.HasPrefix(line, ".cast.block.show") {
+		// 			data := strings.Split(line, " ")
+		// 			if len(data) < 2 {
+		// 				fmt.Println("error parsing: ", line)
+		// 			}
+		// 			data = strings.Split(data[1], ":")
+		// 			if len(data) < 2 {
+		// 				fmt.Println("error parsing: ", line)
+		// 				continue
+		// 			}
+		// 			start, _ := strconv.Atoi(data[0])
+		// 			end, _ := strconv.Atoi(data[1])
+		// 			codeBlockShowStart = &start
+		// 			codeBlockShowEnd = &end
 
-		hasCastStream := strings.Contains(slide.Markdown, ".cast.stream")
-		if hasCastStream {
-			lines := strings.Split(slide.Markdown, "\n")
-			for index, line := range lines {
-				if strings.HasPrefix(line, ".cast.stream") {
-					slide.HasCastStreamed = true
-					lines = append(lines[:index], lines[index+1:]...)
-					slide.Markdown = strings.Join(lines, "\n")
-					break
-				}
-			}
-		}
-
-		hasCastBlockAfter := strings.Contains(slide.Markdown, ".cast.after")
-		if hasCastBlockAfter {
-			lines := strings.Split(slide.Markdown, "\n")
-			for index := 0; index < len(lines); index++ {
-				line := lines[index]
-				if strings.HasPrefix(line, ".cast.after") {
-					newLine := strings.Replace(line, ".cast.after", ".cast.after .", 1)
-					lines[index] = newLine
-					var tc types.TerminalCommand
-					tc, lines = parseCommandBlock(lines, index, nil, nil)
-					var c types.Cast
-					if slide.Cast != nil {
-						c = *slide.Cast
-					}
-					slide.TerminalCommandBefore = append(slide.TerminalCommandBefore, tc)
-					slide.Cast = &c
-					slide.HasRun = true
-					slide.HasCast = true
-					slide.UseTmpFolder = true
-					slide.CanEdit = true
-					lines = append(lines[:index], lines[index+1:]...)
-					slide.Markdown = strings.Join(lines, "\n")
-					break
-				}
-			}
-		}
-
-		hasCastBlockShow := strings.Contains(slide.Markdown, ".cast.block.show")
-		if hasCastBlockShow { //nolint:nestif
-			lines := strings.Split(slide.Markdown, "\n")
-			for index, line := range lines {
-				if strings.HasPrefix(line, ".cast.block.show") {
-					data := strings.Split(line, " ")
-					if len(data) < 2 {
-						fmt.Println("error parsing: ", line)
-					}
-					data = strings.Split(data[1], ":")
-					if len(data) < 2 {
-						fmt.Println("error parsing: ", line)
-						continue
-					}
-					start, _ := strconv.Atoi(data[0])
-					end, _ := strconv.Atoi(data[1])
-					codeBlockShowStart = &start
-					codeBlockShowEnd = &end
-
-					lines = append(lines[:index], lines[index+1:]...)
-					slide.Markdown = strings.Join(lines, "\n")
-					break
-				}
-			}
-		}
-
-		hasCastBlockEdit := strings.Contains(slide.Markdown, ".cast.block")
-		if hasCastBlockEdit {
-			lines := strings.Split(slide.Markdown, "\n")
-			// fmt.Println("lines", lines)
-			// for index, line := range lines {
-			for index := 0; index < len(lines); index++ {
-				line := lines[index]
-				if strings.HasPrefix(line, ".cast.block") {
-					var terminalCommand types.TerminalCommand
-					terminalCommand, lines = parseCommandBlock(lines, index, codeBlockShowStart, codeBlockShowEnd)
-					var c types.Cast
-					if slide.Cast != nil {
-						c = *slide.Cast
-					}
-					slide.TerminalCommand = append(slide.TerminalCommand, terminalCommand)
-					slide.Cast = &c
-					slide.HasRun = true
-					slide.HasCast = true
-					slide.UseTmpFolder = true
-					slide.CanEdit = true
-					lines = append(lines[:index], lines[index+1:]...)
-					slide.Markdown = strings.Join(lines, "\n")
-					codeBlockShowStart = nil
-					codeBlockShowEnd = nil
-				}
-			}
-		}
-
-		hasCast := strings.Contains(slide.Markdown, ".cast")
-		if hasCast {
-			lines := strings.Split(slide.Markdown, "\n")
-			for index, line := range lines {
-				if strings.HasPrefix(line, ".cast") {
-					// slide.Markdown = strings.Replace(slide.Markdown, line, "", 1)
-					// p := strings.Split(line, " ")
-					tc := parseCommand(line)
-					c := types.Cast{}
-					slide.TerminalCommand = append(slide.TerminalCommand, tc)
-					slide.Cast = &c
-					slide.HasCast = true
-					lines = append(lines[:index], lines[index+1:]...)
-					slide.Markdown = strings.Join(lines, "\n")
-					break
-				}
-			}
-		}
+		// 			lines = append(lines[:index], lines[index+1:]...)
+		// 			slide.Markdown = strings.Join(lines, "\n")
+		// 			break
+		// 		}
+		// 	}
+		// }
 
 		hasAsciinema := strings.Contains(slide.Markdown, ".asciinema")
 		if hasAsciinema {

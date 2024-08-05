@@ -48,6 +48,7 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 	currentTerminalFontSize := ro.DefaultTerminalFontSize
 	currentTerminalFontColor := ro.DefaultTerminalFontColor
 	currentTerminalBackgroundColor := ro.DefaultTerminalBackgroundColor
+	hideRunButton := ro.HideRunButton
 	currentBackgroundColor := ro.DefaultBackgroundColor
 	defaultEveryDashIsACut := ro.EveryDashIsACut
 	_ = defaultEveryDashIsACut
@@ -166,6 +167,7 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 						TerminalFontSize:        currentTerminalFontSize,
 						TerminalFontColor:       currentTerminalFontColor,
 						TerminalBackgroundColor: currentTerminalBackgroundColor,
+						HideRunButton:           hideRunButton,
 						BackgroundColor:         currentBackgroundColor,
 						Title:                   currentSlideTitle,
 					})
@@ -177,8 +179,8 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 				currentTerminalFontColor = ro.DefaultTerminalFontColor
 				currentTerminalBackgroundColor = ro.DefaultTerminalBackgroundColor
 				currentBackgroundColor = ro.DefaultBackgroundColor
+				hideRunButton = ro.HideRunButton
 				currentSlideTitle = ""
-				currentBackgroundColor = ro.DefaultBackgroundColor
 			}
 			slide.Reset()
 			slideDashCut = ro.EveryDashIsACut
@@ -217,8 +219,8 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 			lines[index] = ""
 			continue
 		}
-		if strings.HasPrefix(line, ".side.terminal.font-size") {
-			currentTerminalFontSize = strings.TrimPrefix(line, ".side.terminal.font-size ")
+		if strings.HasPrefix(line, ".slide.terminal.font-size") {
+			currentTerminalFontSize = strings.TrimPrefix(line, ".slide.terminal.font-size ")
 			lines[index] = ""
 			continue
 		}
@@ -234,8 +236,8 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 			lines[index] = ""
 			continue
 		}
-		if strings.HasPrefix(line, ".side.terminal.font-color") {
-			currentTerminalFontColor = strings.TrimPrefix(line, ".side.terminal.font-color ")
+		if strings.HasPrefix(line, ".slide.terminal.font-color") {
+			currentTerminalFontColor = strings.TrimPrefix(line, ".slide.terminal.font-color ")
 			lines[index] = ""
 			continue
 		}
@@ -245,11 +247,23 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 			lines[index] = ""
 			continue
 		}
-		if strings.HasPrefix(line, ".side.terminal.background-color") {
-			currentTerminalBackgroundColor = strings.TrimPrefix(line, ".side.terminal.background-color ")
+		if strings.HasPrefix(line, ".slide.terminal.background-color") {
+			currentTerminalBackgroundColor = strings.TrimPrefix(line, ".slide.terminal.background-color ")
 			lines[index] = ""
 			continue
 		}
+		if strings.HasPrefix(line, ".global.hide.run.button") {
+			ro.HideRunButton = true
+			hideRunButton = ro.HideRunButton
+			lines[index] = ""
+			continue
+		}
+		if strings.HasPrefix(line, ".slide.hide.run.button") {
+			hideRunButton = true
+			lines[index] = ""
+			continue
+		}
+		// HideRunButton
 		if strings.HasPrefix(line, ".slide.title") {
 			currentSlideTitle = strings.TrimPrefix(line, ".slide.title ")
 			lines[index] = ""
@@ -278,6 +292,7 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 					TerminalFontSize:        currentTerminalFontSize,
 					TerminalFontColor:       currentTerminalFontColor,
 					TerminalBackgroundColor: currentTerminalBackgroundColor,
+					HideRunButton:           hideRunButton,
 					BackgroundColor:         currentBackgroundColor,
 					Title:                   currentSlideTitle,
 					PrintDisable:            true,
@@ -305,6 +320,7 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 					TerminalFontSize:        currentTerminalFontSize,
 					TerminalFontColor:       currentTerminalFontColor,
 					TerminalBackgroundColor: currentTerminalBackgroundColor,
+					HideRunButton:           hideRunButton,
 					BackgroundColor:         currentBackgroundColor,
 					Title:                   currentSlideTitle,
 					PrintDisable:            true,
@@ -343,6 +359,7 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 			TerminalFontSize:        currentTerminalFontSize,
 			TerminalFontColor:       currentTerminalFontColor,
 			TerminalBackgroundColor: currentTerminalBackgroundColor,
+			HideRunButton:           hideRunButton,
 			BackgroundColor:         currentBackgroundColor,
 			Title:                   currentSlideTitle,
 		})
