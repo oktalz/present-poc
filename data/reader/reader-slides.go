@@ -20,6 +20,8 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 		DefaultBackgroundColor:         "black",
 		DefaultTerminalFontColor:       "black",
 		DefaultTerminalBackgroundColor: "rgb(253, 246, 227)",
+		HidePageNumber:                 false,
+		KeepPagePrintOnCut:             false,
 	}
 
 	slides, hasHeaderFile, err := listSlideFiles(".")
@@ -82,13 +84,14 @@ func ReadFiles() types.Presentation { //nolint:funlen,gocognit,gocyclo,cyclop,ma
 				}
 			}
 		}
-		hasBackground := strings.Contains(slide.Markdown, ".background")
+		hasBackground := strings.Contains(slide.Markdown, ".background(")
 		if hasBackground {
 			lines := strings.Split(slide.Markdown, "\n")
 			for _, line := range lines {
-				if strings.HasPrefix(line, ".background") {
+				if strings.HasPrefix(line, ".background(") {
 					slide.Markdown = strings.Replace(slide.Markdown, line, "", 1)
-					p := strings.Split(line, " ")
+					p := strings.Split(line, "(")
+					p[1] = strings.TrimSuffix(p[1], ")")
 					slide.BackgroundImage = p[1]
 					break
 				}

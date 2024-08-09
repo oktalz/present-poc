@@ -93,7 +93,9 @@
       <div class="terminal closed" id="terminal-{{.PageIndex}}" style="background-color: {{.TerminalBackgroundColor}}; color: {{.TerminalFontColor}};  font-size: {{.TerminalFontSize}};">{{ .HasCast }}</div>
     {{- end }}
     {{- if not .PrintDisable }}
-      {{.PagePrint}}
+      {{- if not .HidePageNumber }}
+        {{.PagePrint }}
+      {{- end }}
     {{- else }}
       &nbsp;
     {{- end }}

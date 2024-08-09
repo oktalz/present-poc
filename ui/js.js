@@ -178,21 +178,29 @@ window.addEventListener('wheel', function(event) {
 }, true);
 
 touchX = 0;
+touchY = 0;
 
 document.addEventListener("pointerdown", (e) => {
   touchStartX = e.clientX;
+  touchStartY = e.clientY;
 });
 
 document.addEventListener("pointermove", (e) => {
   touchEndX = e.clientX;
+  touchEndY = e.clientY;
 });
 
 document.addEventListener('touchstart', function (event) {
   touchX = event.changedTouches[0].screenX;
+  touchY = event.changedTouches[0].screenY;
 }, false);
 
 document.addEventListener('touchend', function (event) {
   endX = event.changedTouches[0].screenX;
+  endY = event.changedTouches[0].screenY;
+  if (Math.abs(endX - touchX) <= Math.abs(endY - touchY)) {
+    return;
+  }
 
   if (endX > touchX) {
     oldPage = page;

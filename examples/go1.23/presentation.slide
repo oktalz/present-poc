@@ -1,0 +1,350 @@
+.center
+&nbsp;
+&nbsp;
+&nbsp;
+
+.{font-size: 3.2em;text-shadow: 0 0 3px #FFFFFF, 0 0 15px #000000; color: #1c264a;}(**GoTalks 18.09.2024**)
+.center.end
+
+.background(assets/golang-back.png)
+
+.=========================================
+.TITLE Go 1.23
+
+- in rc phase
+- go1.23rc2
+- https://tip.golang.org/doc/go1.23
+
+```sh
+go install golang.org/dl/go1.23rc2@latest
+$ go1.23rc2 download
+```
+
+.=========================================
+.TITLE Changes - range-over-func
+
+The `range` clause in a `for-range` loop now accepts iterator functions of the following types
+
+```go
+func(func() bool)
+func(func(K) bool)
+func(func(K, V) bool)
+```
+
+.=========================================
+.TITLE Changes - Iterators - slices
+.global.font-size 4.9svh
+
+https://tip.golang.org/doc/go1.23#iterators
+
+- [All](https://tip.golang.org/pkg/slices#All) returns an iterator over slice indexes and values.
+- [Values](https://tip.golang.org/pkg/slices#Values) returns an iterator over slice elements.
+- [Backward](https://tip.golang.org/pkg/slices#Backward) returns an iterator that loops over a slice backward.
+- [Collect](https://tip.golang.org/pkg/slices#Collect) collects values from an iterator into a new slice.
+- [AppendSeq](https://tip.golang.org/pkg/slices#AppendSeq) appends values from an iterator to an existing slice.
+- [Sorted](https://tip.golang.org/pkg/slices#Sorted) collects values from an iterator into a new slice, and then sorts the slice.
+- [SortedFunc](https://tip.golang.org/pkg/slices#SortedFunc) is like Sorted but with a comparison function.
+- [SortedStableFunc](https://tip.golang.org/pkg/slices#SortedStableFunc) is like SortFunc but uses a stable sort algorithm.
+- [Chunk](https://tip.golang.org/pkg/slices#All) returns an iterator over consecutive sub-slices of up to n elements of a slice.
+
+.=========================================
+.TITLE Changes - Iterators - maps
+
+https://tip.golang.org/doc/go1.23#iterators
+
+- [All](https://tip.golang.org/pkg/maps#All) returns an iterator over key-value pairs from a map.
+- [Keys](https://tip.golang.org/pkg/maps#Keys) returns an iterator over keys in a map.
+- [Values](https://tip.golang.org/pkg/maps#Values) returns an iterator over values in a map.
+- [Insert](https://tip.golang.org/pkg/maps#Insert) adds the key-value pairs from an iterator to an existing map.
+- [Collect](https://tip.golang.org/pkg/maps#Collect) collects key-value pairs from an iterator into a new map and returns it.
+
+.=========================================
+.TITLE Changes - range-over-func - slices
+
+```go
+slices.All(s)
+slices.Values(s)
+slices.Backward(s)
+
+slices.Collect(slices.Values(s)) // new slice
+
+slices.AppendSeq(s, slices.Values(source))
+slices.Sorted(slices.Values(s))
+slices.SortedFunc(slices.Values(s), compare)
+```
+.=========================================
+.TITLE Changes - range-over-func - maps
+
+```go
+maps.All(m)
+maps.Keys(m) // Iterator over keys
+maps.Values(m)
+maps.Insert(m, maps.All(m1))
+maps.Collect(maps.All(m1)) // new map
+```
+
+.=========================================
+.TITLE Changes - range-over-func
+
+.tabs
+.tab go.mod
+.cast.stream.file(go.mod)
+```go
+module hello
+
+go 1.23rc2
+```
+.tab.active main.go
+.cast.stream.edit.file(main.go).run(go run .).before(go mod init x).show(3:13)
+```go
+package main
+
+import (
+    "fmt"
+    "slices"
+)
+
+func main() {
+  s := []string{"a", "b", "c"}
+  for i, v := range slices.All(s) {
+    fmt.Printf("%d:%v ", i, v)
+  }
+}
+```
+.tabs.end
+
+.=========================================
+.TITLE Changes - range-over-func
+.slide.keep.page.print.on.cut
+
+.tabs
+.tab go.mod
+.cast.stream.file(go.mod)
+```go
+module hello
+
+go 1.23rc2
+```
+.tab#tab1# backward.go
+.cast.stream.edit.file(backward.go).show(3:100)
+```go
+package main
+
+func Backward[E any](s []E) func(func(int, E) bool) {
+	return func(yield func(int, E) bool) {
+		for i := len(s)-1; i >= 0; i-- {
+			if !yield(i, s[i]) {
+				return
+			}
+		}
+	}
+}
+```
+
+.tab#tab2# backward-str.go
+.cast.stream.edit.file(backward-str.go).show(3:100)
+```go
+package main
+
+func BackwardStr(s []string) func(func(int, string) bool) {
+	return func(yield func(int, string) bool) {
+		for i := len(s)-1; i >= 0; i-- {
+			if !yield(i, s[i]) {
+				return
+			}
+		}
+	}
+}
+```
+.tab#tab3# main.go
+.cast.stream.edit.file(main.go).run(go run .).before(go mod init x).show(7:100)
+```go
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+  s := []string{"a", "b", "c"}
+  for i, v := range Backward(s) {
+    fmt.Printf("%d:%v ", i, v)
+  }
+  fmt.Println("")
+  for i, v := range BackwardStr(s) {
+    fmt.Printf("%d:%v ", i, v)
+  }
+}
+```
+.tabs.end
+.cut #tab1#.#empty# #tab2#.#active#
+.cut #active#.#empty# #tab3#.#active#
+.=========================================
+.TITLE Changes - range-over-func
+.slide.font-size 4.2svh
+.slide.keep.page.print.on.cut
+
+.tabs
+.tab go.mod
+.cast.stream.file(go.mod)
+```go
+module hello
+
+go 1.23rc2
+```
+.tab#tab1# type.go
+.cast.stream.edit.file(backward.go).show(3:100)
+```go
+package main
+
+type Grocery struct {
+	Name string
+	Type string
+}
+
+type ShoopingList struct {
+	Groceries map[string]Grocery
+	// ...
+}
+```
+
+.tab#tab2# food-sorting.go
+.cast.stream.edit.file(food-sorting.go).show(7:100)
+```go
+package main
+
+import (
+	"sort"
+)
+
+func (v ShoopingList) SortedByName() func(func(int, Grocery) bool) {
+	return func(yield func(int, Grocery) bool) {
+		index := 0
+		keys := []string{}
+		for _, v := range v.Groceries {
+			keys = append(keys, v.Name)
+		}
+		sort.Strings(keys)
+		for _, k := range keys {
+			for _, v := range v.Groceries {
+				if v.Name != k {
+					continue
+				}
+				if !yield(index, v) {
+					return
+				}
+				index++
+			}
+		}
+	}
+}
+```
+.tab#tab3# food-filter.go
+.cast.stream.edit.file(food-filter.go).show(3:100)
+```go
+package main
+
+func (v ShoopingList) Filter(foodType string) func(func(Grocery) bool) {
+	return func(yield func(Grocery) bool) {
+		for _, v := range v.Groceries {
+			if v.Type != foodType {
+				continue
+			}
+			if !yield(v) {
+				return
+			}
+		}
+	}
+}
+```
+.tab#tab4# main.go
+.cast.stream.edit.file(main.go).run(go run .).before(go mod init x).show(22:34)
+```go
+package main
+
+import "fmt"
+
+func main() {
+	shoppingList := ShoopingList{
+		Groceries: map[string]Grocery{
+			"serial_number_1": {
+				Name: "banana",
+				Type: "fruit",
+			},
+			"serial_number_2": {
+				Name: "apple",
+				Type: "fruit",
+			},
+			"serial_number_3": {
+				Name: "carrot",
+				Type: "vegetable",
+			},
+		},
+	}
+for _, v := range shoppingList.Groceries {
+    fmt.Println(v)
+}
+fmt.Println("====================")
+
+for i, g := range shoppingList.SortedByName() {
+    fmt.Println(i, g)
+}
+fmt.Println("====================")
+
+for g := range shoppingList.Filter("fruit") {
+    fmt.Println(g)
+}
+}
+```
+.tabs.end
+
+.cut #tab1#.#empty# #tab2#.#active#
+.cut #active#.#empty# #tab3#.#active#
+.cut #active#.#empty# #tab4#.#active#
+.=======================================================
+.TITLE Telemetry
+
+.cast.stream.file(go.mod)
+```go
+module hello
+
+go 1.23rc2
+```
+
+.cast.stream.file(run.sh).run(sh run.sh)
+```go
+go telemetry
+```
+
+https://telemetry.go.dev/
+
+.=======================================================
+.TITLE Other Changes
+
+### Go
+```sh
+go mod tidy -diff
+```
+- causes the command not to modify the files but instead print the necessary changes as a unified diff.
+- It exits with a non-zero code if updates are needed.
+
+### CGo
+
+- `cmd/cgo` supports the new `-ldflags` flag for passing flags to the C linker
+
+.=======================================================
+.TITLE Other Changes
+
+Compiler
+- The build time overhead to building with Profile Guided Optimization has been reduced significantly. Previously, large builds could see 100%+ build time increase from enabling PGO. In Go 1.23, overhead should be in the single digit percentages.
+
+- The compiler in Go 1.23 can now overlap the stack frame slots of local variables accessed in disjoint regions of a function, which reduces stack usage for Go applications.
+
+- For 386 and amd64, the compiler will use information from PGO to align certain hot blocks in loops. This improves performance an additional 1-1.5% at a cost of an additional 0.1% text and binary size. This is currently only implemented on 386 and amd64 because it has not shown an improvement on other platforms.
+
+.=======================================================
+.TITLE Timer
+
+- Significant changes to the implementation of `time.Timer` and `time.Ticker`.
+  - Timers and Tickers that are no longer referred to by the program become eligible for garbage collection immediately
+  - the timer channel associated with a Timer or Ticker is now unbuffered, with capacity 0

@@ -558,7 +558,7 @@ HTML non breaking space can be used
 ____________
 .template.end
 
-.GOTITLE Templates Go.spaceNews \o/
+.GOTITLE Templates Go#space#News \o/
 
 ```txt
 #dot#template GOTITLE .Title .Extra .Last
@@ -566,13 +566,15 @@ ____________
 ____________
 #dot#template.end
 
-#dot#GOTITLE Templates Go#dot#spaceNews \o/
+#dot#replace.after -hashtag-space# &nbsp;
+
+#dot#GOTITLE Templates Go-hashtag-space#News \o/
 ```
 
-- Go Templating can be used in templates
+- Go templates can be used
 - multiple attributes are separated by space
   - when params do not exist, whole line is used for `{{.}}`
-  - `#dot#space` can be used to add 'space'
+  - replace can be used to add 'space'
 .================================
 .TITLE Code
 

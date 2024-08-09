@@ -1,5 +1,5 @@
 .global.font-size 5svh
-.title Present - Go tutorial
+.title Present - example slides
 
 .replace.after #space# &nbsp;
 .replace.after #dot# .
@@ -20,7 +20,7 @@ ____________
 .template.end
 
 .template CAST
-.cast.block.edit.file(main.go).run(go run .).before(go mod init x)
+.cast.block.stream.edit.file(main.go).run(go run .).before(go mod init x)
 .template.end
 
 .template TITLE_WITH_OVERFLOW

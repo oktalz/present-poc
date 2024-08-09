@@ -105,7 +105,7 @@ func main() { //nolint:funlen
 		// 	panic(err)
 		// }
 	} else {
-		if os.Getenv("ADMIN_PWD_DISABLE") == "true" {
+		if os.Getenv("ADMIN_PWD_DISABLE") == "true" || os.Getenv("ADMIN_PWD_DISABLE") == "1" {
 			log.Println("admin token is disabled")
 		} else {
 			adminPWD = ulid.Make().String()

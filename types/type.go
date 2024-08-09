@@ -63,6 +63,7 @@ type Slide struct {
 	LinkPrev                string
 	PrintOnly               bool
 	PrintDisable            bool
+	HidePageNumber          bool
 	Title                   string
 }
 
@@ -94,4 +95,6 @@ type ReadOptions struct {
 	DefaultTerminalFontColor       string
 	DefaultTerminalBackgroundColor string
 	HideRunButton                  bool
+	HidePageNumber                 bool
+	KeepPagePrintOnCut             bool
 }

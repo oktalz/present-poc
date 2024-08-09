@@ -49,6 +49,9 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 	currentTerminalFontColor := ro.DefaultTerminalFontColor
 	currentTerminalBackgroundColor := ro.DefaultTerminalBackgroundColor
 	hideRunButton := ro.HideRunButton
+	hidePageNumber := ro.HidePageNumber
+	keepPagePrintOnCut := ro.KeepPagePrintOnCut
+
 	currentBackgroundColor := ro.DefaultBackgroundColor
 	defaultEveryDashIsACut := ro.EveryDashIsACut
 	_ = defaultEveryDashIsACut
@@ -168,6 +171,7 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 						TerminalFontColor:       currentTerminalFontColor,
 						TerminalBackgroundColor: currentTerminalBackgroundColor,
 						HideRunButton:           hideRunButton,
+						HidePageNumber:          hidePageNumber,
 						BackgroundColor:         currentBackgroundColor,
 						Title:                   currentSlideTitle,
 					})
@@ -180,6 +184,8 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 				currentTerminalBackgroundColor = ro.DefaultTerminalBackgroundColor
 				currentBackgroundColor = ro.DefaultBackgroundColor
 				hideRunButton = ro.HideRunButton
+				hidePageNumber = ro.HidePageNumber
+				keepPagePrintOnCut = ro.KeepPagePrintOnCut
 				currentSlideTitle = ""
 			}
 			slide.Reset()
@@ -263,7 +269,28 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 			lines[index] = ""
 			continue
 		}
-		// HideRunButton
+		if strings.HasPrefix(line, ".global.hide.page.number") {
+			ro.HidePageNumber = true
+			hidePageNumber = ro.HidePageNumber
+			lines[index] = ""
+			continue
+		}
+		if strings.HasPrefix(line, ".slide.hide.page.number") {
+			hidePageNumber = true
+			lines[index] = ""
+			continue
+		}
+		if strings.HasPrefix(line, ".global.keep.page.print.on.cut") {
+			ro.KeepPagePrintOnCut = true
+			keepPagePrintOnCut = ro.KeepPagePrintOnCut
+			lines[index] = ""
+			continue
+		}
+		if strings.HasPrefix(line, ".slide.keep.page.print.on.cut") {
+			keepPagePrintOnCut = true
+			lines[index] = ""
+			continue
+		}
 		if strings.HasPrefix(line, ".slide.title") {
 			currentSlideTitle = strings.TrimPrefix(line, ".slide.title ")
 			lines[index] = ""
@@ -293,6 +320,7 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 					TerminalFontColor:       currentTerminalFontColor,
 					TerminalBackgroundColor: currentTerminalBackgroundColor,
 					HideRunButton:           hideRunButton,
+					HidePageNumber:          hidePageNumber,
 					BackgroundColor:         currentBackgroundColor,
 					Title:                   currentSlideTitle,
 					PrintDisable:            true,
@@ -310,6 +338,10 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 			// we have reached cut delimiter, see if we have anything in buffer
 			converters := strings.Split(line, " ")
 			var tmp string
+			printDisable := true
+			if !isDashCut && keepPagePrintOnCut {
+				printDisable = false
+			}
 			if slide.Len() > 0 {
 				tmp = slide.String()
 				slides = append(slides, types.Slide{
@@ -321,9 +353,10 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 					TerminalFontColor:       currentTerminalFontColor,
 					TerminalBackgroundColor: currentTerminalBackgroundColor,
 					HideRunButton:           hideRunButton,
+					HidePageNumber:          hidePageNumber,
 					BackgroundColor:         currentBackgroundColor,
 					Title:                   currentSlideTitle,
-					PrintDisable:            true,
+					PrintDisable:            printDisable,
 				})
 				notes = ""
 				adminPage = ""
@@ -360,6 +393,7 @@ func readSlideFile(filename string, ro types.ReadOptions, headerFile string) (ty
 			TerminalFontColor:       currentTerminalFontColor,
 			TerminalBackgroundColor: currentTerminalBackgroundColor,
 			HideRunButton:           hideRunButton,
+			HidePageNumber:          hidePageNumber,
 			BackgroundColor:         currentBackgroundColor,
 			Title:                   currentSlideTitle,
 		})
